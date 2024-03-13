@@ -1,0 +1,110 @@
+html, body {
+    height: 100%;
+}
+
+body {
+    padding: 0;
+    margin:0;
+    box-sizing: border-box;
+    /* padding-top: 40px;
+    padding-bottom: 40px;
+    background-image: linear-gradient(to top, #88d3ce 0%, #6e45e2 100%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #b4b1b1; */
+}
+
+h5 {
+    font-size: 0.875rem;
+}
+
+.btn-gradient-dark
+{
+    color: #fff !important;
+    background-image: linear-gradient(to right, #243949 0%, #517fa4 100%);
+    background-color: #517fa4;
+}
+
+
+.forget-pass a{
+    color: rgb(70, 110, 241);
+    text-decoration: none;
+}
+
+.login_detail {
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 10px 60px 0 rgba(29,29,31,.09);
+    position: relative;
+}
+
+.login_detail .division {
+    float: none;
+    margin: 0 auto 18px;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    width: 100%;
+    color: #e95f2b;
+}
+
+.login_detail .form-group{
+    margin-bottom: 15px;
+}
+
+.login_detail .col-md-12:last-child .form-group{
+    margin: 0;
+}
+
+.login_detail .form-label{
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.login_detail .form-control{
+    border: none;
+    border-bottom: 1px solid #ccc;
+    border-radius: 0;
+    padding: 8px 0 !important;
+}
+
+.login_detail .form-control:focus{
+    box-shadow: none;
+    border-color: #ccc;
+}
+
+.form-login .division .line {
+    border-top: 1px solid #e9ecef;
+    position: absolute;
+    top: 10px;
+    width: 34%;
+}
+
+.login_detail .division .line.line-left {
+    left: 0;
+    border-top: 1px solid #07e0c4;
+}
+
+.login_detail .division .line.line-right {
+    right: 0;
+    border-top: 1px solid #07e0c4;
+}
+
+.login_detail .checkbox .custom-control label {
+    text-transform: initial;
+    font-size: 14px;
+    color: #e95f2b;
+}
+
+.login_detail a { color: #6e45e2 }
+
+.theme-logo{
+    width: 100px;
+}

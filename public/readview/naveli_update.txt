@@ -1,0 +1,102 @@
+ * 05-12-23
+
+1. set up  project 
+2. creating database
+3. working on roles
+4. permission add and testing
+
+* 06-12-23
+
+1. creating user tables 
+2. The user table has completed the entire INSERT UPDATE DELETE AND VIEW
+3. Tested the entire user table 
+4. create a ages view
+
+* 07-12-23
+
+1. The age table has completed the entire INSERT UPDATE DELETE AND VIEW
+2. Tested the entire age table 
+3. set up project in roles 
+4. changes label all project
+5. working admin login
+
+* 08-12-23
+
+1. create a Question view
+2. working all logic and functionality
+3. The Question table has completed the entire INSERT UPDATE DELETE AND VIEW
+4. And some design and label working
+
+* 11-12-23
+
+1. Solved some error occurred in question_options
+2. And complete Question_option view
+3. And design changes and some labels add
+4. Everything that has been done so far has been tested
+
+* 12-12-23
+
+1. create a notification view and models controller
+2. check all code in labels and link set up
+3. notification in change some fields
+4. Tested the entire Question and Question_option in some field
+
+* 13-12-23
+
+1. create GeneralSetting all of view
+2. The GeneralSetting in set up editor 
+3. The GeneralSetting table has completed the entire INSERT UPDATE
+4. GeneralSetting and notification label and link set right format
+
+* 14-12-23
+
+1. Added Help and Support in generalsettings
+2. Help and Support complete set up in General Settings
+3. layout and icon complete set in the project
+4. create a view ContentUpload 
+
+* 15-12-23
+
+1. working on ContentUpload 
+2. The ContentUpload table has completed the entire INSERT UPDATE
+3. testing ContentUpload and all label and design setup
+4. set up active and inactive status complete
+
+* 18-12-23
+
+1. Question menu in add a select Age Group
+2. Question menu in add Option View Type
+3. Question menu all data set a right format and testing Question All Items
+4. Api In Routing error solve
+
+* 19-12-23
+
+1. create Api in User Controller and base controller
+2. User Controller in create  register Api
+3. User Controller in create login Api
+4. User Controller in working on userList
+
+* 20-12-23
+
+1. User Controller complete userList Api
+2. User Controller in create update Api
+3. User Controller in create destroy Api
+4. Question Controller in create QuestionList Api
+5. Question Controller in create destroy Api
+6. Question Api in add filter Age_Group
+
+* 21-12-23
+
+1. Question Api in add filter Option_view_type
+2. create a forgetpassword view and set up
+3. working on forgetpassword Controller OverAll and complete did it
+4. forgetpassword Controller in create submitForgetPasswordForm Api
+5. forgetpassword Controller in create checkOtpApi
+6. forgetpassword Controller in confirmPassword Api Working 
+7. forgetpassword view design complete set up 
+
+* 22-12-23
+
+1.forgetpassword Controller in confirmPassword Api complete
+2. GeneralSetting Cotroller in create getGeneralSetting Api
+3.Everything that has been done so far has been tested
