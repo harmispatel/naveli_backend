@@ -9,9 +9,15 @@ use Carbon\Carbon;
 
 class ForumCommentController extends Controller
 {
+    public function __construct(){
+        $this->middleware('permission:forumcomments.index|forumcomments.reply|forumcomments.destroy', ['only' => ['index', 'show']]);
+        $this->middleware('permission:forumcomments.reply', ['only' => ['reply', 'storeReply']]);
+        $this->middleware('permission:forumcomments.destroy', ['only' => ['destroy']]);
+    }
+
    public function index(Request $request){
     if($request->ajax()){
-        $getForumcomments = ForumComment::latest();
+        $getForumcomments = ForumComment::get();
 
         return DataTables::of($getForumcomments)
         ->addIndexColumn()

@@ -16,14 +16,11 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-
-            if(auth()->user())
-            {
-                return $next($request);
-            }
-            else
-            {
-                return redirect()->route('admin.login')->with('error','Please Enter the Credentials..');
-            }
+        if(auth()->user()){
+            return $next($request);
         }
+        else{
+            return redirect()->route('admin.login')->with('error','Please Enter the Credentials..');
+        }    
+    }
 }

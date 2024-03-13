@@ -74,12 +74,13 @@
             var table = $('#ForumCommentsTable').DataTable({
                 processing: true,
                 serverSide: true,
-                pageLength: 10,
+                pageLength: 50,
                 ajax: "{{ route('forumcomments.index') }}",
                 columns: [
                     {
                         data: 'id',
-                        name:'id',
+                        name: 'id',
+                        orderable: true,
                     },
                     {
                         data: 'forum_title',
@@ -93,13 +94,13 @@
                         data: 'comment',
                         name: 'comment',
                         searchable: false,
-                        orderable:false,
+                        orderable: false,
                     },
                     {
                         data: 'admin_reply',
                         name: 'admin_reply',
                         searchable: false,
-                        orderable:false,
+                        orderable: false,
                     },
                     {
                         data: 'comment_time',

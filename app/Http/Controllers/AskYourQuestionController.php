@@ -11,6 +11,14 @@ class AskYourQuestionController extends Controller
 {
     use ImageTrait;
 
+    public function __construct()
+    {
+        $this->middleware('permission:userAskQuestion.index|userAskQuestion.create|userAskQuestion.edit|userAskQuestion.destroy', ['only' => ['index', 'show']]);
+        $this->middleware('permission:userAskQuestion.edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:userAskQuestion.destroy', ['only' => ['delete']]);
+    }
+
+
     public function index(Request $request)
     {
         try {
@@ -21,23 +29,13 @@ class AskYourQuestionController extends Controller
 
                 return DataTables::of($askquestion)
                     ->addIndexColumn()
-                    ->addColumn('image', function ($ask) {
-                        if ($ask->file_type == 'link') {
-                            return isset($ask->image) == $ask->image ? 'Video Url' : '--';
-                        } else if ($ask->file_type == 'image') {
-                            return '<image src="' . asset('/public/images/uploads/askQuestion/' . $ask->image) . '"
-                        class="img-thumbnail" width="100" height="70">';
-                        } else if ($ask->file_type == '') {
-                            return '--';
-                        }
-                    })
                     ->addColumn('actions', function ($ask) {
                         return '<div class="btn-group">
                     <a href=' . route("userAskQuestion.edit", ["id" => encrypt($ask->id)]) . ' class="btn btn-sm custom-btn me-1"><i class="bi bi-reply-fill" aria-hidden="true"></i></a>
                     <a href=' . route("userAskQuestion.destroy", ["id" => $ask->id]) . ' class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
                     </div>';
                     })
-                    ->rawColumns(['actions', 'image'])
+                    ->rawColumns(['actions'])
                     ->make(true);
 
             }

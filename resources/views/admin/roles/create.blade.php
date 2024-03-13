@@ -70,7 +70,7 @@
                                                     @endif
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div>                 
                                         <div class="prmission_box">
                                             <h3><strong>{{trans('label.Permission')}}</strong><span class="text-danger">*</span></h3>
                                             <div class="row">
@@ -382,6 +382,175 @@
                                                                                     @else
                                                                                     {{trans('label.Delete')}}
                                                                                     @endif
+                                                                        </label>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="accordion" id="accordionten">
+                                                        <div class="accordion-item">
+                                                            <h2 class="accordion-header" id="headingten">
+                                                                <button class="accordion-button collapsed" type="button"
+                                                                    data-bs-toggle="collapse" data-bs-target="#collapseten"
+                                                                    aria-expanded="false" aria-controls="collapseten">
+                                                                    {{trans('label.askquestion')}}   
+                                                                </button>
+                                                            </h2>
+                                                            <div id="collapseten" class="accordion-collapse collapse"
+                                                                aria-labelledby="headingten"
+                                                                data-bs-parent="#accordionten">
+                                                                @foreach ($permission->slice(37, 3) as $value)
+                                                                    <div class="accordion-body">
+                                                                        <label>
+                                                                            <input type="checkbox" name="permission[]"
+                                                                                value="{{ $value->id }}"
+                                                                                class="mr-3">
+                                                                                    @if ($value->name == 'userAskQuestion.index')
+                                                                                    {{trans('label.view')}}
+                                                                                    @elseif($value->name == 'userAskQuestion.edit')
+                                                                                    {{trans('label.reply')}}
+                                                                                    @else
+                                                                                    {{trans('label.Delete')}}
+                                                                                    @endif
+                                                                        </label>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="accordion" id="accordionten">
+                                                        <div class="accordion-item">
+                                                            <h2 class="accordion-header" id="headingten">
+                                                                <button class="accordion-button collapsed" type="button"
+                                                                    data-bs-toggle="collapse" data-bs-target="#collapseten"
+                                                                    aria-expanded="false" aria-controls="collapseten">
+                                                                    {{trans('label.askquestion')}}   
+                                                                </button>
+                                                            </h2>
+                                                            <div id="collapseten" class="accordion-collapse collapse"
+                                                                aria-labelledby="headingten"
+                                                                data-bs-parent="#accordionten">
+                                                                @foreach ($permission->slice(37, 3) as $value)
+                                                                    <div class="accordion-body">
+                                                                        <label>
+                                                                            <input type="checkbox" name="permission[]"
+                                                                                value="{{ $value->id }}"
+                                                                                class="mr-3">
+                                                                                    @if ($value->name == 'userAskQuestion.index')
+                                                                                    {{trans('label.view')}}
+                                                                                    @elseif($value->name == 'userAskQuestion.edit')
+                                                                                    {{trans('label.reply')}}
+                                                                                    @else
+                                                                                    {{trans('label.Delete')}}
+                                                                                    @endif
+                                                                        </label>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="accordion" id="accordioneleven">
+                                                        <div class="accordion-item">
+                                                            <h2 class="accordion-header" id="headingeleven">
+                                                                <button class="accordion-button collapsed" type="button"
+                                                                    data-bs-toggle="collapse" data-bs-target="#collapseeleven"
+                                                                    aria-expanded="false" aria-controls="collapseeleven">
+                                                                    {{trans('label.questionType')}}   
+                                                                </button>
+                                                            </h2>
+                                                            <div id="collapseeleven" class="accordion-collapse collapse"
+                                                                aria-labelledby="headingeleven"
+                                                                data-bs-parent="#accordioneleven">
+                                                                @foreach ($permission->slice(40, 4) as $value)
+                                                                    <div class="accordion-body">
+                                                                        <label>
+                                                                            <input type="checkbox" name="permission[]"
+                                                                            value="{{ $value->id }}"
+                                                                            class="mr-3">
+                                                                                @if ($value->name == 'questionType.index')
+                                                                                {{trans('label.view')}}
+                                                                                @elseif($value->name == 'questionType.create')
+                                                                                {{trans('label.Add')}} 
+                                                                                @elseif($value->name == 'questionType.edit')
+                                                                                {{trans('label.Update')}}
+                                                                                @else
+                                                                                {{trans('label.Delete')}}
+                                                                                @endif
+                                                                        </label>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="accordion" id="accordiontwelve">
+                                                        <div class="accordion-item">
+                                                            <h2 class="accordion-header" id="headingtwelve">
+                                                                <button class="accordion-button collapsed" type="button"
+                                                                    data-bs-toggle="collapse" data-bs-target="#collapsetwelve"
+                                                                    aria-expanded="false" aria-controls="collapsetwelve">
+                                                                    {{trans('label.forums')}}   
+                                                                </button>
+                                                            </h2>
+                                                            <div id="collapsetwelve" class="accordion-collapse collapse"
+                                                                aria-labelledby="headingtwelve"
+                                                                data-bs-parent="#accordiontwelve">
+                                                                @foreach ($permission->slice(44, 4) as $value)
+                                                                    <div class="accordion-body">
+                                                                        <label>
+                                                                            <input type="checkbox" name="permission[]"
+                                                                            value="{{ $value->id }}"
+                                                                            class="mr-3">
+                                                                                @if ($value->name == 'forums.index')
+                                                                                {{trans('label.view')}}
+                                                                                @elseif($value->name == 'forums.create')
+                                                                                {{trans('label.Add')}} 
+                                                                                @elseif($value->name == 'forums.edit')
+                                                                                {{trans('label.Update')}}
+                                                                                @else
+                                                                                {{trans('label.Delete')}}
+                                                                                @endif
+                                                                        </label>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="accordion" id="accordionthirteen">
+                                                        <div class="accordion-item">
+                                                            <h2 class="accordion-header" id="headingthirteen">
+                                                                <button class="accordion-button collapsed" type="button"
+                                                                    data-bs-toggle="collapse" data-bs-target="#collapsethirteen"
+                                                                    aria-expanded="false" aria-controls="collapsethirteen">
+                                                                    {{trans('label.forum_comments')}}   
+                                                                </button>
+                                                            </h2>
+                                                            <div id="collapsethirteen" class="accordion-collapse collapse"
+                                                                aria-labelledby="headingthirteen"
+                                                                data-bs-parent="#accordionthirteen">
+                                                                @foreach ($permission->slice(48, 3) as $value)
+                                                                    <div class="accordion-body">
+                                                                        <label>
+                                                                            <input type="checkbox" name="permission[]"
+                                                                            value="{{ $value->id }}"
+                                                                            class="mr-3">
+                                                                                @if ($value->name == 'forumcomments.index')
+                                                                                {{trans('label.view')}}
+                                                                                @elseif($value->name == 'forumcomments.reply')
+                                                                                {{trans('label.reply')}}
+                                                                                @else
+                                                                                {{trans('label.Delete')}}
+                                                                                @endif
                                                                         </label>
                                                                     </div>
                                                                 @endforeach

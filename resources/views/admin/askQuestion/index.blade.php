@@ -47,7 +47,7 @@
                                                     <th>{{ trans('label.username') }}</th>
                                                     <th>{{ trans('label.userquestion') }}</th>
                                                     <th>{{ trans('label.adminanswer')}}</th>
-                                                    <th>{{ trans('label.image')}}</th>
+                                                    <th>{{ trans('label.media')}}</th>
                                                     <th>{{ trans('label.actions') }}</th>
                                                 </tr>
                                             </thead>
@@ -89,18 +89,26 @@
                     {
                         data: 'user_question',
                         name: 'user_question',
+                        orderable: false,
+                        searchable:false
                     },
                     {
                         data: 'question_answer',
                         name: 'question_answer',
+                        orderable: false,
+                        searchable:false
                     },
                     {
-                        data: 'image',
-                        name: 'image',
+                        data: 'file_type',
+                        name: 'file_type',
+                        orderable: false,
+                        searchable:false
                     },
                     {
                         data: 'actions',
                         name: 'actions',
+                        orderable: false,
+                        searchable:false
                     },
                 ]
             });

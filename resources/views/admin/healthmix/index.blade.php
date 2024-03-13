@@ -44,7 +44,6 @@
                                                 <tr>
                                                     <th>{{ trans('label.Id') }}</th>
                                                     <th>{{ trans('label.healthtype') }}</th>
-                                                    <th>{{ trans('label.media') }}</th>
                                                     <th>{{ trans('label.media_type') }}</th>
                                                     <th>{{ trans('label.description')}}</th>
                                                     <th>{{ trans('label.actions')}}</th>
@@ -84,12 +83,6 @@
                         data: 'health_type',
                         name: 'health_type',
                         'orderable': false, 
-                    },
-                    {
-                        data: 'media',
-                        name: 'media',
-                        'orderable': false, 
-                        'searchable': false
                     },
                     {
                         data: 'media_type',

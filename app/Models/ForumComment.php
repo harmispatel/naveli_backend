@@ -14,4 +14,8 @@ class ForumComment extends Model
     public function users(){
         return $this->hasOne(User::class,'id','user_id');
     }
+
+    public function forum(){
+        return $this->hasOne(Forum::class,'id','forum_id');
+    }
 }

@@ -56,8 +56,10 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        @if($role->id != 1)
                                         <div class="prmission_box">
-                                            <h3><strong>{{trans('label.Permission')}}</strong><span class="text-danger">*</span></h3>
+                                            <h5><strong>{{trans('label.Permission')}}</strong><span class="text-danger">*</span></h5>
+
                                             <div class="row">
                                                 <div class="col-md-3">
                                                     <div class="accordion" id="accordionOne">
@@ -210,7 +212,7 @@
                                                                 <button class="accordion-button collapsed" type="button"
                                                                     data-bs-toggle="collapse" data-bs-target="#collapsefive"
                                                                     aria-expanded="false" aria-controls="collapsefive">
-                                                                    {{trans('label.news')}}   
+                                                                    {{trans('label.news')}}
                                                                 </button>
                                                             </h2>
                                                             <div id="collapsefive" class="accordion-collapse collapse"
@@ -226,7 +228,7 @@
                                                                                     @if ($value->name == 'news.index')
                                                                                     {{trans('label.view')}}
                                                                                     @elseif($value->name == 'news.create')
-                                                                                    {{trans('label.Add')}} 
+                                                                                    {{trans('label.Add')}}
                                                                                     @elseif($value->name == 'news.edit')
                                                                                     {{trans('label.Update')}}
                                                                                     @else
@@ -246,7 +248,7 @@
                                                                 <button class="accordion-button collapsed" type="button"
                                                                     data-bs-toggle="collapse" data-bs-target="#collapsesix"
                                                                     aria-expanded="false" aria-controls="collapsesix">
-                                                                    {{trans('label.HealthMix')}}   
+                                                                    {{trans('label.HealthMix')}}
                                                                 </button>
                                                             </h2>
                                                             <div id="collapsesix" class="accordion-collapse collapse"
@@ -262,7 +264,7 @@
                                                                                     @if ($value->name == 'healthMix.index')
                                                                                     {{trans('label.view')}}
                                                                                     @elseif($value->name == 'healthMix.create')
-                                                                                    {{trans('label.Add')}} 
+                                                                                    {{trans('label.Add')}}
                                                                                     @elseif($value->name == 'healthMix.edit')
                                                                                     {{trans('label.Update')}}
                                                                                     @else
@@ -282,7 +284,7 @@
                                                                 <button class="accordion-button collapsed" type="button"
                                                                     data-bs-toggle="collapse" data-bs-target="#collapseSeven"
                                                                     aria-expanded="false" aria-controls="collapseSeven">
-                                                                    {{trans('label.posts')}}   
+                                                                    {{trans('label.posts')}}
                                                                 </button>
                                                             </h2>
                                                             <div id="collapseSeven" class="accordion-collapse collapse"
@@ -298,7 +300,7 @@
                                                                                     @if ($value->name == 'posts.index')
                                                                                     {{trans('label.view')}}
                                                                                     @elseif($value->name == 'posts.create')
-                                                                                    {{trans('label.Add')}} 
+                                                                                    {{trans('label.Add')}}
                                                                                     @elseif($value->name == 'posts.edit')
                                                                                     {{trans('label.Update')}}
                                                                                     @else
@@ -318,7 +320,7 @@
                                                                 <button class="accordion-button collapsed" type="button"
                                                                     data-bs-toggle="collapse" data-bs-target="#collapseEight"
                                                                     aria-expanded="false" aria-controls="collapseEight">
-                                                                    {{trans('label.Medicine')}}   
+                                                                    {{trans('label.Medicine')}}
                                                                 </button>
                                                             </h2>
                                                             <div id="collapseEight" class="accordion-collapse collapse"
@@ -334,7 +336,7 @@
                                                                                     @if ($value->name == 'medicine.index')
                                                                                     {{trans('label.view')}}
                                                                                     @elseif($value->name == 'medicine.create')
-                                                                                    {{trans('label.Add')}} 
+                                                                                    {{trans('label.Add')}}
                                                                                     @elseif($value->name == 'medicine.edit')
                                                                                     {{trans('label.Update')}}
                                                                                     @else
@@ -354,7 +356,7 @@
                                                                 <button class="accordion-button collapsed" type="button"
                                                                     data-bs-toggle="collapse" data-bs-target="#collapseNine"
                                                                     aria-expanded="false" aria-controls="collapseNine">
-                                                                    {{trans('label.ailments')}}   
+                                                                    {{trans('label.ailments')}}
                                                                 </button>
                                                             </h2>
                                                             <div id="collapseNine" class="accordion-collapse collapse"
@@ -370,7 +372,7 @@
                                                                                     @if ($value->name == 'ailments.index')
                                                                                     {{trans('label.view')}}
                                                                                     @elseif($value->name == 'ailments.create')
-                                                                                    {{trans('label.Add')}} 
+                                                                                    {{trans('label.Add')}}
                                                                                     @elseif($value->name == 'ailments.edit')
                                                                                     {{trans('label.Update')}}
                                                                                     @else
@@ -383,8 +385,149 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="col-md-3">
+                                                    <div class="accordion" id="accordionten">
+                                                        <div class="accordion-item">
+                                                            <h2 class="accordion-header" id="headingten">
+                                                                <button class="accordion-button collapsed" type="button"
+                                                                    data-bs-toggle="collapse" data-bs-target="#collapseten"
+                                                                    aria-expanded="false" aria-controls="collapseten">
+                                                                    {{trans('label.askquestion')}}   
+                                                                </button>
+                                                            </h2>
+                                                            <div id="collapseten" class="accordion-collapse collapse"
+                                                                aria-labelledby="headingten"
+                                                                data-bs-parent="#accordionten">
+                                                                @foreach ($permission->slice(37, 3) as $value)
+                                                                    <div class="accordion-body">
+                                                                        <label>
+                                                                            <input type="checkbox" name="permission[]"
+                                                                                value="{{ $value->id }}"
+                                                                                class="mr-3"
+                                                                                {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
+                                                                                    @if ($value->name == 'userAskQuestion.index')
+                                                                                    {{trans('label.view')}}
+                                                                                    @elseif($value->name == 'userAskQuestion.edit')
+                                                                                    {{trans('label.reply')}}
+                                                                                    @else
+                                                                                    {{trans('label.Delete')}}
+                                                                                    @endif
+                                                                        </label>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="accordion" id="accordioneleven">
+                                                        <div class="accordion-item">
+                                                            <h2 class="accordion-header" id="headingeleven">
+                                                                <button class="accordion-button collapsed" type="button"
+                                                                    data-bs-toggle="collapse" data-bs-target="#collapseeleven"
+                                                                    aria-expanded="false" aria-controls="collapseeleven">
+                                                                    {{trans('label.questionType')}}   
+                                                                </button>
+                                                            </h2>
+                                                            <div id="collapseeleven" class="accordion-collapse collapse"
+                                                                aria-labelledby="headingeleven"
+                                                                data-bs-parent="#accordioneleven">
+                                                                @foreach ($permission->slice(40, 4) as $value)
+                                                                    <div class="accordion-body">
+                                                                        <label>
+                                                                            <input type="checkbox" name="permission[]"
+                                                                            value="{{ $value->id }}"
+                                                                            class="mr-3"
+                                                                            {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
+                                                                                @if ($value->name == 'questionType.index')
+                                                                                {{trans('label.view')}}
+                                                                                @elseif($value->name == 'questionType.create')
+                                                                                {{trans('label.Add')}} 
+                                                                                @elseif($value->name == 'questionType.edit')
+                                                                                {{trans('label.Update')}}
+                                                                                @else
+                                                                                {{trans('label.Delete')}}
+                                                                                @endif
+                                                                        </label>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="accordion" id="accordiontwelve">
+                                                        <div class="accordion-item">
+                                                            <h2 class="accordion-header" id="headingtwelve">
+                                                                <button class="accordion-button collapsed" type="button"
+                                                                    data-bs-toggle="collapse" data-bs-target="#collapsetwelve"
+                                                                    aria-expanded="false" aria-controls="collapsetwelve">
+                                                                    {{trans('label.forums')}}   
+                                                                </button>
+                                                            </h2>
+                                                            <div id="collapsetwelve" class="accordion-collapse collapse"
+                                                                aria-labelledby="headingtwelve"
+                                                                data-bs-parent="#accordiontwelve">
+                                                                @foreach ($permission->slice(44, 4) as $value)
+                                                                    <div class="accordion-body">
+                                                                        <label>
+                                                                            <input type="checkbox" name="permission[]"
+                                                                            value="{{ $value->id }}"
+                                                                            class="mr-3"
+                                                                            {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
+                                                                                @if ($value->name == 'forums.index')
+                                                                                {{trans('label.view')}}
+                                                                                @elseif($value->name == 'forums.create')
+                                                                                {{trans('label.Add')}} 
+                                                                                @elseif($value->name == 'forums.edit')
+                                                                                {{trans('label.Update')}}
+                                                                                @else
+                                                                                {{trans('label.Delete')}}
+                                                                                @endif
+                                                                        </label>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="accordion" id="accordionthirteen">
+                                                        <div class="accordion-item">
+                                                            <h2 class="accordion-header" id="headingthirteen">
+                                                                <button class="accordion-button collapsed" type="button"
+                                                                    data-bs-toggle="collapse" data-bs-target="#collapsethirteen"
+                                                                    aria-expanded="false" aria-controls="collapsethirteen">
+                                                                    {{trans('label.forum_comments')}}   
+                                                                </button>
+                                                            </h2>
+                                                            <div id="collapsethirteen" class="accordion-collapse collapse"
+                                                                aria-labelledby="headingthirteen"
+                                                                data-bs-parent="#accordionthirteen">
+                                                                @foreach ($permission->slice(48, 3) as $value)
+                                                                    <div class="accordion-body">
+                                                                        <label>
+                                                                            <input type="checkbox" name="permission[]"
+                                                                            value="{{ $value->id }}"
+                                                                            class="mr-3"
+                                                                            {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
+                                                                                @if ($value->name == 'forumcomments.index')
+                                                                                {{trans('label.view')}}
+                                                                                @elseif($value->name == 'forumcomments.reply')
+                                                                                {{trans('label.reply')}}
+                                                                                @else
+                                                                                {{trans('label.Delete')}}
+                                                                                @endif
+                                                                        </label>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

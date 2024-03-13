@@ -59,6 +59,13 @@ Route::group(['prefix' => 'admin'], function () {
     });
 
     // Admin Auth Routes
+    Route::get('/login', function () {
+        if (auth()->check()) {
+            return redirect()->route('dashboard');
+        } else {
+            return view('auth.login'); // Replace 'your_login_view' with the actual view name
+        }
+    })->name('admin.login');
     Route::get('/login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
     Route::post('/do/login', [AuthController::class, 'Adminlogin'])->name('admin.do.login');
     Route::get('/forget-password', [ForgotPasswordController::class, 'showForgetPasswordForm'])->name('forget.password.get');
@@ -70,6 +77,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::group(['middleware' => 'is_admin'], function () {
 
         // Dashboard
+        
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         // Roles

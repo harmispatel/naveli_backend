@@ -9,6 +9,13 @@ use Yajra\DataTables\Facades\DataTables;
 
 class ForumController extends Controller
 {
+    public function __construct(){
+        $this->middleware('permission:forums.index|forums.create|forums.edit|forums.destroy', ['only' => ['index', 'show']]);
+        $this->middleware('permission:forums.create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:forums.edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:forums.destroy', ['only' => ['destroy']]);
+    }
+
    public function index(Request $request){
 
      if($request->ajax()){

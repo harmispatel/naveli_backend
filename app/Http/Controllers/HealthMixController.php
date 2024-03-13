@@ -30,19 +30,6 @@ class HealthMixController extends Controller
 
                 return DataTables::of($healthMix)
                     ->addIndexColumn()
-                    ->addColumn('media', function ($new) {
-                        if ($new->media_type == 'video') {
-                            return '<video src="' . asset('/public/images/uploads/healthmix/' . $new->media) . '"
-                  width="50" height="50" type="video/mp4"
-                  controls>';
-                        } elseif ($new->media_type == 'image') {
-                            return '<image src="' . asset('/public/images/uploads/healthmix/' . $new->media) . '"
-                   class="img-thumbnail" width="70" height="70">';
-                        } else {
-                            return ' <img src="' . asset('/public/images/uploads/general_image/noImage.png') . '"
-                    alt="no_image" class="img-thumbnail" style="max-width: 50px;">';
-                        }
-                    })
                     ->addColumn('health_type', function ($health) {
                         $healthmix_category_id = $health->health_type;
                         switch ($healthmix_category_id) {
@@ -77,7 +64,7 @@ class HealthMixController extends Controller
                 <a href=' . route("healthMix.destroy", ["id" => $health->id]) . ' class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
                 </div>';
                     })
-                    ->rawColumns(['actions', 'media', 'health_type'])
+                    ->rawColumns(['actions','health_type'])
                     ->make(true);
             }
 

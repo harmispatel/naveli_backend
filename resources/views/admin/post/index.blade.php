@@ -57,10 +57,9 @@
                                             <thead>
                                                 <tr>
                                                     <th>{{ trans('label.Id') }}</th>
-                                                    <th>{{ trans('label.description') }}</th>
-                                                    <th>{{ trans('label.posts') }}</th>
                                                     <th>{{ trans('label.posts_category') }}</th>
                                                     <th>{{ trans('label.file_type')}}</th>
+                                                    <th>{{ trans('label.description') }}</th>
                                                     <th>{{ trans('label.actions')}}</th>
                                                 </tr>
                                             </thead>
@@ -101,23 +100,22 @@
                         searchable: false
                     },
                     {
-                        data: 'description',
-                        name: 'description',
-                    },
-                    {
-                        data: 'posts',
-                        name: 'posts',
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
                         data: 'posts_category',
                         name: 'posts_category',
-                        searchable: false
+                        searchable: false,
+                        orderable: false
                     },
                     {
                         data: 'file_type',
                         name: 'file_type',
+                        searchable: false,
+                        orderable: false
+                    },
+                    {
+                        data: 'description',
+                        name: 'description',
+                        searchable: false,
+                        orderable: false
                     },
                     {
                         data: 'actions',

@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\BaseController as BaseController;
 use App\Http\Controllers\Controller;
 use App\Models\ForumComment;
 use App\Models\Forum;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ForumController extends BaseController
@@ -64,12 +65,61 @@ class ForumController extends BaseController
             if (isset($request->forum_id) && !empty($request->forum_id) && isset($request->comment) && !empty($request->comment)) {
                 $forumStore = ForumComment::create($input);
 
-                return $this->sendResponse([], 'Comment Saved SuccessFully', true);
+                return $this->sendResponse(null, 'Comment Saved SuccessFully', true);
             } else {
                 return $this->sendResponse(null, 'All fields are required.', false);
             }
         } catch (\Throwable $th) {
             return $this->sendResponse(null, 'Somting went Wrong!', false);
         }
+    }
+
+    public function getUsersCommentList(Request $request){
+
+       try {
+            $forum_id = $request->forum_id;
+            $getUserComments = ForumComment::where('forum_id',$forum_id)->with('forum','users')->get();
+
+
+            if(count($getUserComments) > 0){
+                $data = $getUserComments->map(function ($commentDetail,$getUserComments) {
+
+                    $diff = $commentDetail->created_at->diffForHumans();
+
+                if (strpos($diff, 'second') !== false) {
+                    $diffInHumanReadable = str_replace('seconds', 'sec.', $diff);
+                } elseif (strpos($diff, 'minute') !== false) {
+                    $diffInHumanReadable = str_replace('minutes', 'min.', $diff);
+                } elseif (strpos($diff, 'hour') !== false) {
+                    $diffInHumanReadable = str_replace('hours', 'hr.', $diff);
+                } elseif (strpos($diff, 'day') !== false) {
+                    $diffInHumanReadable = str_replace('days', 'day', $diff);
+                } elseif (strpos($diff, 'month') !== false) {
+                    $diffInHumanReadable = str_replace('months', 'mon.', $diff);
+                } elseif (strpos($diff, 'year') !== false) {
+                    $diffInHumanReadable = str_replace('years', 'year', $diff);
+                } else {
+                    $diffInHumanReadable = "";
+                }
+                    return [
+                        'id' => $commentDetail->id,
+                        'user_detail' =>isset($commentDetail->user_id) ? [
+                           'id' => $commentDetail->users->id,
+                           'name' => $commentDetail->users->name,
+                           'image' => isset($commentDetail->users->image) ? asset('public/images/uploads/user_images/' .$commentDetail->users->image) :null,
+                        ]: null,
+                        'comment' => $commentDetail->comment,
+                        'admin_reply'=>$commentDetail->admin_reply,
+                        'comment_time' => $diffInHumanReadable,
+                    ];
+                });
+                return $this->sendResponse($data, 'User Comments Received For this Forum', true);
+            }else{
+                return $this->sendResponse(null, 'No Comments On This Forum', true);
+            }
+       } catch (\Throwable $th) {
+        return $this->sendResponse(null, 'Somting went Wrong!', false);
+       }
+
     }
 }

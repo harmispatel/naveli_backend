@@ -86,6 +86,8 @@
                     {
                         data: 'actions',
                         name: 'actions',
+                        searchable: false,
+                        orderable: false
                     },
                 ]
             });

@@ -73,19 +73,27 @@
                 serverSide: true,
                 pageLength: 50,
                 ajax: "{{ route('questionType.index') }}",
-                columns: [{ data: 'DT_RowIndex', 'orderable': false, 'searchable': false },
+                columns: [
+                    { data: 'id',
+                      name: 'id', 
+                      searchable: false
+                    },
                     {
                         data: 'name',
-                        name: 'name',
+                        name: 'name'
                     },
                     {
                         data: 'icon',
                         name: 'icon',
+                        orderable: false,
+                        searchable:false
                     },
                     {
                         
                         data : 'actions',
                         name : 'actions',
+                        orderable: false,
+                        searchable:false
                     }                  
                 ]
             });

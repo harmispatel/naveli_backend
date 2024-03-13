@@ -18,7 +18,7 @@ class AskYourQuestionResource extends JsonResource
         $image = '';
 
         if($file_extension == 'image'){
-            $image = asset('images/uploads/askQuestion/'. $this->image);
+            $image = asset('public/images/uploads/askQuestion/'. $this->image);
         }elseif($file_extension == 'link'){
             $image = $this->image;
         }else{

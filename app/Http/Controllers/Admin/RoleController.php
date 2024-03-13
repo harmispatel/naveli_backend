@@ -30,12 +30,12 @@ class Rolecontroller extends Controller
                         $role_id = isset($row->id) ? $row->id : '';
                         $action_html = '<div class="btn-group">';
                         $action_html .= '<a href="' . route('roles.edit', encrypt($row->id)) . '" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
-                       
-                      
-                        if($role_id != 1){
+
+
+                        if($role_id != 1 && $role_id != 2 && $role_id != 3 && $role_id != 4){
                             $action_html .= '<a onclick="deleteRole(\'' . $row->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
-                        }                      
-                       
+                        }
+
                         $action_html .= '</div>';
                         return $action_html;
                     })
@@ -60,15 +60,17 @@ class Rolecontroller extends Controller
     {
         $this->validate($request, [
             'name' => 'required|unique:roles',
-            'permission' => 'required',
         ]);
 
         try {
 
             $role = Role::create(['name' => $request->input('name')]);
-            $permissions = Permission::whereIn('id', $request->permission)->get();
 
-            $role->syncPermissions($permissions);
+            if(isset($request->permission)){
+                $permissions = Permission::whereIn('id', $request->permission)->get();
+                $role->syncPermissions($permissions);
+            }
+
             return redirect()->route('roles')
                 ->with('message', 'Role created successfully');
         } catch (\Throwable $th) {
@@ -100,19 +102,20 @@ class Rolecontroller extends Controller
 
         $request->validate([
             'name' => 'required|unique:roles,name,'.$id,
-            'permission' => 'required',
         ]);
 
         try {
-           
+
             $role = Role::find($id);
 
             $role->name = $request->input('name');
             $role->save();
 
-            $permissions = Permission::whereIn('id', $request->permission)->get();
+            if(isset($request->permission)){
 
-            $role->syncPermissions($permissions);
+                $permissions = Permission::whereIn('id', $request->permission)->get();
+                $role->syncPermissions($permissions);
+            }
 
             return redirect()->route('roles')
                 ->with('message', 'Role updated successfully');
@@ -125,7 +128,7 @@ class Rolecontroller extends Controller
     public function destroy(Request $request)
     {
         try {
-            $id = decrypt($request->id);
+            $id = $request->id;
             $role = Role::where('id', $id)->delete();
 
             return response()->json(
@@ -138,7 +141,7 @@ class Rolecontroller extends Controller
             return response()->json(
                 [
                     'success' => 0,
-                    'message' => "Something with wrong",
+                    'message' => "Something went wrong",
                 ]
             );
         }

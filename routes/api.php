@@ -29,9 +29,9 @@ use App\Models\generalSetting;
  Route::post('signup', [UserController::class, 'signup']);
  Route::post('login', [UserController::class, 'login']);
  Route::post('verify-mobile',[UserController::class,'VerifyMobileNumber']);
- Route::post('userList', [UserController::class, 'userList']);
+ Route::post('userList', [UserController::class, 'userList'])->middleware('auth:sanctum');
  Route::post('update', [UserController::class, 'update'])->middleware('auth:sanctum');
- Route::post('destroy',[UserController::class,'destroy']);
+ Route::post('destroy',[UserController::class,'destroy'])->middleware('auth:sanctum');
  Route::get('user-details',[UserController::class,'userDetail'])->middleware('auth:sanctum');
  Route::post('user-update-details',[UserController::class,'userUpdateDetails'])->middleware('auth:sanctum');
 
@@ -69,13 +69,13 @@ Route::post('Super-Woman',[SuperWomancontroller::class,'SuperWoman']);
 Route::get('logout',[UserController::class,'logout'])->middleware('auth:sanctum');
 
 //news
-Route::get('newsDetails',[UserController::class,'newsDetails']);
+Route::get('newsDetails',[UserController::class,'newsDetails'])->middleware('auth:sanctum');
 
 //medicine
-Route::get('medicineList',[UserController::class,'medicineList']);
+Route::get('medicineList',[UserController::class,'medicineList'])->middleware('auth:sanctum');
 
 //ailmentsList
-Route::get('/ailmentsList',[UserController::class,'ailmentsList']);
+Route::get('/ailmentsList',[UserController::class,'ailmentsList'])->middleware('auth:sanctum');
 
 //posts
 Route::post('get-all-posts',[UserController::class,'getAllPosts'])->middleware('auth:sanctum');
@@ -101,6 +101,7 @@ Route::post('/userHealthMixLikeDislike',[HealthMixController::class,'likeDislike
 //ForumController
 Route::get('/forumsList',[ForumController::class,'forumsList'])->middleware('auth:sanctum');
 Route::post('/forumCommentStore',[ForumController::class,'forumCommentStore'])->middleware('auth:sanctum');
+Route::post('/getUsersCommentList',[ForumController::class,'getUsersCommentList']);
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 

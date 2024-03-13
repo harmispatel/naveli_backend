@@ -35,7 +35,7 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('public/assets/vendor/css/toastr.css') }}">
 
 {{-- fa icon --}}
-{{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"> --}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="{{ asset('public/assets/vendor/css/awesome.min.css') }}">
 
 {{-- select2 --}}

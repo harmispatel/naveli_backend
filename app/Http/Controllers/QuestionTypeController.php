@@ -12,9 +12,15 @@ class QuestionTypeController extends Controller
 {
     use ImageTrait;
 
+    public function __construct(){
+        $this->middleware('permission:questionType.index|questionType.create|questionType.edit|questionType.destroy', ['only' => ['index', 'show']]);
+        $this->middleware('permission:questionType.create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:questionType.edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:questionType.destroy', ['only' => ['destroy']]);
+    }
+
     public function index(Request $request)
     {
-
         try {
             if ($request->ajax()) {
                 $questionType = QuestionType::all();

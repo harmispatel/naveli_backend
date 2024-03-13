@@ -1,6 +1,8 @@
 <?php
 
 return [
+
+    "reply" => "Reply",
     "filetype" => "File Type",
     "username" => "User Name",
     "adminanswer" => "Admin Answer",

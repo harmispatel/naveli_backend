@@ -70,8 +70,8 @@
                                                 <thead>
                                                     <tr>
                                                         <th>{{ trans('label.Id') }}</th>
-                                                        <th>{{ trans('label.questionType') }}</th>
                                                         <th>{{ trans('label.question_name') }}</th>
+                                                        <th>{{ trans('label.questionType') }}</th>
                                                         <th>{{ trans('label.ageType') }}</th>
                                                         <th>{{ trans('label.actions') }}</th>
                                                     </tr>
@@ -107,15 +107,15 @@
                        
                     },
                     {
-                        data: 'questionType_id',
-                        name: 'questionType_id',
-
-                    },
-                    {
                         data: 'question_name',
                         name: 'question_name',
-                        'searchable': true,
-                        'orderable': false, 
+        
+                    },
+                    {
+                        data: 'questionType_id',
+                        name: 'questionType_id',
+                      
+
                     },
                     {
                         data: 'age_group_id',
@@ -124,6 +124,8 @@
                     {
                         data: 'actions',
                         name: 'actions',
+                        'searchable': false,
+                        'orderable': false, 
                     },
 
                 ]

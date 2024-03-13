@@ -33,18 +33,6 @@ class PostController extends Controller
 
                 return DataTables::of($posts)
                     ->addIndexColumn()
-                    ->addColumn('posts', function ($row) {
-
-                        if ($row->file_type == 'link') {
-                            return isset($row->posts) == $row->posts ? 'Video Url' :  '--';
-                        } elseif ($row->file_type == 'image') {
-                            return '<image src="' . asset('/public/images/uploads/newsPosts/' . $row->posts) . '"
-                    class="img-thumbnail" width="100" height="70">';
-                        } else {
-                            return ' <img src="' . asset('/public/images/uploads/general_image/noImage.png') . '"
-                        alt="no_image" class="img-thumbnail" style="max-width: 50px;">';
-                        }
-                    })
                     ->addColumn('posts_category', function ($row) {
                         $post_category_id = $row->parent_title;
                         switch ($post_category_id) {

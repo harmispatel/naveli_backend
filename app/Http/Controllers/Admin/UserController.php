@@ -61,7 +61,7 @@ class UserController extends Controller
                     ->addColumn('actions', function ($row) {
                         $user_id = isset($row->id) ? $row->id : '';
                         $action_html = '';
-                        $action_html .= '<a href="' . route('users.edit', encrypt($user_id)) . '" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
+                        $action_html .= '<a href="' . route('users.edit', encrypt($user_id)) . '" class="btn btn-sm custom-btn me-1"><i class="bi bi-eye"></i></a>';
     
     
                         if ($user_id != 1) {
@@ -141,7 +141,7 @@ class UserController extends Controller
         try {
             $id = decrypt($id);
             $data = User::where('id', $id)->first();
-            $roles = Role::all();
+            $roles = Role::where('id',$data->role_id)->first();
             return view('admin.users.edit', compact('data', 'roles'));
 
         } catch (\Throwable $th) {
@@ -150,7 +150,7 @@ class UserController extends Controller
        
     }
 
-    public function update(UserRequest $request)
+    public function update(Request $request)
     {
         try {
             $input = $request->except('_token', 'id', 'password', 'confirm_password', 'image');
