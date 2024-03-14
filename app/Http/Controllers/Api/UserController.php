@@ -24,32 +24,32 @@ class UserController extends BaseController
 {
     use ImageTrait;
 
-    public function signup(Request $request)
-    {
-        try {
-            $checkEmailOrMobile = User::where('email', $request->email)->orWhere('mobile', $request->mobile)->first();
+    // public function signup(Request $request)
+    // {
+    //     try {
+    //         $checkEmailOrMobile = User::where('email', $request->email)->orWhere('mobile', $request->mobile)->first();
 
-            if (isset($checkEmailOrMobile)) {
-                return  $this->sendResponse(null, 'Email or phone number is already registered', false);
-            }
+    //         if (isset($checkEmailOrMobile)) {
+    //             return  $this->sendResponse(null, 'Email or phone number is already registered', false);
+    //         }
 
-            if (empty($request->email) &&  empty($request->mobile) && empty($request->password)) {
-                return  $this->sendResponse(null, 'All field is required', false);
-            } else {
+    //         if (empty($request->email) &&  empty($request->mobile) && empty($request->password)) {
+    //             return  $this->sendResponse(null, 'All field is required', false);
+    //         } else {
 
-                $input = $request->except('_token', 'password', 'device_token');
+    //             $input = $request->except('_token', 'password', 'device_token');
 
-                $input['password'] = Hash::make($request->password);
-                $input['unique_id'] = uuId();
+    //             $input['password'] = Hash::make($request->password);
+    //             $input['unique_id'] = uuId();
 
-                $user = User::create($input);
-                return  $this->sendResponse($user, 'Signup Successfully', true);
-            }
-        } catch (\Throwable $th) {
+    //             $user = User::create($input);
+    //             return  $this->sendResponse($user, 'Signup Successfully', true);
+    //         }
+    //     } catch (\Throwable $th) {
 
-            return  $this->sendError('Something Went Wrong.', [], 500);
-        }
-    }
+    //         return  $this->sendError('Something Went Wrong.', [], 500);
+    //     }
+    // }
 
     // public function login(Request $request)
     // {
@@ -119,7 +119,7 @@ class UserController extends BaseController
                 }
 
             }
-            $input['unique_id'] = uuId();
+
             $createNewRegistration = User::create($input);
             Auth::login($createNewRegistration);
             $userDetail = $this->userResponse($createNewRegistration);
@@ -196,8 +196,10 @@ class UserController extends BaseController
                 if(isset($name) && isset($birthdate) && isset($gender) && isset($relationship_status)  && isset($previous_periods_begin)){
 
                     $getUserData = User::find($id);
+                    $find_user_uid = $getUserData->unique_id;
                     $updateUserDetail = $getUserData->update([
                         'name' => $name,
+                        'unique_id' => isset($find_user_uid) ? $find_user_uid : uuId($user_role,$gender),
                         'birthdate'=> $birthdate,
                         'gender' => $gender,
                         'gender_type' => isset($request->gender_type) ? $request->gender_type : null,
@@ -220,8 +222,10 @@ class UserController extends BaseController
                 if(isset($name) && isset($birthdate) && isset($gender) && isset($relationship_status)  && isset($hum_apke_he_kon) ){
 
                     $getUserData = User::find($id);
+                    $find_user_uid = $getUserData->unique_id;
                     $updateUserDetail = $getUserData->update([
                         'name' => $name,
+                        'unique_id' => isset($find_user_uid) ? $find_user_uid : uuId($user_role,$gender),
                         'birthdate'=> $birthdate,
                         'gender' => $gender,
                         'gender_type' => isset($request->gender_type) ? $request->gender_type : null,
@@ -241,8 +245,10 @@ class UserController extends BaseController
                 if(isset($name) && isset($birthdate) && isset($gender) && isset($relationship_status) ){
 
                     $getUserData = User::find($id);
+                    $find_user_uid = $getUserData->unique_id;
                     $updateUserDetail = $getUserData->update([
                         'name' => $name,
+                        'unique_id' => isset($find_user_uid) ? $find_user_uid : uuId($user_role,$gender),
                         'birthdate'=> $birthdate,
                         'gender' => $gender,
                         'gender_type' => isset($request->gender_type) ? $request->gender_type : null,

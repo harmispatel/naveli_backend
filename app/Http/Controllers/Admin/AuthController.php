@@ -12,7 +12,7 @@ class AuthController extends Controller
     // Show Admin Login Form
     public function showAdminLogin()
     {
-        session(['previousUrl' => url()->previous()]);
+        //session(['previousUrl' => url()->previous()]);
         return view('auth.login');
     }
 
@@ -33,8 +33,11 @@ class AuthController extends Controller
                 if (Auth::attempt($input)) {
                     $username = Auth::user()->name;
                     // Check if there's a previous URL stored in the session
-                    $previousUrl = session()->pull('previousUrl', route('dashboard'));
-                    return redirect()->intended($previousUrl)->with('message', 'Welcome '.$username);
+
+                    // $previousUrl = session()->pull('previousUrl', route('dashboard'));
+                    // return redirect()->intended($previousUrl)->with('message', 'Welcome '.$username);
+                   
+                    return redirect()->route('dashboard')->with('message', 'Welcome '.$username);
                 }
             } else {
                 return redirect()->route('admin.login')->with('error', 'Your account is deactivated!');

@@ -34,7 +34,7 @@
                                     </div>
                                     <div class="form_box_info">
                                         <div class="row">
-                                            <input type="hidden" name="id" id="id" value="{{$data->id}}">
+                                            <input type="hidden" name="id" id="id" value="{{encrypt($data->id)}}">
                                             <div class="col-md-6 mb-3">
                                                 <div class="form-group">
                                                     <label for="name" class="form-label">{{trans('label.Name')}}<span class="text-danger">*</span></label>
@@ -79,7 +79,6 @@
                                                         </div>
                                                     @endif
                                                 </div>
-
                                             </div>
 
                                             <div class="col-md-6 mb-3">

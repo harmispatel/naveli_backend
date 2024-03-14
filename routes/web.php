@@ -82,6 +82,10 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+        //health profile
+
+        Route::get('healthProfile', [UserController::class, 'healthProfile'])->name('healthProfile');
+
         // Roles
         Route::get('roles', [RoleController::class, 'index'])->name('roles');
         Route::get('roles/create', [RoleController::class, 'create'])->name('roles.create');

@@ -78,6 +78,12 @@ class ForumController extends BaseController
 
        try {
             $forum_id = $request->forum_id;
+
+            $check_currect_id = Forum::where('id',$forum_id)->first();
+
+            if(!$check_currect_id || empty($check_currect_id)){
+                 return $this->sendResponse(null, 'Wrong Forum Id!', false);
+            }
             $getUserComments = ForumComment::where('forum_id',$forum_id)->with('forum','users')->get();
 
             if(count($getUserComments) > 0){

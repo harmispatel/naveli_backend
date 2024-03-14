@@ -22,8 +22,8 @@ class QuestionAnswersResource extends JsonResource
             foreach($answers as $answer){
                 $item['question_id'] = (isset($answer->question_id)) ? $answer->question_id : '';
                 $item['option_id'] = (isset($answer->question_option_id)) ? $answer->question_option_id : '';
+                $data[] = $item;
             }
-            $data[] = $item;
         }
 
         return $data;

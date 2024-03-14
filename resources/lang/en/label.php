@@ -1,7 +1,8 @@
 <?php
 
 return [
-
+    "lengthcycle" => "Length Cycle",
+    "healthProfile" => "Health Profile",
     "reply" => "Reply",
     "filetype" => "File Type",
     "username" => "User Name",

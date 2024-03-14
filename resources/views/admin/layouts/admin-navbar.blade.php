@@ -51,7 +51,7 @@
 
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="{{ route('profile.edit',Auth::user()->id) }}">
+              <a class="dropdown-item d-flex align-items-center" href="{{ route('profile.edit',encrypt(Auth::user()->id)) }}">
                 <i class="bi bi-person"></i>
                 <span>{{trans('label.My_Profile')}}</span>
               </a>

@@ -43,7 +43,6 @@
                                             <option value="2">{{ trans('label.myth_vs_facts') }}</option>
                                             <option value="3">{{ trans('label.all_about_periods') }}</option>
                                             <option value="4">{{ trans('label.nutrition') }}</option>
-
                                         </select>
                                     </div>
                                 </div>

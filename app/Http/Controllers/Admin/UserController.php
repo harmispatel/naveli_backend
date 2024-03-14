@@ -111,7 +111,6 @@ class UserController extends Controller
         }
     }
 
-
     // Store a Users status Changes resource in storage..
     public function status(Request $request)
     {
@@ -212,6 +211,7 @@ class UserController extends Controller
     public function profileEdit($id)
     {
         try {
+            $id = decrypt($id);
             $data = User::where('id', $id)->first();
             $roles = Role::where('id', $data->role_id)->first();
 
@@ -223,39 +223,39 @@ class UserController extends Controller
         
     }
 
-        public function profileUpdate(ProfileRequest $request)
-        {
-            try {
-                $input = $request->except('_token', 'id', 'password', 'confirm_password', 'image');
-                $id = $request->id;
+    public function profileUpdate(ProfileRequest $request)
+    {
+        try {
+            $input = $request->except('_token', 'id', 'password', 'confirm_password', 'image');
+            $id = $request->id;
 
-                if (!empty($request->password) || $request->password != null) {
-                    $input['password'] = Hash::make($request->password);
-                }
-
-                if ($request->hasFile('image')) {
-                    $img = User::where('id', $id)->first();
-                    $old_image = $img->image;
-                    $file = $request->file('image');
-                    $image_url = $this->addSingleImage('user_images', $file, $old_image = '');
-                    $input['image'] = $image_url;
-                }
-                $user = User::find($id);
-                $user->update($input);
-                DB::table('model_has_roles')->where('model_id', $id)->delete();
-                $role_id = $user->role_id;
-                $roles = Role::where('id', $role_id)->first();
-                $user->assignRole($roles->name);
-
-
-                return redirect()->route('profile.edit', Auth::user()->id)->with('message', 'Profile updated successfully');
-            } catch (\Throwable $th) {
-                
-                return redirect()->route('users')->with('error', 'Something with wrong');
+            if (!empty($request->password) || $request->password != null) {
+                $input['password'] = Hash::make($request->password);
             }
-        }
 
-    public function notification(){
+            if ($request->hasFile('image')) {
+                $img = User::where('id', $id)->first();
+                $old_image = $img->image;
+                $file = $request->file('image');
+                $image_url = $this->addSingleImage('user_images', $file, $old_image = '');
+                $input['image'] = $image_url;
+            }
+            $user = User::find($id);
+            $user->update($input);
+            DB::table('model_has_roles')->where('model_id', $id)->delete();
+            $role_id = $user->role_id;
+            $roles = Role::where('id', $role_id)->first();
+            $user->assignRole($roles->name);
+
+
+            return redirect()->route('profile.edit', Auth::user()->id)->with('message', 'Profile updated successfully');
+        } catch (\Throwable $th) {
+            return redirect()->route('users')->with('error', 'Something with wrong');
+        }
+    }         
+
+    public function notification()
+    {
         try {
             $userLists = User::where('id', '!=', 1)->get();
 
@@ -264,5 +264,30 @@ class UserController extends Controller
             return redirect()->route('users')->with('error', 'Something with wrong');
         }
         
+    }
+
+    public function healthProfile(Request $request){
+       try {
+          if($request->ajax()){
+             $users = User::query();
+
+              if(isset($request->dateFrom) && isset($request->dateTo)){
+                  
+              }
+             return DataTables::of($users)
+                    ->addIndexColumn()
+                    ->addColumn('average_cycle_length',function($users){
+
+                    })
+                    ->addColumn('average_period_length',function($users){
+
+                    })
+                    ->rawColumns(['average_cycle_length', 'average_period_length'])
+                    ->make(true);
+                   
+          }
+       } catch (\Throwable $th) {
+        return redirect()->back()->with('error', 'Something went wrong');
+       }
     }
 }
