@@ -119,6 +119,7 @@ class UserController extends BaseController
                 }
 
             }
+            $input['unique_id'] = uuId();
             $createNewRegistration = User::create($input);
             Auth::login($createNewRegistration);
             $userDetail = $this->userResponse($createNewRegistration);

@@ -80,8 +80,8 @@ class ForumController extends BaseController
             $forum_id = $request->forum_id;
             $getUserComments = ForumComment::where('forum_id',$forum_id)->with('forum','users')->get();
 
-
             if(count($getUserComments) > 0){
+
                 $data = $getUserComments->map(function ($commentDetail,$getUserComments) {
 
                     $diff = $commentDetail->created_at->diffForHumans();
