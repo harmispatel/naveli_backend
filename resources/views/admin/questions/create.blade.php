@@ -66,7 +66,7 @@
                                                 @foreach ($ageTypes as $ageType)
                                                     <option value="{{ $ageType->id }}"
                                                         {{ old('age_group_id') == $ageType->id ? 'selected' : '' }}>
-                                                        {{ $ageType->name }}
+                                                        {{ $ageType->name }} Year
                                                     </option>
                                                 @endforeach
                                             </select>

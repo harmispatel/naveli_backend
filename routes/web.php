@@ -68,15 +68,15 @@ Route::group(['prefix' => 'admin'], function () {
     // Route Access if Authanticated User
     Route::group(['middleware' => 'is_admin'], function () {
 
-         // Admin Auth Routes
-        Route::get('/login', function () {
+        // Admin Auth Routes
 
-            if (auth()->check()) {
-                return redirect()->route('dashboard');
-            } else {
-                return view('auth.login'); // Replace 'your_login_view' with the actual view name
-            }
-        })->name('admin.login');
+        // Route::get('/login', function () {
+        //     if (auth()->check()) {
+        //         return redirect()->route('dashboard');
+        //     } else {
+        //         return view('auth.login'); // Replace 'your_login_view' with the actual view name
+        //     }
+        // })->name('admin.login');
 
         // Dashboard
 
@@ -104,6 +104,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('users/destroy', [UserController::class, 'destroy'])->name('users.destroy');
         Route::get('profile/edit/{id}', [UserController::class, 'profileEdit'])->name('profile.edit');
         Route::post('profile/update', [UserController::class, 'profileUpdate'])->name('profile.update');
+        Route::get('users/count/genderwise/{age_group_id}',[DashboardController::class,'ageGroupWiseCount'])->name('users.count');
 
         //age
         Route::controller(AgeController::class)->group(function () {

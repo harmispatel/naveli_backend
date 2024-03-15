@@ -41,6 +41,9 @@
 {{-- select2 --}}
 <link href="{{ asset('public/assets/vendor/Select2/select2.min.css') }}" rel="stylesheet"/>
 
+{{-- daterangepicker--}}
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
 {{-- text-editor --}}
 
 <style>

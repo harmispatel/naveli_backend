@@ -3,6 +3,7 @@
 use Spatie\Permission\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Str;
+use DateTime;
 
  function getRoleList(){
 
@@ -51,8 +52,25 @@ function uuId($role_id,$gender_id) {
     // Generate a unique number
     $nextId = $starting_count_no + (User::count() + 1);
     $uniqueId = $prefix_role . $prefix_gender . $nextId;
+
+    do {
+        $userWithSameId = User::where('unique_id', $uniqueId)->first();
+        if ($userWithSameId) {
+            $nextId++;
+            $uniqueId = $prefix_role . $prefix_gender . $nextId;
+        }
+    } while ($userWithSameId);
+
     return $uniqueId;
 }
+
+function ageCount($birthdate)
+    {
+        $birthdate = new DateTime($birthdate);
+        $today = new DateTime();
+        $age = $birthdate->diff($today)->y;
+        return $age;
+    }
 
 
 ?>

@@ -225,11 +225,11 @@
                                                                                 value="{{ $value->id }}"
                                                                                 class="mr-3"
                                                                                 {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
-                                                                                    @if ($value->name == 'news.index')
+                                                                                    @if ($value->name == 'woman-in-news.index')
                                                                                     {{trans('label.view')}}
-                                                                                    @elseif($value->name == 'news.create')
-                                                                                    {{trans('label.Add')}}
-                                                                                    @elseif($value->name == 'news.edit')
+                                                                                    @elseif($value->name == 'woman-in-news.create')
+                                                                                    {{trans('label.Add')}} 
+                                                                                    @elseif($value->name == 'woman-in-news.edit')
                                                                                     {{trans('label.Update')}}
                                                                                     @else
                                                                                     {{trans('label.Delete')}}

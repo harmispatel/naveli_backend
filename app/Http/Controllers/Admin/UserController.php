@@ -76,8 +76,7 @@ class UserController extends Controller
             return view('admin.users.list');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Something went wrong');
-        }
-        
+        }      
     }
 
     public function create()

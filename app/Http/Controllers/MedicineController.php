@@ -38,7 +38,6 @@ class MedicineController extends Controller
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Internal server error');
         }
-
     }
 
     public function create()
@@ -48,7 +47,6 @@ class MedicineController extends Controller
 
     public function store(Request $request)
     {
-
         $request->validate([
             'name' => 'required|unique:medicines',
         ]);

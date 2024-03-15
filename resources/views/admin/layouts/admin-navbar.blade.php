@@ -24,7 +24,6 @@
       <a href="{{ route('dashboard') }}" class="logo d-flex align-items-center">
         <!-- <span class="d-none d-lg-block">{{trans('label.Administrator')}}</span> -->
         <img  src="{{ asset('/public/assets/frontend/logo_image/Background - 2024-02-26T151826.204.png') }}"  alt="Logo" >
-        <span>New Naveli</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->

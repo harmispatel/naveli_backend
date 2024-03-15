@@ -233,11 +233,11 @@
                                                                             <input type="checkbox" name="permission[]"
                                                                                 value="{{ $value->id }}"
                                                                                 class="mr-3">
-                                                                                    @if ($value->name == 'news.index')
+                                                                                    @if ($value->name == 'woman-in-news.index')
                                                                                     {{trans('label.view')}}
-                                                                                    @elseif($value->name == 'news.create')
+                                                                                    @elseif($value->name == 'woman-in-news.create')
                                                                                     {{trans('label.Add')}} 
-                                                                                    @elseif($value->name == 'news.edit')
+                                                                                    @elseif($value->name == 'woman-in-news.edit')
                                                                                     {{trans('label.Update')}}
                                                                                     @else
                                                                                     {{trans('label.Delete')}}

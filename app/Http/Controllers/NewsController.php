@@ -13,10 +13,10 @@ class NewsController extends Controller
 
     public function __construct()
     {
-        $this->middleware('permission:news.index|news.create|news.edit|news.destroy', ['only' => ['index', 'show']]);
-        $this->middleware('permission:news.create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:news.edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:news.destroy', ['only' => ['destroy']]);
+        $this->middleware('permission:woman-in-news.index|woman-in-news.create|woman-in-news.edit|woman-in-news.destroy', ['only' => ['index', 'show']]);
+        $this->middleware('permission:woman-in-news.create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:woman-in-news.edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:woman-in-news.destroy', ['only' => ['destroy']]);
     }
 
     // Display a listing of the resource.
