@@ -34,9 +34,8 @@
                     <div class="card-body">
                         <div class="table-responsive custom_dt_table">
                         <div class="form_box">
-                            <div class="col-md-4 mb-5">
+                                <div class="col-md-4 mb-3">
                                     <div class="form-group">
-                                        <label><strong>{{ trans('label.option_view_type_:') }}</strong></label>
                                         <select class="form-control mt-2" id="option_view_filter">
                                             <option value="">{{ trans('label.select_option_view_type') }}</option>
                                             <option value="1">{{ trans('label.do_you_know') }}</option>

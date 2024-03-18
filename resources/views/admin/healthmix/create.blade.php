@@ -42,13 +42,13 @@
                                                 <span class="text-danger">*</span></label>
                                             <select name="health_type" id="health_type" class="form-control {{ $errors->has('health_type') ? 'is-invalid' : '' }}">
                                                 <option value="" >-- select type --</option>
-                                                <option value="1" {{ old('health_type') == 1 ? 'selected' :''}} >EXPERT ADVICE</option>
-                                                <option value="2" {{  old('health_type') == 2 ? 'selected' :''}} >CYCLE WISDOM</option>
-                                                <option value="3" {{ old('health_type') == 3 ? 'selected' :''}} >Groove with Neow</option>
+                                                <option value="1" {{ old('health_type') == 1 ? 'selected' :''}} >Expert Advice</option>
+                                                <option value="2" {{  old('health_type') == 2 ? 'selected' :''}} >Cycle Wisdom</option>
+                                                <option value="3" {{ old('health_type') == 3 ? 'selected' :''}} >Groove With Neow</option>
                                                 <option value="4" {{  old('health_type') == 4 ? 'selected' :''}} >Celebs Speak</option>
                                                 <option value="5" {{  old('health_type') == 5 ? 'selected' :''}} >Testimonials</option>
                                                 <option value="6" {{  old('health_type') == 6 ? 'selected' :''}} >Fun Corner</option>
-                                                <option value="8" {{  old('health_type') == 8 ? 'selected' :''}} >EmpowHer</option>
+                                                <option value="8" {{  old('health_type') == 8 ? 'selected' :''}} >Empowher</option>
                                             </select>
                                             @if ($errors->has('health_type'))
                                                 <div class="invalid-feedback">

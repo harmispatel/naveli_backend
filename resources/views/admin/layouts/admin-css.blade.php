@@ -79,6 +79,14 @@
     }
 
     .ck-editor__editable {min-height: 400px;}
+
+    td.details-control {
+        background: url('https://datatables.net/dev/accessibility/DataTables_1_10/examples/resources/details_open.png') no-repeat center center;
+        cursor: pointer;
+    }
+    tr.details td.details-control {
+        background: url('https://datatables.net/dev/accessibility/DataTables_1_10/examples/resources/details_close.png') no-repeat center center;
+    }
 </style>
 <!-- =======================================================
 * Template Name: NiceAdmin - v2.3.1

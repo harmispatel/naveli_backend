@@ -45,13 +45,13 @@
                                                         <span class="text-danger">*</span></label>
                                                         <select name="health_type" id="health_type" class="form-control {{ $errors->has('health_type') ? 'is-invalid' : '' }}">
                                                             <option value="">-- select type --</option>
-                                                            <option value="1" {{ $healthMix->health_type == "1" ? 'Selected' : ''  }} >EXPERT ADVICE</option>
-                                                            <option value="2" {{ $healthMix->health_type == "2" ? 'Selected' : ''  }} >CYCLE WISDOM</option>
-                                                            <option value="3" {{ $healthMix->health_type == "3" ? 'Selected' : ''  }} >Groove with Neow</option>
+                                                            <option value="1" {{ $healthMix->health_type == "1" ? 'Selected' : ''  }} >Expert Advice</option>
+                                                            <option value="2" {{ $healthMix->health_type == "2" ? 'Selected' : ''  }} >Cycle Wisdom</option>
+                                                            <option value="3" {{ $healthMix->health_type == "3" ? 'Selected' : ''  }} >Groove With Neow</option>
                                                             <option value="4" {{ $healthMix->health_type == "4" ? 'Selected' : ''  }} >Celebs Speak</option>
                                                             <option value="5" {{ $healthMix->health_type == "5" ? 'Selected' : ''  }} >Testimonials</option>
                                                             <option value="6" {{ $healthMix->health_type == "6" ? 'Selected' : ''  }} >Fun Corner</option>
-                                                            <option value="8" {{ $healthMix->health_type == "8" ? 'Selected' : ''  }} >EmpowHer</option>
+                                                            <option value="8" {{ $healthMix->health_type == "8" ? 'Selected' : ''  }} >Empowher</option>
                                                         </select>
                                                         @if ($errors->has('health_type'))
                                                             <div class="invalid-feedback">

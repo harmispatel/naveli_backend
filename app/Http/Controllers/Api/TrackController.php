@@ -49,7 +49,7 @@ class TrackController extends BaseController
     public function getStoredMedicationsDetail(Request $request)
     {
         try {
-            $login_user_id = Auth::user()->id;
+            $login_user_id = auth()->user()->id;
             $getUserMedicationsDetail = TrackPeriodsMedication::where('user_id', $login_user_id)->first();
 
             if (isset($getUserMedicationsDetail)) {
@@ -67,7 +67,6 @@ class TrackController extends BaseController
 
             return $this->sendResponse(null, 'No Data Retrived', true);
         } catch (\Throwable $th) {
-
             return $this->sendResponse(null, 'Internal Server Error!', false);
         }
     }
@@ -154,7 +153,7 @@ class TrackController extends BaseController
     public function getStoredAilmentsDetail()
     {
         try {
-            $login_user_id = Auth::user()->id;
+            $login_user_id = auth()->user()->id;
 
             $getUserAilmentsDetail = TrackAilment::where('user_id', $login_user_id)->first();
 

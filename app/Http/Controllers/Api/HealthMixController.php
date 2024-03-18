@@ -21,7 +21,7 @@ class HealthMixController extends BaseController
                 $getHealthMixesList = HealthMix::where('health_type', $title_id)->get();
             }
             $data = ['HealthMixPosts' => HealthMixResource::collection($getHealthMixesList)];
-            return $this->sendResponse($data, 'Data Received Successfully.', true);
+            return $this->sendResponse($data, 'Health Mix Posts Received Successfully.', true);
         } catch (\Throwable $th) {
             return $this->sendResponse(null, 'Something Went Wrong !', false);
         }
@@ -35,11 +35,7 @@ class HealthMixController extends BaseController
 
             if (isset($check_User_likes)) {
                 $update = $check_User_likes->update([
-
-                    'user_id' => auth()->user()->id,
-                    'health_mix_id' => $request->health_mix_id,
                     'is_like' => $request->is_like,
-
                 ]);
 
                 return $this->sendResponse(null, 'Data Updated Successfully', true);
@@ -53,6 +49,21 @@ class HealthMixController extends BaseController
             return $this->sendResponse(null, 'Data Saved Successfully', true);
         } catch (\Throwable $th) {
 
+            return $this->sendResponse(null, 'Something Went Wrong !', false);
+        }
+    }
+
+    public function getUserLikesOrDislikes(Request $request){
+
+        try {
+            $authUser = auth()->user();
+            if($authUser){
+                $getUserLikesOrDislikes = HealthMixLike::select('user_id', 'health_mix_id', 'is_like')
+                ->where('user_id', $authUser->id)
+                ->get();
+               return $this->sendResponse($getUserLikesOrDislikes, 'User Likes Or Dislikes Received Successfully', true);
+            }
+        } catch (\Throwable $th) {
             return $this->sendResponse(null, 'Something Went Wrong !', false);
         }
     }

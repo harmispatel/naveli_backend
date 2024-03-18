@@ -22,6 +22,7 @@ use App\Http\Controllers\QuestionTypeController;
 use App\Http\Controllers\AskYourQuestionController;
 use App\Http\Controllers\ForumCommentController;
 use App\Http\Controllers\ForumController;
+use App\Http\Controllers\HealthProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -84,7 +85,8 @@ Route::group(['prefix' => 'admin'], function () {
 
         //health profile
 
-        Route::get('healthProfile', [UserController::class, 'healthProfile'])->name('healthProfile');
+        Route::get('health-profile', [HealthProfileController::class, 'index'])->name('healthProfile');
+        Route::get('health-profile/load', [HealthProfileController::class, 'load'])->name('healthProfile.load');
 
         // Roles
         Route::get('roles', [RoleController::class, 'index'])->name('roles');

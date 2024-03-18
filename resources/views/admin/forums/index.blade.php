@@ -33,9 +33,19 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="form_box">
+                                <div class="col-md-4 mb-3">
+                                    <div class="form-group">
+                                        <select class="form-control mt-2" id="option_view_filter">
+                                            <option value="">{{ trans('label.select_option_view_type') }}</option>
+                                            @foreach ( $forum_categories as $forum_category)
+                                            <option value="{{$forum_category->id}}">{{ $forum_category->name }}</option>
+                                            @endforeach 
+                                        </select>
+                                    </div>
+                                </div>
                             <div class="form_box_inr">
                                 <div class="box_title">
-                                    <h2>{{ trans('label.forums_group') }}</h2>
+                                    <h2>{{ trans('label.forums') }}</h2>
                                 </div>
                                 <div class="form_box_info">
                                     <div class="table-responsive">
@@ -73,8 +83,13 @@
             var table = $('#ForumTable').DataTable({
                 processing: true,
                 serverSide: true,
-                pageLength: 50,
-                ajax: "{{ route('forums.index') }}",
+                pageLength: 10,
+                ajax:{
+                    url : "{{ route('forums.index') }}",
+                    data : function(d) {
+                        d.category_filter = $('#option_view_filter').val();
+                    }
+                },
                 columns: [
                     {
                         data: 'id',
@@ -108,6 +123,10 @@
                         orderable:false,
                     }
                 ]
+            });
+
+            $('#option_view_filter').change(function() {
+               table.draw();
             });
 
         });

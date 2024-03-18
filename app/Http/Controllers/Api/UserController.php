@@ -163,7 +163,7 @@ class UserController extends BaseController
 
             return  $this->sendResponse(UserResource::collection($users), 'User list retrieved successfully.', true);
         } catch (\Throwable $th) {
-            return  $this->sendError('Something went wrong', [], 500);
+            return  $this->sendResponse(null, 'Something went wrong !', false);
         }
     }
 
@@ -173,7 +173,7 @@ class UserController extends BaseController
             $demo = $this->userResponse(Auth::user());
             return  $this->sendResponse($demo, 'User login successful', true);
         } catch (\Throwable $th) {
-            return  $this->sendResponse($demo, 'Something went wrong', false);
+            return  $this->sendResponse(null, 'Something went wrong', false);
         }
     }
 
@@ -321,7 +321,6 @@ class UserController extends BaseController
 
             return $this->sendResponse($success, 'Data Updated SuccessFully', true);
         } catch (\Throwable $th) {
-            dd($th);
             return $this->sendResponse(null, 'Something went wrong', false);
         }
     }
@@ -346,7 +345,7 @@ class UserController extends BaseController
 
             return $this->sendResponse($success, "User Deleted Successfully", true);
         } catch (\Throwable $th) {
-            return  $this->sendError('Something went wrong', [], 500);
+            return $this->sendResponse(null, 'Something went wrong', false);
         }
     }
 

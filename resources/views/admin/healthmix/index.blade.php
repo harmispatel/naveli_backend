@@ -33,6 +33,20 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="form_box">
+                                <div class="col-md-4 mb-3">
+                                    <div class="form-group">
+                                        <select class="form-control mt-2" id="option_view_filter">
+                                            <option value="">{{ trans('label.select_option_view_type') }}</option>
+                                            <option value="1" >Expert Advice</option>
+                                            <option value="2" >Cycle Wisdom</option>
+                                            <option value="3" >Groove With Neow</option>
+                                            <option value="4" >Celebs Speak</option>
+                                            <option value="5" >Testimonials</option>
+                                            <option value="6" >Fun Corner</option>
+                                            <option value="8" >Empowher</option>
+                                        </select>
+                                    </div>
+                                </div>
                             <div class="form_box_inr">
                                 <div class="box_title">
                                     <h2>{{ trans('label.healthmix_group') }}</h2>
@@ -73,7 +87,12 @@
                 processing: true,
                 serverSide: true,
                 pageLength: 50,
-                ajax: "{{ route('healthMix.index') }}",
+                ajax:{
+                    url : "{{ route('healthMix.index') }}",
+                    data : function(d) {
+                        d.healthmix_type_filter = $('#option_view_filter').val();
+                    }
+                },
                 columns: [
                     {
                         data: 'id',
@@ -105,6 +124,11 @@
                     }
                 ]
             });
+
+            $('#option_view_filter').change(function() {
+               table.draw();
+            });
+
 
         });
     </script>

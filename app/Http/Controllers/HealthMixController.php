@@ -24,10 +24,14 @@ class HealthMixController extends Controller
     {
 
         try {
+            $healthMix = HealthMix::all();
+
             if ($request->ajax()) {
 
-                $healthMix = HealthMix::all();
-
+                if (isset($request->healthmix_type_filter)) {
+                    $healthMix = $healthMix->where('health_type', $request->healthmix_type_filter);
+                }
+        
                 return DataTables::of($healthMix)
                     ->addIndexColumn()
                     ->addColumn('health_type', function ($health) {
@@ -50,6 +54,9 @@ class HealthMixController extends Controller
                                 break;
                             case '6':
                                 $message = "FUN CORNER";
+                                break;
+                            case '8':
+                                $message = "EMPOWHER";
                                 break;
                             default:
                                 $message = "-----";
@@ -76,7 +83,6 @@ class HealthMixController extends Controller
 
     public function create()
     {
-
         return view('admin.healthmix.create');
     }
 

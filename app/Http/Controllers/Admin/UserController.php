@@ -34,7 +34,7 @@ class UserController extends Controller
             if ($request->ajax()) {
                 // Get all Amenities
                 $users = User::get();
-    
+
                 return DataTables::of($users)
                     ->addIndexColumn()
                     ->addColumn('image', function ($row) {
@@ -55,19 +55,19 @@ class UserController extends Controller
                         $checkVal = ($status == 1) ? 0 : 1;
                         $user_id = isset($row->id) ? $row->id : '';
                         $diabled = ($user_id == 1) ? 'disabled' : '';
-    
+
                         return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus(' . $checkVal . ',' . $user_id . ')" id="statusBtn" ' . $checked . ' ' . $diabled . '></div>';
                     })
                     ->addColumn('actions', function ($row) {
                         $user_id = isset($row->id) ? $row->id : '';
                         $action_html = '';
                         $action_html .= '<a href="' . route('users.edit', encrypt($user_id)) . '" class="btn btn-sm custom-btn me-1"><i class="bi bi-eye"></i></a>';
-    
-    
+
+
                         if ($user_id != 1) {
                             $action_html .= '<a onclick="deleteUsers(\'' . encrypt($user_id) . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
                         }
-    
+
                         return $action_html;
                     })
                     ->rawColumns(['status', 'usertype', 'actions', 'image'])
@@ -76,7 +76,7 @@ class UserController extends Controller
             return view('admin.users.list');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Something went wrong');
-        }      
+        }
     }
 
     public function create()
@@ -145,7 +145,7 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Something went wrong');
         }
-       
+
     }
 
     public function update(Request $request)
@@ -219,7 +219,7 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Something went wrong');
         }
-        
+
     }
 
     public function profileUpdate(ProfileRequest $request)
@@ -251,7 +251,7 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             return redirect()->route('users')->with('error', 'Something with wrong');
         }
-    }         
+    }
 
     public function notification()
     {
@@ -262,31 +262,6 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             return redirect()->route('users')->with('error', 'Something with wrong');
         }
-        
-    }
 
-    public function healthProfile(Request $request){
-       try {
-          if($request->ajax()){
-             $users = User::query();
-
-              if(isset($request->dateFrom) && isset($request->dateTo)){
-                  
-              }
-             return DataTables::of($users)
-                    ->addIndexColumn()
-                    ->addColumn('average_cycle_length',function($users){
-
-                    })
-                    ->addColumn('average_period_length',function($users){
-
-                    })
-                    ->rawColumns(['average_cycle_length', 'average_period_length'])
-                    ->make(true);
-                   
-          }
-       } catch (\Throwable $th) {
-        return redirect()->back()->with('error', 'Something went wrong');
-       }
     }
 }

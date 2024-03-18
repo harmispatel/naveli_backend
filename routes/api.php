@@ -97,6 +97,7 @@ Route::get('/track/getStoredAilmentsDetail',[TrackController::class,'getStoredAi
 //HealthMixController
 Route::post('/healthMixPostList',[HealthMixController::class,'index'])->middleware('auth:sanctum');
 Route::post('/userHealthMixLikeDislike',[HealthMixController::class,'likeDislike'])->middleware('auth:sanctum');
+Route::get('/getUserLikesOrDislikes',[HealthMixController::class,'getUserLikesOrDislikes'])->middleware('auth:sanctum');
 
 //ForumController
 Route::get('/forumsList',[ForumController::class,'forumsList'])->middleware('auth:sanctum');

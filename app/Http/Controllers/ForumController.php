@@ -18,8 +18,14 @@ class ForumController extends Controller
 
    public function index(Request $request){
 
+    $getForums = Forum::all();
+
      if($request->ajax()){
-        $getForums = Forum::all();
+
+        // $getForums = Forum::get();
+        if (isset($request->category_filter)) {
+            $getForums = $getForums->where('forum_category_id', $request->category_filter);
+        }
 
         return DataTables::of($getForums)
         ->addIndexColumn()
@@ -53,7 +59,8 @@ class ForumController extends Controller
         ->rawColumns(['actions','forums_category','forums_subcategory'])
         ->make(true);
      }
-     return view('admin.forums.index');
+     $forum_categories = ForumCategory::where('parent_id',null)->get();
+     return view('admin.forums.index',compact('forum_categories'));
    }
 
    public function create(Request $request){
