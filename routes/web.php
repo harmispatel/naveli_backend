@@ -61,6 +61,12 @@ Route::group(['prefix' => 'admin'], function () {
 
     Route::get('/login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
     Route::post('/do/login', [AuthController::class, 'Adminlogin'])->name('admin.do.login');
+    // Route for showing the OTP verification form
+    Route::get('/verify-otp/form', [AuthController::class, 'verifyOTPForm'])->name('verify.otp.form');
+
+    // Route for verifying the OTP
+    Route::post('/verify-otp', [AuthController::class, 'verifyOTP'])->name('verify.otp');
+
     Route::get('/forget-password', [ForgotPasswordController::class, 'showForgetPasswordForm'])->name('forget.password.get');
     Route::post('/forget-password', [ForgotPasswordController::class, 'submitforgetpasswordform'])->name('forget.password.post');
     Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showresetpasswordform'])->name('reset.password.get');

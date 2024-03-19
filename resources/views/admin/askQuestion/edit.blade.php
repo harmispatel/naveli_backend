@@ -46,7 +46,7 @@
                                                         <span class="text-danger">*</span></label>
                                                     <input type="text" name="name" id="name"
                                                         value="{{ $askQuestion->name }}"
-                                                        class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}">
+                                                        class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" readonly>
                                                     @if ($errors->has('name'))
                                                         <div class="invalid-feedback">
                                                             {{ $errors->first('name') }}
@@ -61,7 +61,7 @@
                                                         <span class="text-danger">*</span></label>
                                                     <input type="text" name="user_question" id="user_question"
                                                         value="{{ $askQuestion->user_question }}"
-                                                        class="form-control {{ $errors->has('user_question') ? 'is-invalid' : '' }}">
+                                                        class="form-control {{ $errors->has('user_question') ? 'is-invalid' : '' }}" readonly>
                                                     @if ($errors->has('user_question'))
                                                         <div class="invalid-feedback">
                                                             {{ $errors->first('user_question') }}

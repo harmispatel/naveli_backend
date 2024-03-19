@@ -31,7 +31,7 @@
         @can ('users')
             <li class="nav-item">
                 <a href="{{ route('users') }}" class="nav-link {{ (in_array($currentRouteName, ['users', 'users.create', 'users.edit'])) ? 'active-tab' : '' }}">
-                    <i class="bi bi-person-fill {{ (in_array($currentRouteName, ['users', 'users.create', 'users.edit'])) ? 'icon-tab' : '' }}"></i>
+                <i class="fa-solid fa-users {{ (in_array($currentRouteName, ['users', 'users.create', 'users.edit'])) ? 'icon-tab' : '' }}"></i>
                     <span>{{ trans('label.Users') }}</span>
                 </a>
             </li>
@@ -41,7 +41,7 @@
         @can('userAskQuestion.index')
         <li class="nav-item">
             <a href="{{ route('userAskQuestion.index') }}" class="nav-link {{ (in_array($currentRouteName, ['userAskQuestion.index', 'userAskQuestion.create', 'userAskQuestion.edit'])) ? 'active-tab' : '' }}">
-                <i class="fa-solid fa-file-circle-question {{ (in_array($currentRouteName, ['userAskQuestion.index', 'userAskQuestion.create', 'userAskQuestion.edit'])) ? 'icon-tab' : '' }}">
+                <i class="fa-solid fa-person-circle-question {{ (in_array($currentRouteName, ['userAskQuestion.index', 'userAskQuestion.create', 'userAskQuestion.edit'])) ? 'icon-tab' : '' }}">
                 </i>
                 <span>{{ trans('label.askquestion') }}</span>
             </a>
@@ -127,7 +127,7 @@
         @endcan
 
          {{-- Health profile --}}
-       
+
          <li class="nav-item">
              <a href="{{ route('healthProfile') }}" class="nav-link {{ (in_array($currentRouteName, ['healthProfile'])) ? 'active-tab' : '' }}">
                  <i class="fa-solid fa-heart-pulse {{ (in_array($currentRouteName, ['healthProfile'])) ? 'active-tab' : '' }}">
@@ -135,13 +135,13 @@
                  <span>{{ trans('label.healthProfile') }}</span>
              </a>
          </li>
-     
+
 
         {{-- Health Mix --}}
         @can('healthMix.index')
             <li class="nav-item">
                 <a href="{{ route('healthMix.index') }}" class="nav-link {{ (in_array($currentRouteName, ['healthMix.index', 'healthMix.create', 'healthMix.edit'])) ? 'active-tab' : '' }}">
-                    <i class="bi bi-clipboard-plus {{ (in_array($currentRouteName, ['healthMix.index', 'healthMix.create', 'healthMix.edit'])) ? 'active-tab' : '' }}">
+                    <i class="fa-solid fa-hand-holding-heart {{ (in_array($currentRouteName, ['healthMix.index', 'healthMix.create', 'healthMix.edit'])) ? 'active-tab' : '' }}">
                     </i>
                     <span>{{ trans('label.HealthMix') }}</span>
                 </a>
@@ -162,7 +162,7 @@
         @can('medicine.index')
             <li class="nav-item">
                 <a href="{{ route('medicine.index') }}" class="nav-link {{ (in_array($currentRouteName, ['medicine.index', 'medicine.create', 'medicine.edit'])) ? 'active-tab' : '' }}">
-                    <i class="bi bi-capsule {{ (in_array($currentRouteName, ['medicine.index', 'medicine.create', 'medicine.edit'])) ? 'active-tab' : '' }}"></i>
+                     <i class="fa-solid fa-capsules {{ (in_array($currentRouteName, ['medicine.index', 'medicine.create', 'medicine.edit'])) ? 'active-tab' : '' }}"></i>
                     <span>{{ trans('label.Medicine') }}</span>
                 </a>
             </li>

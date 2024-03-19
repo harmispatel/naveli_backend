@@ -90,13 +90,14 @@ class ForumController extends Controller
    }
 
    public function getSubCategory(Request $request){
-    if($request->ajax()){
 
-        $categoryId = $request->categoryId;
-        $subcategories = ForumCategory::where('parent_id', $categoryId)->get();
+        if($request->ajax()){
 
-        return response()->json($subcategories);
-    }
+            $categoryId = $request->categoryId;
+            $subcategories = ForumCategory::where('parent_id', $categoryId)->get();
+
+            return response()->json($subcategories);
+        }
    }
 
    public function edit($id){
@@ -115,15 +116,15 @@ class ForumController extends Controller
 
     public function update(Request $request){
         // return redirect()->back()->with('error','Update Work In Process...');
-        
+
         $request->validate([
             'forums_category' => "required",
             'title' => "required",
         ]);
         try {
             $id = decrypt($request->id);
-            
-            if(isset($id)){  
+
+            if(isset($id)){
 
                 $forumRecord = Forum::find($id);
 
@@ -133,12 +134,12 @@ class ForumController extends Controller
                     'title' => isset($request->title) ?$request->title: '',
                     'description' => isset($request->description) ? $request->description: ''
                 ]);
-                
+
                 return redirect()->route('forums.index')->with('message', 'Forum Updated Successfully');
             }
             return redirect()->route('forums.edit')->with('error', 'Something want wrong!');
         } catch (\Throwable $th) {
-            
+
             return redirect()->route('forums.index')->with('error', 'Internal Server Error!');
         }
     }

@@ -99,9 +99,11 @@ class UserController extends BaseController
         try{
             $input = $request->except('_token');
             $mobile_no = $request->mobile;
+            $role_id = $request->role_id;
             $deviceToken = $request->device_token;
 
             $getUserRegisterDetail = User::where('mobile',$mobile_no)->first();
+
             if(isset($getUserRegisterDetail)){
 
                 if($getUserRegisterDetail->status == 1){
@@ -117,7 +119,6 @@ class UserController extends BaseController
                 }else{
                     return  $this->sendResponse(null, 'User is deactive!', false);
                 }
-
             }
 
             $createNewRegistration = User::create($input);
@@ -138,15 +139,17 @@ class UserController extends BaseController
         try {
 
             $mobile =  $request->mobile;
+            $role_id = $request->role_id;
+
             $checkVerify = User::where('mobile', $mobile)->first();
             if ($checkVerify) {
-                if ($checkVerify->status == 1) {
-                    return  $this->sendResponse(null, 'Otp send successful', true);
-                } else {
-                    return  $this->sendResponse(null, 'User is deacitve', false);
-                }
+               if($role_id == $checkVerify->role_id){
+                 return  $this->sendResponse(null, 'This phone-no is alredy exist', false);
+               }else{
+                return  $this->sendResponse(null, 'This phone-no is already used in another user role!', false);
+               }
             } else {
-                return  $this->sendResponse(null, 'Mobile is not registered!', false);
+                return  $this->sendResponse(null, 'This phone-no is ready for registration', true);
             }
         } catch (\Throwable $th) {
             //throw $th;
