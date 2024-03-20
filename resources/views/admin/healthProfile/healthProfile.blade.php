@@ -70,6 +70,21 @@
                 html += '</tr>';
             html += '</table>';
             return html;
+        }else{
+            var html = '';
+            html += '<table class="table w-100">';
+                html += '<tr>';
+                    html += '<td class="text-center"><strong>Day 1</strong></td>';
+                    html += '<td class="text-center"><strong>Day 2</strong></td>';
+                    html += '<td class="text-center"><strong>Day 3</strong></td>';
+                html += '</tr>';
+                html += '<tr>';
+                    html += '<td class="text-center">Almost Never : '+details.day_1_almost_never+' <br> Almost Always : 0 <br> None : 0</td>';
+                    html += '<td class="text-center">Almost Never : 0 <br> Almost Always : 0 <br> None : 0</td>';
+                    html += '<td class="text-center">Almost Never : 0 <br> Almost Always : 0 <br> None : 0</td>';
+                html += '</tr>';
+            html += '</table>';
+            return html;
         }
     }
 
@@ -116,12 +131,14 @@
             detailRows.splice( idx, 1 );
         }
         else {
-            tr.addClass( 'details' );
-            row.child( format( row.data() ) ).show();
+            if(row.data()){
+                tr.addClass( 'details' );
+                row.child( format( row.data() ) ).show();
 
-            // Add to the 'open' array
-            if ( idx === -1 ) {
-                detailRows.push( tr.attr('id') );
+                // Add to the 'open' array
+                if ( idx === -1 ) {
+                    detailRows.push( tr.attr('id') );
+                }
             }
         }
     } );

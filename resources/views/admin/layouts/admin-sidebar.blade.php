@@ -1,4 +1,5 @@
 @php
+   
     $currentRouteName = Route::currentRouteName();
     $isCollQuickQuestion = !in_array($currentRouteName, ['questionType.index', 'questionType.create', 'questionType.edit', 'question.index', 'question.create', 'question.edit', 'question.optionView']);
     $isCollForum = !in_array($currentRouteName, ['forums.index', 'forums.create', 'forums.edit', 'forumcomments.index', 'forumcomments.reply']);
@@ -179,57 +180,61 @@
         @endcan
 
         {{-- Settings --}}
-        @canany(['roles', 'notification', 'generalSetting'])
-            <li class="nav-item">
-                <a class="nav-link {{ $isCollSettings ? 'collapsed' : '' }} {{ $isCollSettings ? '' : 'active-tab' }}" data-bs-target="#setting-nav" data-bs-toggle="collapse" href="#" aria-expanded="{{ !$isCollSettings }}">
-                    <i class="bi bi-gear-fill {{ !$isCollSettings ? 'icon-tab' : '' }}"></i>
-                    <span>{{ trans('label.Setting') }}</span>
-                    <i class="bi bi-chevron-down ms-auto {{ !$isCollSettings ? 'icon-tab' : '' }}"></i>
-                </a>
-                <ul id="setting-nav" class="nav-content sidebar-ul collapse {{ !$isCollSettings ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+        @if (auth()->user()->role_id == 1)
+        
+            @canany(['roles', 'notification', 'generalSetting'])
+                <li class="nav-item">
+                    <a class="nav-link {{ $isCollSettings ? 'collapsed' : '' }} {{ $isCollSettings ? '' : 'active-tab' }}" data-bs-target="#setting-nav" data-bs-toggle="collapse" href="#" aria-expanded="{{ !$isCollSettings }}">
+                        <i class="bi bi-gear-fill {{ !$isCollSettings ? 'icon-tab' : '' }}"></i>
+                        <span>{{ trans('label.Setting') }}</span>
+                        <i class="bi bi-chevron-down ms-auto {{ !$isCollSettings ? 'icon-tab' : '' }}"></i>
+                    </a>
+                    <ul id="setting-nav" class="nav-content sidebar-ul collapse {{ !$isCollSettings ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
 
-                    {{-- Roles --}}
-                    @can('roles')
-                        <li>
-                            <a href="{{ route('roles') }}" class="{{ (in_array($currentRouteName, ['roles', 'roles.create', 'roles.edit'])) ? 'active-tab' : '' }}">
-                                <i class="bi bi-gear-fill {{ (in_array($currentRouteName, ['roles', 'roles.create', 'roles.edit'])) ? 'icon-tab' : '' }}"></i>
-                                <span>{{ trans('label.Roles') }}</span>
-                            </a>
-                        </li>
-                    @endcan
+                        {{-- Roles --}}
+                        @can('roles')
+                            <li>
+                                <a href="{{ route('roles') }}" class="{{ (in_array($currentRouteName, ['roles', 'roles.create', 'roles.edit'])) ? 'active-tab' : '' }}">
+                                    <i class="bi bi-gear-fill {{ (in_array($currentRouteName, ['roles', 'roles.create', 'roles.edit'])) ? 'icon-tab' : '' }}"></i>
+                                    <span>{{ trans('label.Roles') }}</span>
+                                </a>
+                            </li>
+                        @endcan
 
-                    {{-- Notification --}}
-                    {{-- @can('notification') --}}
-                        <li class="nav-item">
-                            <a class="nav-link {{ ($currentRouteName == 'notification') ? 'active-tab' : '' }}" href="{{ route('notification') }}">
-                                <i class="bi bi-gear-fill {{ ($currentRouteName == 'notification') ? 'icon-tab' : '' }}"></i>
-                                <span>{{ trans('label.notification') }}</span>
-                            </a>
-                        </li>
-                    {{-- @endcan --}}
+                        {{-- Notification --}}
+                        {{-- @can('notification') --}}
+                            <li class="nav-item">
+                                <a class="nav-link {{ ($currentRouteName == 'notification') ? 'active-tab' : '' }}" href="{{ route('notification') }}">
+                                    <i class="bi bi-gear-fill {{ ($currentRouteName == 'notification') ? 'icon-tab' : '' }}"></i>
+                                    <span>{{ trans('label.notification') }}</span>
+                                </a>
+                            </li>
+                        {{-- @endcan --}}
 
-                    {{-- General Settings --}}
-                    {{-- @can('generalSetting') --}}
-                        <li class="nav-item">
-                            <a href="{{ route('generalSetting') }}" class="nav-link {{ ($currentRouteName == 'generalSetting') ? 'active-tab' : '' }}">
-                                <i class="bi bi-gear-fill {{ ($currentRouteName == 'generalSetting') ? 'icon-tab' : '' }}"></i>
-                                <span>{{ trans('label.generalSetting') }}</span>
-                            </a>
-                        </li>
-                    {{-- @endcan --}}
+                        {{-- General Settings --}}
+                        {{-- @can('generalSetting') --}}
+                            <li class="nav-item">
+                                <a href="{{ route('generalSetting') }}" class="nav-link {{ ($currentRouteName == 'generalSetting') ? 'active-tab' : '' }}">
+                                    <i class="bi bi-gear-fill {{ ($currentRouteName == 'generalSetting') ? 'icon-tab' : '' }}"></i>
+                                    <span>{{ trans('label.generalSetting') }}</span>
+                                </a>
+                            </li>
+                        {{-- @endcan --}}
 
-                    {{-- @can('ContentUpload')
-                        <li class="nav-item">
-                            <a href="{{ route('ContentUpload') }}" class="{{ ($currentRouteName == 'ContentUpload') ? 'active-tab' : '' }}">
-                                <i class="bi bi-gear-fill {{ ($currentRouteName == 'ContentUpload') ? 'active-tab' : '' }}"></i>
-                                <span>{{ trans('label.ContentUpload') }}</span>
-                            </a>
-                        </li>
-                    @endcan --}}
+                        {{-- @can('ContentUpload')
+                            <li class="nav-item">
+                                <a href="{{ route('ContentUpload') }}" class="{{ ($currentRouteName == 'ContentUpload') ? 'active-tab' : '' }}">
+                                    <i class="bi bi-gear-fill {{ ($currentRouteName == 'ContentUpload') ? 'active-tab' : '' }}"></i>
+                                    <span>{{ trans('label.ContentUpload') }}</span>
+                                </a>
+                            </li>
+                        @endcan --}}
 
-                </ul>
-            </li>
-        @endcan
+                    </ul>
+                </li>
+            @endcan
+
+        @endif
 
     </ul>
 

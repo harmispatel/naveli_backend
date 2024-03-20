@@ -222,11 +222,20 @@ class UserController extends Controller
 
     }
 
-    public function profileUpdate(ProfileRequest $request)
+    public function profileUpdate(Request $request)
     {
+        $id = decrypt($request->id);
+
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|unique:users,email,'.$id,
+            'confirm_password' => 'same:password',
+            'image' => 'mimes:jpeg,png,jpg',    
+        ]);
+        
         try {
             $input = $request->except('_token', 'id', 'password', 'confirm_password', 'image');
-            $id = $request->id;
+         
 
             if (!empty($request->password) || $request->password != null) {
                 $input['password'] = Hash::make($request->password);
@@ -247,7 +256,7 @@ class UserController extends Controller
             $user->assignRole($roles->name);
 
 
-            return redirect()->route('profile.edit', Auth::user()->id)->with('message', 'Profile updated successfully');
+            return redirect()->route('profile.edit', encrypt($id))->with('message', 'Profile updated successfully');
         } catch (\Throwable $th) {
             return redirect()->route('users')->with('error', 'Something with wrong');
         }

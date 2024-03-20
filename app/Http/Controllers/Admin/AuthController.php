@@ -33,19 +33,20 @@ class AuthController extends Controller
             ]);
 
             if ($userstatus == 1) {
+
                 if (Auth::attempt($input)) {
                     $username = Auth::user()->name;
                     $otpGenrate = '';
                     for ($i = 0; $i < 6; $i++) {
-                        $otpGenrate .= rand(0, 9); // Append a random digit (0-9) to the OTP string
+                        $otpGenrate .= rand(0, 9);
                     }
 
                     $otp = [
                         'code' => $otpGenrate,
-                        'expires_at' => now()->addMinutes(1) // OTP expires after 1 minute
+                        'expires_at' => now()->addMinutes(1)
                     ];
-
-                    // Send OTP via email
+                    $request->session()->put('otp', $otp);
+                    
                     Mail::send([], [], function ($message) use ($request, $otp) {
                         $message->from('developers@harmistechnology.com');
                         $message->to($request->email);
@@ -53,7 +54,6 @@ class AuthController extends Controller
                         $message->setBody('Your OTP for verification is: ' . $otp['code']);
                     });
 
-                    $request->session()->put('otp', $otp);
 
                     // $previousUrl = session()->pull('previousUrl', route('dashboard'));
                     // return redirect()->intended($previousUrl)->with('message', 'Welcome '.$username);
@@ -66,7 +66,6 @@ class AuthController extends Controller
 
             return back()->with('error', 'Please Enter Valid Email & Password');
         } catch (\Throwable $th) {
-            dd($th);
             return redirect()->back()->with('error', 'Something went wrong');
         }
     }
@@ -83,41 +82,61 @@ class AuthController extends Controller
             'otp' => 'required'
         ]);
 
+
         // Retrieve OTP and its expiry time from session
         $storedOTP = $request->session()->get('otp');
-
-        if ($storedOTP && now()->lt($storedOTP['expires_at'])) {
-            // Check if the submitted OTP matches the stored OTP
+        
+        if(isset($storedOTP)){
+           
+          
             if ($request->otp === $storedOTP['code']) {
 
-                $username = Auth::user()->name;
-                $request->session()->forget('otp');
-                return redirect()->route('dashboard')->with('message', 'OTP Verified. Welcome!' . $username);
+                if ( now()->lt($storedOTP['expires_at'])) {
+
+                    $username = Auth::user()->name;
+                    $request->session()->forget('otp');
+                    $request->session()->put('is_verified',true);
+                    return redirect()->route('dashboard')->with('message', 'Welcome ' . $username);
+
+                } else {
+                    return redirect()->back()->with('error', 'OTP Expired');
+                }
             } else {
-
-                return back()->withErrors(['otp' => 'Invalid OTP']);
+                return redirect()->back()->with('error', 'Invalid OTP');
             }
-        } else {
-
-            // $otpGenrate = '';
-            // for ($i = 0; $i < 6; $i++) {
-            //     $otpGenrate .= rand(0, 9);
-            // }
-            // $newOTP = [
-            //     'code' => $otpGenrate,
-            //     'expires_at' => now()->addMinutes(1)
-            // ];
-
-            // Mail::send([], [], function ($message) use ($request, $newOTP) {
-            //     $message->from('developers@harmistechnology.com');
-            //     $message->to($request->email);
-            //     $message->subject('OTP Verification');
-            //     $message->setBody('Your OTP for verification is: ' . $newOTP['code']);
-            // });
-
-            // $request->session()->put('otp', $newOTP['code']);
-            return back()->withErrors(['otp' => 'OTP expired!']);
+        }else{
+            return redirect()->back()->with('error', 'First Enter Your Credentials And Get OTP');
         }
     }
+   
+    public function resendOTP(Request $request)
+    {
+        try {
+            // Retrieve user email from session or database
+            $userEmail = auth()->user()->email; // Change this according to your user authentication logic
 
+            $otpGenrate = '';
+            for ($i = 0; $i < 6; $i++) {
+                $otpGenrate .= rand(0, 9);
+            }
+
+            $otp = [
+                'code' => $otpGenrate,
+                'expires_at' => now()->addMinutes(5)
+            ];
+
+            $request->session()->put('otp', $otp);
+            // Send the OTP via email
+            Mail::send([], [], function ($message) use ($request,$userEmail, $otp) {
+                $message->from('developers@harmistechnology.com');
+                $message->to($userEmail);
+                $message->subject('OTP Verification');
+                $message->setBody('Your OTP for verification is: ' . $otp['code']);
+            });
+
+            return response()->json(['success' => true]);
+        } catch (\Throwable $th) {
+            return response()->json(['success' => false]);
+        }
+    }
 }

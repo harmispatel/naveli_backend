@@ -5,6 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verify OTP</title>
+
+    {{-- Bootstrap CSS --}}
+    <link rel="stylesheet" href="{{ asset('public/assets/frontend/css/bootstrap/bootstrap.min.css') }}">
+
+    {{-- Font Awesome CSS --}}
+    <link rel="stylesheet" href="{{ asset('public/assets/frontend/css/font-awesome/css/all.css') }}">
+
+    {{-- Toastr CSS --}}
+    <link rel="stylesheet" href="{{ asset('public/assets/admin/css/toastr/toastr.min.css') }}">
+
     <style>
     body {
         font-family: Arial, sans-serif;
@@ -54,6 +64,10 @@
     button:hover {
         background-color: #0056b3;
     }
+    #successMessage{
+        color: green;
+        margin-top: 10px;
+    }
 
     .error-message {
         color: red;
@@ -76,12 +90,27 @@
                 <input type="text" class="otp-input" maxlength="1" required>
                 <input type="text" class="otp-input" maxlength="1" required>
             </div>
-            <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="successMessage"></div>
+            <div id="errorMessage" class="error-message">
+                @if (session()->has('error'))
+                    {{ session('error') }}
+                @endif
+            </div>
             <!-- Hidden input field to store OTP value -->
             <input type="hidden" id="otpValue" name="otp">
-            <button id="submitButton" type="button">Submit</button>
+            <button id="submitButton" type="submit">Submit</button>
+            @if (session()->has('error') && session('error') === 'OTP Expired')
+                <button id="resendButton" type="button">Resend OTP</button>
+            @endif
         </div>
     </form>
+
+    {{-- Toastr --}}
+    <script src="{{ asset('public/assets/admin/js/toastr/toastr.min.js') }}"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <script>
     // Limit input to numbers only
     document.querySelectorAll('.otp-input').forEach(input => {
@@ -118,7 +147,49 @@
         // Submit the form
         document.getElementById('otpForm').submit();
     });
+
     </script>
+    <script>
+    document.getElementById('resendButton').addEventListener('click', function() {
+        resendOTP();
+    });
+
+    function resendOTP() {
+        // Make an AJAX request to resend the OTP
+        fetch('{{ route("resend.otp") }}', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-Token': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({})
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to resend OTP.');
+            }
+            return response.json();
+        })
+        .then(data => {
+
+            if (data && data.success) {
+             
+            document.getElementById('successMessage').innerText = 'Otp Sent Successfully ✔';
+            document.getElementById('errorMessage').innerText = '';
+            } else {
+           
+            document.getElementById('errorMessage').innerText = 'Failed to resend OTP. Please try again later.';
+            document.getElementById('successMessage').innerText = ''; 
+           
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Something went wrong.');
+        });
+    }
+</script>
+
 </body>
 
 </html>

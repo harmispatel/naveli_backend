@@ -16,11 +16,13 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        if(auth()->user()){
+        $getVerifiedStatus = session()->get('is_verified');
+
+        if(auth()->user() && isset($getVerifiedStatus)){
             return $next($request);
         }
         else{
             return redirect()->route('admin.login')->with('error','Please Enter the Credentials..');
-        }    
+        }
     }
 }

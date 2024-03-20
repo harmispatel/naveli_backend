@@ -72,9 +72,6 @@ class QuestionController extends BaseController
         }
     }
 
-
-
-
     public function questionTypeList(Request $request)
     {
 
@@ -123,36 +120,80 @@ class QuestionController extends BaseController
         }
     }
 
+    // public function questionAnswer(Request $request)
+    // {
+    //     try {
+    //         $user_id = Auth::user() ? Auth::user()->id : "";
+    //         if (isset($request->question_id) && !empty($request->question_id) && isset($request->option_id) && !empty($request->option_id)) {
+    //             if(!empty($user_id)){
+    //                 $input = $request->except(['_token', 'option_id']);
+    //                 $input['user_id'] = $user_id;
+    //                 $input['question_option_id'] = $request->option_id;
+    //                 $question_answer = QuestionAnswer::where('user_id', $user_id)->where('question_id', $request->question_id)->first();
+    //                 $answer_id = (isset($question_answer->id)) ? $question_answer->id : "";
+
+    //                 if(!empty($answer_id)){
+    //                     $edit_data = QuestionAnswer::find($answer_id);
+    //                     $edit_data->question_option_id = $request->option_id;
+    //                     $edit_data->update();
+    //                 }else{
+    //                     QuestionAnswer::create($input);
+    //                 }
+    //                 return $this->sendResponse([], 'Question answer has been Submited.', true);
+    //             }else{
+    //                 return $this->sendError('User not Found!.', [], 404);
+    //             }
+    //         } else {
+    //             return $this->sendError('all Fields are required!', [], 404);
+    //         }
+    //     } catch (\Throwable $th) {
+    //         return $this->sendError('Something Went Wrong.', [], 500);
+    //     }
+    // }
+
     public function questionAnswer(Request $request)
     {
         try {
-            $user_id = Auth::user() ? Auth::user()->id : "";
-            if (isset($request->question_id) && !empty($request->question_id) && isset($request->option_id) && !empty($request->option_id)) {
-                if(!empty($user_id)){
-                    $input = $request->except(['_token', 'option_id']);
-                    $input['user_id'] = $user_id;
-                    $input['question_option_id'] = $request->option_id;
-                    $question_answer = QuestionAnswer::where('user_id', $user_id)->where('question_id', $request->question_id)->first();
-                    $answer_id = (isset($question_answer->id)) ? $question_answer->id : "";
 
-                    if(!empty($answer_id)){
-                        $edit_data = QuestionAnswer::find($answer_id);
-                        $edit_data->question_option_id = $request->option_id;
-                        $edit_data->update();
-                    }else{
+            $user_id = Auth::id(); // Simplified way to get user id using Auth::id()
+
+            if (!empty($user_id) && isset($request->question_ids) && isset($request->question_option_ids)) {
+                $question_ids = $request->question_ids;
+                $question_option_ids = $request->question_option_ids;
+
+                // Validate if both arrays have the same length
+                if (count($question_ids) !== count($question_option_ids)) {
+                    return $this->sendResponse(null, 'Question ids and option ids array length mismatch.', false);
+                }
+
+                foreach ($question_ids as $index => $question_id) {
+
+                    $input = [
+                        'user_id' => $user_id,
+                        'question_id' => $question_id,
+                        'question_option_id' => $question_option_ids[$index]
+                    ];
+
+                    $question_answer = QuestionAnswer::where('user_id', $user_id)
+                        ->where('question_id', $question_id)
+                        ->first();
+
+                    if ($question_answer) {
+                        $question_answer->update($input);
+                    } else {
                         QuestionAnswer::create($input);
                     }
-                    return $this->sendResponse([], 'Question answer has been Submited.', true);
-                }else{
-                    return $this->sendError('User not Found!.', [], 404);
                 }
+
+                return $this->sendResponse([], 'Question answers have been submitted successfully.', true);
             } else {
-                return $this->sendError('all Fields are required!', [], 404);
+                return $this->sendResponse(null, 'User not found or question/option ids are missing.!', false);
             }
         } catch (\Throwable $th) {
-            return $this->sendError('Something Went Wrong.', [], 500);
+            return $this->sendResponse(null, 'Something Went Wrong !', false);
         }
     }
+
 
     public function getQuestionAnswers(){
         try {

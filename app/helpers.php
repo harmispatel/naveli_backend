@@ -3,7 +3,6 @@
 use Spatie\Permission\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Str;
-use DateTime;
 
  function getRoleList(){
 
@@ -64,13 +63,7 @@ function uuId($role_id,$gender_id) {
     return $uniqueId;
 }
 
-function ageCount($birthdate)
-    {
-        $birthdate = new DateTime($birthdate);
-        $today = new DateTime();
-        $age = $birthdate->diff($today)->y;
-        return $age;
-    }
+
 
 
 ?>

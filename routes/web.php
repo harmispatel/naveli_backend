@@ -63,6 +63,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('/do/login', [AuthController::class, 'Adminlogin'])->name('admin.do.login');
     // Route for showing the OTP verification form
     Route::get('/verify-otp/form', [AuthController::class, 'verifyOTPForm'])->name('verify.otp.form');
+    Route::post('/resend-otp', [AuthController::class, 'resendOTP'])->name('resend.otp');
 
     // Route for verifying the OTP
     Route::post('/verify-otp', [AuthController::class, 'verifyOTP'])->name('verify.otp');
