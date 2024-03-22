@@ -16,63 +16,64 @@
     <link rel="stylesheet" href="{{ asset('public/assets/admin/css/toastr/toastr.min.css') }}">
 
     <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-    }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #D7BAC5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
 
-    .otp-container {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        text-align: center;
-    }
+        .otp-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
 
-    .otp-input {
-        width: 40px;
-        height: 40px;
-        text-align: center;
-        margin: 0 5px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 20px;
-        outline: none;
-    }
+        .otp-input {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            margin: 0 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 20px;
+            outline: none;
+        }
 
-    .otp-input:focus {
-        border-color: blue;
-    }
+        .otp-input:focus {
+            border-color: blue;
+        }
 
-    button {
-        margin-top: 20px;
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: background-color 0.3s ease;
-    }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
 
-    button:hover {
-        background-color: #0056b3;
-    }
-    #successMessage{
-        color: green;
-        margin-top: 10px;
-    }
+        button:hover {
+            background-color: #0056b3;
+        }
 
-    .error-message {
-        color: red;
-        margin-top: 10px;
-    }
+        #successMessage {
+            color: green;
+            margin-top: 10px;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
     </style>
 </head>
 
@@ -90,7 +91,12 @@
                 <input type="text" class="otp-input" maxlength="1" required>
                 <input type="text" class="otp-input" maxlength="1" required>
             </div>
-            <div id="successMessage" class="successMessage"></div>
+            <div id="loader" class="mt-4" style="display: none;">
+                <img src="{{ asset('/public/images/loader/loading.gif') }}" height="30px" width="30px"
+                    alt="Loader">
+            </div>
+            <div id="countdownTimer" class="mt-3"></div>
+            <div id="successMessage" class="successMessage mt-3"></div>
             <div id="errorMessage" class="error-message">
                 @if (session()->has('error'))
                     {{ session('error') }}
@@ -99,9 +105,8 @@
             <!-- Hidden input field to store OTP value -->
             <input type="hidden" id="otpValue" name="otp">
             <button id="submitButton" type="submit">Submit</button>
-            @if (session()->has('error') && session('error') === 'OTP Expired')
-                <button id="resendButton" type="button">Resend OTP</button>
-            @endif
+            <button id="resendButton" type="button">Resend OTP</button>
+
         </div>
     </form>
 
@@ -109,86 +114,156 @@
     <script src="{{ asset('public/assets/admin/js/toastr/toastr.min.js') }}"></script>
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> --}}
 
     <script>
-    // Limit input to numbers only
-    document.querySelectorAll('.otp-input').forEach(input => {
-        input.addEventListener('input', function() {
-            this.value = this.value.replace(/[^0-9]/g, '');
-        });
-    });
 
-    // Focus next input on typing
-    document.querySelectorAll('.otp-input').forEach((input, index, inputs) => {
-        input.addEventListener('input', function() {
-            if (this.value.length === 1 && index < inputs.length - 1) {
-                inputs[index + 1].focus();
+        // Variable to track if the resend button was clicked
+        var resendButtonClicked = false;
+
+        // Function to update the countdown timer
+        function updateCountdownTimer() {
+            document.getElementById('errorMessage').innerText = '';
+            var startTime = "{{ session('otp_start_time') }}";
+            var expiryTime = new Date("{{ session('otp.expires_at') }}").getTime();
+            var currentTime = new Date().getTime();
+            var timeDifference = expiryTime - currentTime;
+
+            if (timeDifference > 0) {
+                // Calculate remaining minutes and seconds
+                var minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+                // Update the countdown timer in the UI
+                document.getElementById('countdownTimer').innerText = minutes + ' minutes ' + seconds + ' seconds';
+
+                // Hide the resend button
+                document.getElementById('resendButton').style.display = 'none';
+
+            } else {
+
+                // Check if resend button was clicked before displaying the message
+                if (!resendButtonClicked) {
+                    document.getElementById('errorMessage').innerText = 'OTP Expired';
+                    document.getElementById('countdownTimer').innerText = '';
+                    // Show the resend button
+                    document.getElementById('resendButton').style.display = 'inline-block';
+                }
             }
-        });
-    });
-
-    // Handle form submission
-    document.getElementById('submitButton').addEventListener('click', function() {
-        var otp = '';
-        document.querySelectorAll('.otp-input').forEach(input => {
-            otp += input.value;
-        });
-
-        // Validate OTP length
-        if (otp.length !== 6) {
-            document.getElementById('errorMessage').innerText = 'Please enter a valid OTP.';
-            return;
         }
 
-        // Assign the OTP to the hidden input field in the form
-        document.getElementById('otpValue').value = otp;
+        // Check OTP expiry and update countdown timer initially
+        updateCountdownTimer();
 
-        // Submit the form
-        document.getElementById('otpForm').submit();
-    });
+        // Update countdown timer every second
+        setInterval(function() {
+            updateCountdownTimer();
+        }, 1000);
 
-    </script>
-    <script>
-    document.getElementById('resendButton').addEventListener('click', function() {
-        resendOTP();
-    });
-
-    function resendOTP() {
-        // Make an AJAX request to resend the OTP
-        fetch('{{ route("resend.otp") }}', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-Token': '{{ csrf_token() }}',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({})
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to resend OTP.');
-            }
-            return response.json();
-        })
-        .then(data => {
-
-            if (data && data.success) {
-             
-            document.getElementById('successMessage').innerText = 'Otp Sent Successfully ✔';
-            document.getElementById('errorMessage').innerText = '';
-            } else {
-           
-            document.getElementById('errorMessage').innerText = 'Failed to resend OTP. Please try again later.';
-            document.getElementById('successMessage').innerText = ''; 
-           
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Something went wrong.');
+        // Limit input to numbers only
+        document.querySelectorAll('.otp-input').forEach(input => {
+            input.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
         });
-    }
-</script>
+
+        // Focus next input on typing
+        document.querySelectorAll('.otp-input').forEach((input, index, inputs) => {
+            input.addEventListener('input', function() {
+                if (this.value.length === 1 && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            });
+        });
+
+        // Handle form submission
+        document.getElementById('submitButton').addEventListener('click', function() {
+            var otp = '';
+            document.querySelectorAll('.otp-input').forEach(input => {
+                otp += input.value;
+            });
+
+            // Validate OTP length
+            if (otp.length !== 6) {
+                document.getElementById('errorMessage').innerText = 'Please enter a valid OTP.';
+                return;
+            }
+
+            // Assign the OTP to the hidden input field in the form
+            document.getElementById('otpValue').value = otp;
+
+            // Submit the form
+            document.getElementById('otpForm').submit();
+        });
+
+        // Resend Button
+        document.getElementById('resendButton').addEventListener('click', function() {
+               // Set resendButtonClicked to true when resend button is clicked
+                 resendButtonClicked = true;
+
+            // Hide error message
+            document.getElementById('errorMessage').innerText = '';
+            resendOTP();
+        });
+
+        function resendOTP() {
+
+            // Hide error message
+            document.getElementById('errorMessage').innerText = '';
+
+            // Show loader
+            document.getElementById('loader').style.display = 'block';
+
+
+            // Make an AJAX request to resend the OTP
+            fetch('{{ route('resend.otp') }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-Token': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to resend OTP.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Hide loader after the OTP is successfully resent             
+                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('errorMessage').innerText = '';
+
+                    if (data && data.success) {
+                        document.getElementById('successMessage').innerText = 'Otp Sent Successfully ✔';
+                        document.getElementById('errorMessage').innerText = '';
+
+                        // Hide success message after 2 seconds
+                        setTimeout(function() {
+                            document.getElementById('successMessage').innerText = '';
+                            // Update countdown timer after hiding the success message
+                            updateCountdownTimer();
+                        }, 2000);
+
+
+                        window.location.reload();
+
+                    } else {
+                        document.getElementById('errorMessage').innerText =
+                            'Failed to resend OTP. Please try again later.';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Something went wrong.');
+                    // Hide loader in case of error
+                    document.getElementById('loader').style.display = 'none';
+                });
+        }
+    </script>
+
 
 </body>
 

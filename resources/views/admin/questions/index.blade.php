@@ -32,31 +32,29 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        {{-- <div class="row">
-                            <div class="col-md-4 mb-2">
+                         <div class="row">
+                            <div class="col-md-4 mb-3">
                                 <div class="form-group">
-                                    <label><strong>{{ trans('label.Age_Group_:') }}</strong></label>
                                     <select class="form-control" id="age_group_filter">
                                         <option value="">{{ trans('label.Select_Age') }}</option>
                                         @foreach ($ageGroups as $ageGroup)
-                                            <option value="{{ $ageGroup->id }}">{{ $ageGroup->min_age }} To
-                                                {{ $ageGroup->max_age }}</option>
+                                            <option value="{{ $ageGroup->id }}">{{ $ageGroup->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-4 mb-2">
+
+                            <div class="col-md-4 mb-3">
                                 <div class="form-group">
-                                    <label><strong>{{ trans('label.option_view_type_:') }}</strong></label>
-                                    <select class="form-control" id="option_view_filter">
+                                    <select class="form-control" id="question_type_filter">
                                         <option value="">{{ trans('label.select_option_view_type') }}</option>
-                                        @foreach ($options as $key => $option)
-                                            <option value="{{ $key }}">{{ $option }}</option>
+                                        @foreach ($questionTypes as $questionType)
+                                            <option value="{{ $questionType->id }}">{{ $questionType->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
-                        </div> --}}
+                        </div>
                         <div class="table-responsive custom_dt_table">
                             <div class="form_box">
                                 <div class="form_box_inr">
@@ -99,22 +97,28 @@
                 processing: true,
                 serverSide: true,
                 pageLength: 50,
-                ajax: "{{ route('question.index') }}",  
+                ajax:{
+                    url : "{{ route('question.index') }}",
+                    data : function(d) {
+                        d.age_group_filter = $('#age_group_filter').val();
+                        d.question_type_filter = $('#question_type_filter').val();
+                    }
+                },
                 columns: [
                     {
                         data: 'id',
                         name: 'id',
-                       
+
                     },
                     {
                         data: 'question_name',
                         name: 'question_name',
-        
+
                     },
                     {
                         data: 'questionType_id',
                         name: 'questionType_id',
-                      
+
 
                     },
                     {
@@ -125,10 +129,17 @@
                         data: 'actions',
                         name: 'actions',
                         'searchable': false,
-                        'orderable': false, 
+                        'orderable': false,
                     },
 
                 ]
+            });
+
+            $('#question_type_filter').change(function() {
+               table.draw();
+            });
+            $('#age_group_filter').change(function() {
+               table.draw();
             });
         });
     </script>

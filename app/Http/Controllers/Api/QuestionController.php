@@ -47,12 +47,22 @@ class QuestionController extends BaseController
     {
         try {
             $questionType = isset($request->question_type) ? $request->question_type : 0;
+            $ageGroup = $request->age_group ?? null;
 
+            $questionsQuery = Question::where('questionType_id', $questionType)
+            ->with('options', 'age_group');
 
-            $questions = Question::where('questionType_id', $questionType)
-                ->with('options', 'age_group')
-                ->get();
+            if ($questionType == 3 && !$ageGroup) {
+                return $this->sendResponse(null, 'Age group is required for question type Others.', false);
+            }
 
+            if ($ageGroup) {
+                $questionsQuery->whereHas('age_group', function ($query) use ($ageGroup) {
+                    $query->where('name', $ageGroup);
+                });
+            }
+
+        $questions = $questionsQuery->get();
             $questionData = $questions->map(function ($question) {
                 return [
                     'id' => $question->id,

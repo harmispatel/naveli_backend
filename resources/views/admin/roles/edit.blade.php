@@ -314,18 +314,18 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <div class="accordion" id="accordionEight">
+                                                    <div class="accordion" id="accordioneight">
                                                         <div class="accordion-item">
-                                                            <h2 class="accordion-header" id="headingEight">
+                                                            <h2 class="accordion-header" id="headingeight">
                                                                 <button class="accordion-button collapsed" type="button"
-                                                                    data-bs-toggle="collapse" data-bs-target="#collapseEight"
-                                                                    aria-expanded="false" aria-controls="collapseEight">
+                                                                    data-bs-toggle="collapse" data-bs-target="#collapseeight"
+                                                                    aria-expanded="false" aria-controls="collapseeight">
                                                                     {{trans('label.Medicine')}}
                                                                 </button>
                                                             </h2>
-                                                            <div id="collapseEight" class="accordion-collapse collapse"
-                                                                aria-labelledby="headingEight"
-                                                                data-bs-parent="#accordionEight">
+                                                            <div id="collapseeight" class="accordion-collapse collapse"
+                                                                aria-labelledby="headingeight"
+                                                                data-bs-parent="#accordioneight">
                                                                 @foreach ($permission->slice(29, 4) as $value)
                                                                     <div class="accordion-body">
                                                                         <label>

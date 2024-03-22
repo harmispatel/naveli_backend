@@ -12,7 +12,7 @@ class PostController extends Controller
 {
     use ImageTrait;
 
-    public function __contsruct()
+    public function __construct()
     {
         $this->middleware('permission:posts.index|posts.create|posts.edit|posts.destroy', ['only' => ['index', 'show']]);
         $this->middleware('permission:posts.create', ['only' => ['create', 'store']]);

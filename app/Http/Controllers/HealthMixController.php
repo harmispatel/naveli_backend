@@ -12,7 +12,7 @@ class HealthMixController extends Controller
 {
     use ImageTrait;
 
-    public function __contsruct()
+    public function __construct()
     {
         $this->middleware('permission:healthMix.index|healthMix.create|healthMix.edit|healthMix.destroy', ['only' => ['index', 'show']]);
         $this->middleware('permission:healthMix.create', ['only' => ['create', 'store']]);
@@ -31,7 +31,7 @@ class HealthMixController extends Controller
                 if (isset($request->healthmix_type_filter)) {
                     $healthMix = $healthMix->where('health_type', $request->healthmix_type_filter);
                 }
-        
+
                 return DataTables::of($healthMix)
                     ->addIndexColumn()
                     ->addColumn('health_type', function ($health) {
@@ -67,9 +67,9 @@ class HealthMixController extends Controller
                     })
                     ->addColumn('actions', function ($health) {
                         return '<div class="btn-group">
-                <a href=' . route("healthMix.edit", ["id" => encrypt($health->id)]) . ' class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil" aria-hidden="true"></i></a>
-                <a href=' . route("healthMix.destroy", ["id" => $health->id]) . ' class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
-                </div>';
+                            <a href=' . route("healthMix.edit", ["id" => encrypt($health->id)]) . ' class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil" aria-hidden="true"></i></a>
+                            <a href=' . route("healthMix.destroy", ["id" => $health->id]) . ' class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
+                            </div>';
                     })
                     ->rawColumns(['actions','health_type'])
                     ->make(true);

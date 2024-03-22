@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\{DashboardController, RoleController, AuthController, UserController};
+use App\Http\Controllers\Admin\{DashboardController, RoleController, AuthController, UserController,ExportController};
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\QuestionController;
@@ -90,10 +90,16 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+        //export users data
+        Route::get('/export/users', [ExportController::class, 'exportUsers'])->name('export.users');
+
+
         //health profile
 
         Route::get('health-profile', [HealthProfileController::class, 'index'])->name('healthProfile');
         Route::get('health-profile/load', [HealthProfileController::class, 'load'])->name('healthProfile.load');
+        Route::get('health-profile/irregular/users/{ids}', [HealthProfileController::class, 'getHealthProfileUsers'])->name('healthProfile.users');
+        Route::get('health-profile/irregular/load-users', [HealthProfileController::class, 'loadHealthProfileUsers'])->name('healthProfile.users.load');
 
         // Roles
         Route::get('roles', [RoleController::class, 'index'])->name('roles');

@@ -40,9 +40,17 @@
                 <div class="col-md-12">
                     <div class="card mb-3">
                         <div class="card-body">
-                            <h5 class="card-title text-center">Total Users - <span class="users_count"></span></h5>
+
+                            <div class="row card-title text-center">
+                                <div style="display: flex; justify-content: center; align-items: center;">
+                                    <h5>Total Users - </h5>
+                                    <h5 class="users_count ml-2"></h5>
+                                    <a class="btn btn-sm mr-2" href="{{route('export.users')}}"><i class="bi bi-download"></i></a>
+                                </div>
+                            </div>
+
                             <!-- <a href="{{ route('users') }}" style="text-decoration: none; color: inherit;">
-                                                </a> -->
+                                                        </a> -->
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="card mb-3">
@@ -51,10 +59,10 @@
                                             <h3 class="total_neow"></h3>
                                             <div class="p-3 text-start">
                                                 <li>
-                                                    Neow Female : <span class="total_neow_female"></span>
+                                                    Female : <span class="total_neow_female"></span>
                                                 </li>
                                                 <li>
-                                                    Neow Transgender : <span class="total_neow_trans"></span>
+                                                    Transgender : <span class="total_neow_trans"></span>
                                                 </li>
                                             </div>
                                         </div>
@@ -67,13 +75,13 @@
                                             <h3 class="total_buddy"></h3>
                                             <div class="p-3 text-start">
                                                 <li>
-                                                    Buddy Male : <span class="total_buddy_male"></span>
+                                                    Male : <span class="total_buddy_male"></span>
                                                 </li>
                                                 <li>
-                                                    Buddy Female : <span class="total_buddy_female"></span>
+                                                    Female : <span class="total_buddy_female"></span>
                                                 </li>
                                                 <li>
-                                                    Buddy Transgender : <span class="total_buddy_trans"></span>
+                                                    Transgender : <span class="total_buddy_trans"></span>
                                                 </li>
                                             </div>
                                         </div>
@@ -86,14 +94,13 @@
                                             <h3 class="total_cycleExplorer"></h3>
                                             <div class="p-3 text-start">
                                                 <li>
-                                                    Cycle-Explorer Male : <span class="total_cycleExplorer_male"></span>
+                                                    Male : <span class="total_cycleExplorer_male"></span>
                                                 </li>
                                                 <li>
-                                                    Cycle-Explorer Female : <span class="total_cycleExplorer_female"></span>
+                                                    Female : <span class="total_cycleExplorer_female"></span>
                                                 </li>
                                                 <li>
-                                                    Cycle-Explorer Transgender : <span
-                                                        class="total_cycleExplorer_trans"></span>
+                                                    Transgender : <span class="total_cycleExplorer_trans"></span>
                                                 </li>
                                             </div>
                                         </div>
@@ -314,98 +321,8 @@
 
 
 @section('page-js')
-    {{-- <script>
-        $(document).ready(function() {
-            getCount('all'); // Call getCount function with 'all' as the default ageGroupId
-        });
-
-        function getCount(ageGroupId) {
-
-            if (ageGroupId) {
-
-                $.ajax({
-                    url: '{{ route('users.count', ':ageGroupId') }}'.replace(':ageGroupId', ageGroupId),
-                    type: 'GET',
-                    success: function(response) {
-
-                        // Update the total count Neow dynamically
-                        $('.totalNeowCount').text(response.totalNeowCount);
-                        $('.totalFemaleNeowCount').text(response.totalFemaleNeowCount);
-                        $('.totalTransNeowCount').text(response.totalTransNeowCount);
-
-                        // Update the total count Buddy dynamically
-                        $('.totalBuddyCount').text(response.totalBuddyCount);
-                        $('.totalMaleBuddyCount').text(response.totalMaleBuddyCount);
-                        $('.totalFemaleBuddyCount').text(response.totalFemaleBuddyCount);
-                        $('.totalTransBuddyCount').text(response.totalTransBuddyCount);
-
-                        // Update the total count cycle Explorer dynamically
-                        $('.totalExplorerCount').text(response.totalExplorerCount);
-                        $('.totalMaleExplorerCount').text(response.totalMaleExplorerCount);
-                        $('.totalFemaleExplorerCount').text(response.totalFemaleExplorerCount);
-                        $('.totalTransExplorerCount').text(response.totalTransExplorerCount);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(error);
-                    }
-                });
-            }
-        }
-
-        $(function() {
-            $('#daterange').daterangepicker({
-                opens: 'left'
-            }, function(start, end, label) {
-                var startDate = start.format('YYYY-MM-DD');
-                var endDate = end.format('YYYY-MM-DD');
-
-                // Make AJAX request
-                $.ajax({
-                    url: '{{ route('users.count','all') }}',
-                    type: 'GET',
-                    data: {
-                        start_date: startDate,
-                        end_date: endDate
-                    },
-                    success: function(response) {
-
-                    },
-                    error: function(xhr, status, error) {
-
-                    }
-                });
-            });
-        });
-    </script> --}}
-
 
     <script>
-        // $(document).ready(function() {
-        //     // Initialize date range picker
-        //     $('#daterange').daterangepicker({
-        //         opens: 'left'
-        //     });
-
-        //     // Event listener for age group selection change
-        //     $('#selectBox').change(function() {
-        //         var ageGroupId = $(this).val();
-        //         var startDate = $('#daterange').data('daterangepicker').startDate.format('YYYY-MM-DD');
-        //         var endDate = $('#daterange').data('daterangepicker').endDate.format('YYYY-MM-DD');
-
-        //         // Trigger counting process when age group selection changes
-        //         getCount(ageGroupId, startDate, endDate);
-        //     });
-
-        //     // Event listener for date range selection change
-        //     $('#daterange').on('apply.daterangepicker', function(ev, picker) {
-        //         var ageGroupId = $('#selectBox').val();
-        //         var startDate = picker.startDate.format('YYYY-MM-DD');
-        //         var endDate = picker.endDate.format('YYYY-MM-DD');
-
-        //         // Trigger counting process when date range selection changes
-        //         getCount(ageGroupId, startDate, endDate);
-        //     });
-        // });
 
         $(document).ready(function() {
             // Calculate the start and end dates
@@ -502,4 +419,7 @@
             $('.totalTransExplorerCount').text(response.totalTransExplorerCount);
         }
     </script>
+
+
+
 @endsection

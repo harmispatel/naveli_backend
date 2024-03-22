@@ -34,6 +34,7 @@ use App\Models\generalSetting;
  Route::post('destroy',[UserController::class,'destroy'])->middleware('auth:sanctum');
  Route::get('user-details',[UserController::class,'userDetail'])->middleware('auth:sanctum');
  Route::post('user-update-details',[UserController::class,'userUpdateDetails'])->middleware('auth:sanctum');
+ Route::get('storeUsersActivityCount',[UserController::class,'storeUsersActivityCount'])->middleware('auth:sanctum');
 
 
 // Question
@@ -93,6 +94,10 @@ Route::post('/track/storeBmiCalculatorDetail',[TrackController::class,'storeBmiC
 Route::post('/track/storeWeightDetail',[TrackController::class,'storeWeightDetail'])->middleware('auth:sanctum');
 Route::post('/track/storeUserAilmentsDetail',[TrackController::class,'storeUserAilmentsDetail'])->middleware('auth:sanctum');
 Route::get('/track/getStoredAilmentsDetail',[TrackController::class,'getStoredAilmentsDetail'])->middleware('auth:sanctum');
+Route::post('/track/storeUserSleepDetail',[TrackController::class,'storeUserSleepDetail'])->middleware('auth:sanctum');
+Route::post('/track/storeUserWaterReminders',[TrackController::class,'storeUserWaterReminders'])->middleware('auth:sanctum');
+Route::get('/track/getStoredUserSleepDetail',[TrackController::class,'getStoredUserSleepDetail'])->middleware('auth:sanctum');
+Route::get('/track/getStoredUserWaterReminders',[TrackController::class,'getStoredUserWaterReminders'])->middleware('auth:sanctum');
 
 //HealthMixController
 Route::post('/healthMixPostList',[HealthMixController::class,'index'])->middleware('auth:sanctum');

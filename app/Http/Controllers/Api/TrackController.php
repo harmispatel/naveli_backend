@@ -8,8 +8,11 @@ use App\Models\Medicine;
 use App\Models\TrackAilment;
 use App\Models\TrackBmiCalculator;
 use App\Models\TrackPeriodsMedication;
+use App\Models\TrackSleep;
+use App\Models\TrackWaterReminder;
 use App\Models\TrackWeight;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class TrackController extends BaseController
@@ -175,4 +178,90 @@ class TrackController extends BaseController
         }
     }
 
+    public function storeUserSleepDetail(Request $request){
+        try {
+            $authUserId = auth()->user()->id;
+            $today = Carbon::today();
+
+            $getStoredUserSleep = TrackSleep::where('user_id', $authUserId)
+                                ->whereDate('created_at', $today)
+                                ->first();
+            if(isset($getStoredUserSleep)){
+                $update = $getStoredUserSleep->update([
+                    'bad_time' => $request->bad_time,
+                    'wake_up_time' => $request->wake_up_time,
+                    'total_sleep_time' => $request->total_sleep_time,
+                ]);
+                return $this->sendResponse(null, 'User Sleep Detail Updated Successfully', true);
+            }else{
+                $newSleepDetail = new TrackSleep();
+                $newSleepDetail->user_id = $authUserId;
+                $newSleepDetail->bad_time = $request->bad_time;
+                $newSleepDetail->wake_up_time = $request->wake_up_time;
+                $newSleepDetail->total_sleep_time = $request->total_sleep_time;
+                $newSleepDetail->save();
+
+                return $this->sendResponse(null, 'User Sleep Detail Stored Successfully', true);
+            }
+
+        } catch (\Throwable $th) {
+            return $this->sendResponse(null, 'Something Went Wrong !', false);
+        }
+    }
+
+    public function getStoredUserSleepDetail(){
+        try {
+            $authUserId = auth()->user()->id;
+            $getStoredUserSleepDetail = TrackSleep::select('bad_time','wake_up_time','total_sleep_time')
+                                        ->where('user_id',$authUserId)->first();
+            if(isset($getStoredUserSleepDetail)){
+                return $this->sendResponse($getStoredUserSleepDetail, 'User Sleep Detail Received Successfully', true);
+            }
+            return $this->sendResponse($getStoredUserSleepDetail, 'No Sleep Data For This User', true);
+        } catch (\Throwable $th) {
+            return $this->sendResponse(null, 'Something Went Wrong !', false);
+        }
+    }
+
+    public function storeUserWaterReminders(Request $request){
+        try {
+            $authUserId = auth()->user()->id;
+            $today = Carbon::today();
+
+            $getStoredUserWaterReminders = TrackWaterReminder::where('user_id', $authUserId)
+            ->whereDate('created_at', $today)
+            ->first();
+
+            if(isset($getStoredUserWaterReminders)){
+                $update = $getStoredUserWaterReminders->update([
+                    'water_ml' => $request->water_ml,
+                ]);
+
+                return $this->sendResponse(null, 'User Water Remainder Detail Updated Successfully', true);
+            }else{
+                $newWaterReminder = new TrackWaterReminder();
+                $newWaterReminder->user_id = $authUserId;
+                $newWaterReminder->water_ml = $request->water_ml;
+                $newWaterReminder->save();
+
+                return $this->sendResponse(null, 'User Water Remainder Detail Stored Successfully', true);
+            }
+        } catch (\Throwable $th) {
+            return $this->sendResponse(null, 'Something Went Wrong !', false);
+        }
+    }
+
+    public function getStoredUserWaterReminders(){
+        try {
+            $authUserId = auth()->user()->id;
+            $getStoredUserWaterReminders = TrackWaterReminder::select('water_ml')
+                                        ->where('user_id',$authUserId)->first();
+            if(isset($getStoredUserWaterReminders)){
+                return $this->sendResponse($getStoredUserWaterReminders, 'User Water Reminder Received Successfully', true);
+            }
+            return $this->sendResponse([], 'No Water Reminder Detail For This User', true);
+        } catch (\Throwable $th) {
+            return $this->sendResponse(null, 'Something Went Wrong !', false);
+        }
+    }
 }

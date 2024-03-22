@@ -9,7 +9,7 @@ use Yajra\DataTables\Facades\DataTables;
 class MedicineController extends Controller
 {
 
-    public function __contsruct()
+    public function __construct()
     {
         $this->middleware('permission:medicine.index|medicine.create|medicine.edit|medicine.destroy', ['only' => ['index', 'show']]);
         $this->middleware('permission:medicine.create', ['only' => ['create', 'store']]);

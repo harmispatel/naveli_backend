@@ -30,7 +30,9 @@ class DashboardController extends Controller
 
     public function ageGroupWiseCount($ageGroupId, Request $request)
     {
+
         if ($request->ajax()) {
+          
             $startDate = $request->start_date;
             $endDate = $request->end_date;
 
@@ -51,7 +53,9 @@ class DashboardController extends Controller
             $totalFemaleExplorerCount = 0;
             $totalTransExplorerCount = 0;
 
-            $users = User::whereBetween('created_at', [$startDate, $endDate])->get();
+       // Fetch users based on date range if provided, otherwise fetch all users
+       $users = isset($startDate) && isset($endDate) ? User::whereBetween('created_at', [$startDate, $endDate])->get() : User::all();
+            
             $ageGroup = DB::table('question_type_ages')->where('id', $ageGroupId)->first();
 
             $users_count = $users->where('role_id', '!=', 1)->count();
@@ -127,6 +131,7 @@ class DashboardController extends Controller
                     'totalTransExplorerCount' => 0,
                 ]);
             } elseif ($ageGroup) {
+               
                 $agename = $ageGroup->name; // Example: agename = '10 to 15 year'
                 $ageRange = explode(' to ', $agename);
                 // Query the users table to count the users with ages within the specified range
@@ -134,7 +139,7 @@ class DashboardController extends Controller
                 foreach ($users as $user) {
                     $birthdate = $user->birthdate;
                     $age = Carbon::parse($birthdate)->age;
-
+                  
                     if ($ageGroupId == 5) {
                         // Increment counts for users with age greater than 60
                         if ($age > 60) {

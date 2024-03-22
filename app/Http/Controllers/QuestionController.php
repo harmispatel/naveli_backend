@@ -27,33 +27,33 @@ class QuestionController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->ajax()) {
+            $questionTypes = QuestionType::all();
+            $ageGroups = QuestionTypeAge::all();
 
+            if ($request->ajax()) {
                 $questions = Question::query();
 
-                // if (isset($request->age_group_filter) && !empty($request->age_group_filter)) {
-                //     $questions->where('age_group_id', $request->age_group_filter);
-                // }
+                // Filter by age group
+                if ($request->has('age_group_filter') && !empty($request->age_group_filter)) {
+                    $questions->where('age_group_id', $request->age_group_filter);
+                }
 
-                // if (isset($request->option_view_filter) && !empty($request->option_view_filter)) {
-                //     $questions->where('option_view_type', $request->option_view_filter);
-                // }
+                // Filter by question type
+                if ($request->has('question_type_filter') && !empty($request->question_type_filter)) {
+                    $questions->where('questionType_id', $request->question_type_filter);
+                }
 
                 $allQuestions = $questions->get();
 
                 return DataTables::of($allQuestions)
                     ->addIndexColumn()
                     ->addColumn('questionType_id', function ($question) {
-                        $questionType = QuestionType::where('id', $question->questionType_id)->first();
-
-                        return isset($questionType->name) ? $questionType->name : '--';
-
+                        $questionType = QuestionType::find($question->questionType_id);
+                        return $questionType ? $questionType->name : '--';
                     })
                     ->addColumn('age_group_id', function ($question) {
-                        $questionType = QuestionTypeAge::where('id', $question->age_group_id)->first();
-
-                        return isset($questionType->name) ? $questionType->name : '--';
-
+                        $ageGroup = QuestionTypeAge::find($question->age_group_id);
+                        return $ageGroup ? $ageGroup->name : '--';
                     })
                     ->addColumn('actions', function ($question) {
                         return '<div class="btn-group">
@@ -65,12 +65,13 @@ class QuestionController extends Controller
                     ->rawColumns(['actions', 'questionType_id'])
                     ->make(true);
             }
-            return view('admin.questions.index');
+
+            return view('admin.questions.index',compact('ageGroups','questionTypes'));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Internal Server Error');
         }
-
     }
+
 
     public function questionOptionView($id)
     {

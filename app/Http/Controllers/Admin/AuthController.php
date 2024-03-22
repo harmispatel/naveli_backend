@@ -43,7 +43,7 @@ class AuthController extends Controller
 
                     $otp = [
                         'code' => $otpGenrate,
-                        'expires_at' => now()->addMinutes(1)
+                        'expires_at' => now()->addMinutes(2)->format('Y-m-d H:i:s') // Set expiry time for 2 minutes
                     ];
                     $request->session()->put('otp', $otp);
                     
@@ -54,6 +54,8 @@ class AuthController extends Controller
                         $message->setBody('Your OTP for verification is: ' . $otp['code']);
                     });
 
+                    // Start the countdown timer
+                    $request->session()->put('otp_start_time', now()->timestamp);
 
                     // $previousUrl = session()->pull('previousUrl', route('dashboard'));
                     // return redirect()->intended($previousUrl)->with('message', 'Welcome '.$username);
@@ -98,9 +100,7 @@ class AuthController extends Controller
                     $request->session()->put('is_verified',true);
                     return redirect()->route('dashboard')->with('message', 'Welcome ' . $username);
 
-                } else {
-                    return redirect()->back()->with('error', 'OTP Expired');
-                }
+                } 
             } else {
                 return redirect()->back()->with('error', 'Invalid OTP');
             }
@@ -122,7 +122,7 @@ class AuthController extends Controller
 
             $otp = [
                 'code' => $otpGenrate,
-                'expires_at' => now()->addMinutes(5)
+                'expires_at' => now()->addMinutes(2)->format('Y-m-d H:i:s')
             ];
 
             $request->session()->put('otp', $otp);
@@ -134,6 +134,7 @@ class AuthController extends Controller
                 $message->setBody('Your OTP for verification is: ' . $otp['code']);
             });
 
+            
             return response()->json(['success' => true]);
         } catch (\Throwable $th) {
             return response()->json(['success' => false]);

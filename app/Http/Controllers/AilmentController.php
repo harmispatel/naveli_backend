@@ -8,7 +8,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class AilmentController extends Controller
 {
-    public function __contsruct()
+    public function __construct()
     {
         $this->middleware('permission:ailments.index|ailments.create|ailments.edit|ailments.destroy', ['only' => ['index', 'show']]);
         $this->middleware('permission:ailments.create', ['only' => ['create', 'store']]);

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\BaseController as BaseController;
-use App\Models\{Ailment, Medicine, User,News,Post,UserSymptomsLogs};
+use App\Models\{Ailment, Medicine, User,News,Post,UserSymptomsLogs,UserActivityStatus};
 // use App\Models\News;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -122,6 +122,9 @@ class UserController extends BaseController
             }
 
             $createNewRegistration = User::create($input);
+            if(isset($createNewRegistration)){
+                $createUsersActivity = UserActivityStatus::create([ 'user_id' => $createNewRegistration->id]);
+            }
             Auth::login($createNewRegistration);
             $userDetail = $this->userResponse($createNewRegistration);
             $token =  $createNewRegistration->createToken('token')->plainTextToken;
@@ -490,6 +493,37 @@ class UserController extends BaseController
     //         return $this->sendResponse(null,'Something went wrong!',false);
     //     }
     // }
+
+    public function storeUsersActivityCount()
+    {
+        try {
+            $user = auth()->user();
+
+            if (!$user) {
+                return $this->sendResponse(null,'Users Not Authorize!',false);
+            }
+
+            // Increment active user count for the current date
+            $date = now()->toDateString(); // Get current date
+            $activity = UserActivityStatus::where('user_id', $user->id)
+                                     ->whereDate('created_at', $date)
+                                     ->first();
+
+            if ($activity) {
+                $activity->increment('activity_counts');
+            } else {
+
+               $activity = UserActivityStatus::create([
+                    'user_id' => $user->id,
+                    'activity_counts' => 1,
+                ]);
+            }
+            return $this->sendResponse($activity ,'User activity counted successfully',true);
+
+        } catch (\Exception $e) {
+            return $this->sendResponse(null,'Something went wrong!',false);
+        }
+    }
 
     public function userResponse($userdata)
     {

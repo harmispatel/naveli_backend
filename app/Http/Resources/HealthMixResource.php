@@ -36,6 +36,8 @@ class HealthMixResource extends JsonResource
             $diffInHumanReadable = str_replace('hours', 'hr.', $diff);
         } elseif (strpos($diff, 'day') !== false) {
             $diffInHumanReadable = str_replace('days', 'day', $diff);
+        } elseif (strpos($diff, 'week') !== false) { // Check for 'week'
+            $diffInHumanReadable = str_replace('weeks', 'wk.', $diff);
         } elseif (strpos($diff, 'month') !== false) {
             $diffInHumanReadable = str_replace('months', 'mon.', $diff);
         } elseif (strpos($diff, 'year') !== false) {
@@ -43,6 +45,7 @@ class HealthMixResource extends JsonResource
         } else {
             $diffInHumanReadable = "";
         }
+
 
         return [
             'id' => $this->id,

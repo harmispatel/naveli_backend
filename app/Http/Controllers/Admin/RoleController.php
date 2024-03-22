@@ -75,7 +75,7 @@ class Rolecontroller extends Controller
             return redirect()->route('roles')
                 ->with('message', 'Role created successfully');
         } catch (\Throwable $th) {
-            return redirect()->route('roles')->with('error', 'Something went wrong');
+        return redirect()->route('roles')->with('error', 'Something went wrong');
         }
     }
 
