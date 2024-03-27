@@ -2,16 +2,72 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Spatie\Permission\Models\Role;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use Spatie\Permission\Models\Role;
 
 class DashboardController extends Controller
 {
+
+    public function download(Request $request)
+    {
+        
+        try {
+            if ($request->ajax()) {
+                $startDate = $request->start_date;
+                $endDate = $request->end_date;
+                $userCount = $request->user_count;
+                $ageGroupId = $request->ageGroupId;
+
+                //neow
+                $ageTotalNeow = $request->ageTotalNeow;
+                $ageNeowFemale = $request->ageNeowFemale;
+                $ageNeowTrans = $request->ageNeowTrans;
+
+                //buddy
+                $ageTotalBuddy = $request->ageTotalBuddy;
+                $ageBuddyMale = $request->ageBuddyMale;
+                $ageBuddyFemale = $request->ageBuddyFemale;
+                $ageBuddyTrans = $request->ageBuddyTrans;
+
+                //Explore
+                $ageTotalExplore = $request->ageTotalExplore;
+                $ageExploreMale = $request->ageExploreMale;
+                $ageExploreFemale = $request->ageExploreFemale;
+                $ageExploreTrans = $request->ageExploreTrans;
+
+                
+                $ageGroup = DB::table('question_type_ages')->where('id',$ageGroupId)->first();
+
+                
+                if($ageGroupId == 5){
+                    $ageGroupName = "more than 60";
+                }elseif($ageGroupId == 'all'){
+                    $ageGroupName = "All"; 
+                }elseif($ageGroupId == $ageGroup->id){
+                    $ageGroupName = $ageGroup->name . ' Year';
+                }
+
+                // Generate the file and store it
+                return Excel::download(new UsersExport($startDate, $endDate, $userCount, $ageGroupName, $ageTotalNeow, $ageNeowFemale, $ageNeowTrans, $ageTotalBuddy, $ageBuddyMale, $ageBuddyFemale, $ageBuddyTrans, $ageTotalExplore, $ageExploreMale, $ageExploreFemale,
+                $ageExploreTrans), 'users.xlsx', null, [\Maatwebsite\Excel\Excel::XLSX]);
+            }
+        } catch (\Exception $e) {
+           
+            // Log the error
+            \Log::error('Error exporting users: ' . $e->getMessage());
+
+            // Return an error response
+            return response()->json(['error' => 'Error exporting users'], 500);
+        }
+    }
+
     // Dashboard View
     public function index(Request $request)
     {
@@ -22,7 +78,7 @@ class DashboardController extends Controller
 
             $roles = Role::all();
 
-            return view('admin.dashboard.dashboard', compact('age_groups','roles'));
+            return view('admin.dashboard.dashboard', compact('age_groups', 'roles'));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Something went wrong');
         }
@@ -32,7 +88,7 @@ class DashboardController extends Controller
     {
 
         if ($request->ajax()) {
-          
+
             $startDate = $request->start_date;
             $endDate = $request->end_date;
 
@@ -53,9 +109,13 @@ class DashboardController extends Controller
             $totalFemaleExplorerCount = 0;
             $totalTransExplorerCount = 0;
 
-       // Fetch users based on date range if provided, otherwise fetch all users
-       $users = isset($startDate) && isset($endDate) ? User::whereBetween('created_at', [$startDate, $endDate])->get() : User::all();
-            
+            // Fetch users based on date range if provided, otherwise fetch all users
+            if (isset($startDate) && isset($endDate) && $startDate != $endDate) {
+                $users = User::whereBetween('created_at', [$startDate, $endDate])->get();
+            } else {
+                $users = User::all();
+            }
+
             $ageGroup = DB::table('question_type_ages')->where('id', $ageGroupId)->first();
 
             $users_count = $users->where('role_id', '!=', 1)->count();
@@ -131,7 +191,7 @@ class DashboardController extends Controller
                     'totalTransExplorerCount' => 0,
                 ]);
             } elseif ($ageGroup) {
-               
+
                 $agename = $ageGroup->name; // Example: agename = '10 to 15 year'
                 $ageRange = explode(' to ', $agename);
                 // Query the users table to count the users with ages within the specified range
@@ -139,7 +199,7 @@ class DashboardController extends Controller
                 foreach ($users as $user) {
                     $birthdate = $user->birthdate;
                     $age = Carbon::parse($birthdate)->age;
-                  
+
                     if ($ageGroupId == 5) {
                         // Increment counts for users with age greater than 60
                         if ($age > 60) {

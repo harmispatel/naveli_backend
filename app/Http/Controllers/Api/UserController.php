@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\BaseController as BaseController;
-use App\Models\{Ailment, Medicine, User,News,Post,UserSymptomsLogs,UserActivityStatus};
+use App\Models\{Ailment, Medicine, User,News,Post, TrackBmiCalculator, TrackWeight, UserSymptomsLogs,UserActivityStatus};
 // use App\Models\News;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -527,12 +527,21 @@ class UserController extends BaseController
 
     public function userResponse($userdata)
     {
+        if(isset($userdata->id)){
+            // $getUserWeightDetail = TrackWeight::select('weight','weight_type')->where('user_id',$userdata->id)->first();
+            $getUserBmiCalculater = TrackBmiCalculator::select('age','height','weight','bmi_score','bmi_type')->where('user_id',$userdata->id)->first();
+        }
         $data['id'] = $userdata->id;
         $data['name'] = $userdata->name;
         $data['email'] = $userdata->email;
         $data['role_id'] = $userdata->role_id;
         $data['uuId'] = $userdata->unique_id;
         $data['birthdate'] = $userdata->birthdate;
+        $data['age'] = isset($userdata->birthdate) ? calculateAge($userdata->birthdate) : null;
+        $data['height'] = isset($getUserBmiCalculater->height) ? $getUserBmiCalculater->height : null;
+        $data['weight'] = isset($getUserBmiCalculater->weight) ? $getUserBmiCalculater->weight : null;
+        $data['bmi_score'] = isset($getUserBmiCalculater->bmi_score) ? $getUserBmiCalculater->bmi_score : null;
+        $data['bmi_type'] = isset($getUserBmiCalculater->bmi_type) ? $getUserBmiCalculater->bmi_type : null;
         $data['gender'] = isset($userdata->gender) ? strval($userdata->gender) : null;
         $data['gender_type'] = isset($userdata->gender_type) ? $userdata->gender_type : null ;
         $data['mobile'] = $userdata->mobile;
@@ -545,7 +554,6 @@ class UserController extends BaseController
         $data['average_period_length'] = $userdata->average_period_length;
         $data['hum_apke_he_kon'] = $userdata->hum_apke_he_kon;
         $data['status'] = $userdata->status;
-
         return $data;
     }
 

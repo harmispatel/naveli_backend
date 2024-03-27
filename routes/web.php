@@ -23,6 +23,9 @@ use App\Http\Controllers\AskYourQuestionController;
 use App\Http\Controllers\ForumCommentController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\HealthProfileController;
+use App\Http\Controllers\AllAboutPeriodPostController;
+use App\Http\Controllers\AllAboutPeriodCategoryController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -92,7 +95,7 @@ Route::group(['prefix' => 'admin'], function () {
 
         //export users data
         Route::get('/export/users', [ExportController::class, 'exportUsers'])->name('export.users');
-
+        Route::post('/download/users',[DashboardController::class, 'download'])->name('download.users');
 
         //health profile
 
@@ -237,5 +240,21 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/forum-comments/reply/{id}', [ForumCommentController::class, 'reply'])->name('forumcomments.reply');
         Route::Post('/forum-comments/reply/store', [ForumCommentController::class, 'storeReply'])->name('forumcomments.reply.store');
         Route::get('/forum-comments/destroy/{id}', [ForumCommentController::class, 'destroy'])->name('forumcomments.destroy');
+
+        //all about periods-category
+        Route::get('/all-about-periods/categories',[AllAboutPeriodCategoryController::class,'index'])->name('aap.category.index');
+        Route::get('/all-about-periods/categories/create',[AllAboutPeriodCategoryController::class,'create'])->name('aap.category.create');
+        Route::post('/all-about-periods/categories/store',[AllAboutPeriodCategoryController::class,'store'])->name('aap.category.store');
+        Route::get('/all-about-periods/categories/edit/{id}',[AllAboutPeriodCategoryController::class,'edit'])->name('aap.category.edit');
+        Route::post('/all-about-periods/categories/update',[AllAboutPeriodCategoryController::class,'update'])->name('aap.category.update');
+        Route::get('/all-about-periods/categories/destroy/{id}',[AllAboutPeriodCategoryController::class,'destroy'])->name('aap.category.destroy');
+
+       //all about periods-posts
+        Route::get('/all-about-periods/posts',[AllAboutPeriodPostController::class,'index'])->name('aap.posts.index');
+        Route::get('/all-about-periods/posts/create',[AllAboutPeriodPostController::class,'create'])->name('aap.posts.create');
+        Route::post('/all-about-periods/posts/store',[AllAboutPeriodPostController::class,'store'])->name('aap.posts.store');
+        Route::get('/all-about-periods/posts/edit/{id}',[AllAboutPeriodPostController::class,'edit'])->name('aap.posts.edit');
+        Route::post('/all-about-periods/posts/update',[AllAboutPeriodPostController::class,'update'])->name('aap.posts.update');
+        Route::get('/all-about-periods/posts/destroy/{id}',[AllAboutPeriodPostController::class,'destroy'])->name('aap.posts.destroy');
     });
 });

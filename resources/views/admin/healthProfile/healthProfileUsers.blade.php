@@ -61,77 +61,76 @@
 @section('page-js')
 
 <script type="text/javascript">
-
     var healthProfileUsersTable = null;
     var user_ids = @json($user_ids);
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         getHealthDataUsers(user_ids);
     });
 
     // Get Health Data Function
-    function getHealthDataUsers(user_ids){
+    function getHealthDataUsers(user_ids) {
         if (healthProfileUsersTable !== null) {
             healthProfileUsersTable.destroy();
         }
-        healthProfileUsersTable =  $('#healthProfileUsers').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: "{{ route('healthProfile.users.load') }}",
-                data: {
-                    user_ids: user_ids,
+        healthProfileUsersTable = $('#healthProfileUsers').DataTable({
+            processing: true
+            , serverSide: true
+            , ajax: {
+                url: "{{ route('healthProfile.users.load') }}"
+                , data: {
+                    user_ids: user_ids
+                , }
+            }
+            , columns: [{
+                    data: 'uid'
+                    , name: 'uid'
+                    , orderable: false
+                    , searchable: false
                 }
-            },
-            columns: [{
-                    data: 'uid',
-                    name: 'uid',
-                    orderable: false,
-                    searchable: false
-                },
-                {
-                    data: 'name',
-                    name: 'name',
-                    orderable: false,
-                    searchable: false
-                },
-                {
-                    data: 'age',
-                    name: 'age',
-                    orderable: false,
-                    searchable: false
-                },
-                {
-                    data: 'phone',
-                    name: 'phone',
-                    orderable: false,
-                    searchable: false
-                },
-                {
-                    data: 'email',
-                    name: 'email',
-                    orderable: false,
-                    searchable: false
-                },
-                {
-                    data: 'gender',
-                    name: 'gender',
-                    orderable: false,
-                    searchable: false
-                },
-                {
-                    data: 'location',
-                    name: 'location',
-                    orderable: false,
-                    searchable: false
-                },
-                {
-                    data: 'joined_on',
-                    name: 'joined_on',
-                    orderable: false,
-                    searchable: false
-                },
-            ]
+                , {
+                    data: 'name'
+                    , name: 'name'
+                    , orderable: false
+                    , searchable: false
+                }
+                , {
+                    data: 'age'
+                    , name: 'age'
+                    , orderable: false
+                    , searchable: false
+                }
+                , {
+                    data: 'phone'
+                    , name: 'phone'
+                    , orderable: false
+                    , searchable: false
+                }
+                , {
+                    data: 'email'
+                    , name: 'email'
+                    , orderable: false
+                    , searchable: false
+                }
+                , {
+                    data: 'gender'
+                    , name: 'gender'
+                    , orderable: false
+                    , searchable: false
+                }
+                , {
+                    data: 'location'
+                    , name: 'location'
+                    , orderable: false
+                    , searchable: false
+                }
+                , {
+                    data: 'joined_on'
+                    , name: 'joined_on'
+                    , orderable: false
+                    , searchable: false
+                }
+            , ]
         });
     }
 

@@ -114,6 +114,7 @@ return [
     "ContentUpload" => "Content Upload",
     "title" => "Title",
     "user_id" => "User Name",
+    "media" => "Media",
     "media_type" => "Media Type",
     "file" => "File",
     "option_view_type_:" => "Option view Type :",

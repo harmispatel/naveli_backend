@@ -4,9 +4,9 @@
 
 @section('content')
 
-@php
-    $roles = getRoleList();
-@endphp
+    @php
+        $roles = getRoleList();
+    @endphp
 
     {{-- Page Title --}}
     <div class="pagetitle">
@@ -28,7 +28,7 @@
     {{-- Clients Card --}}
     <div class="col-md-12">
         <div class="card">
-           <form class="form" action="{{ route('question.update') }} " method="POST" enctype="multipart/form-data">
+            <form class="form" action="{{ route('question.update') }} " method="POST" enctype="multipart/form-data">
 
                 <input type="hidden" name="id" id="id" value="{{ encrypt($question->id) }}">
                 <div class="card-body">
@@ -51,7 +51,7 @@
                                                 @foreach ($questionTypes as $questionType)
                                                     <option value="{{ $questionType->id }}"
                                                         {{ old('questionType_id', $question->questionType_id == $questionType->id) ? 'selected' : '' }}>
-                                                        {{ $questionType->name }} 
+                                                        {{ $questionType->name }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -93,35 +93,33 @@
                                             @endif
                                         </div>
                                     </div>
-                                   
+
                                     <div class="col-md-12 mb-3 additional-info text-end ">
                                         <a class="btn btn-sm new-category custom-btn" id="addOption"><i
                                                 class="bi bi-plus-lg"></i></a>
                                     </div>
                                     <div class="row">
-                                    <!-- Populate options -->
-                                    @foreach ($options as $option)
-                                    
-                                     <div class="col-md-6">
-                                        <div class="row align-items-end added-option">
-                                            <!-- Populate option_name and icon if they exist in your Option model -->
-                                            <div class="col-md-10 mb-3 additional-info">
-                                                <label for="option_name"
-                                                    class="form-label"><strong>{{ trans('label.option_name') }}</strong></label>
-                                                <input type="text" name="option_name[]" id="option_name1"
-                                                    value="{{ $option->option_name }}" class="form-control" />
-                                                    <div id="option_name1_error" class="invalid-feedback"></div>
+                                        <!-- Populate options -->
+                                        @foreach ($options as $option)
+                                            <div class="col-md-6">
+                                                <div class="row align-items-end added-option">
+                                                    <!-- Populate option_name and icon if they exist in your Option model -->
+                                                    <div class="col-md-10 mb-3 additional-info">
+                                                        <label for="option_name"
+                                                            class="form-label"><strong>{{ trans('label.option_name') }}</strong></label>
+                                                        <input type="text" name="option_name[]" id="option_name1"
+                                                            value="{{ $option->option_name }}" class="form-control" />
+                                                        <div id="option_name1_error" class="invalid-feedback"></div>
+                                                    </div>
+                                                    <div class="col-md-2 mb-3 pt-2 additional-info">
+                                                        <button class="btn btn-sm btn-danger cancel-option"
+                                                            onclick="removeOption(this)"><i class="bi bi-trash"
+                                                                aria-hidden="true"></i></button>
+                                                    </div>
                                                 </div>
-                                            <div class="col-md-2 mb-3 pt-2 additional-info">
-                                                <button class="btn btn-sm btn-danger cancel-option"
-                                                    onclick="removeOption(this)"><i class="bi bi-trash"
-                                                        aria-hidden="true"></i></button>
                                             </div>
-                                        </div>
-                                     </div>
-                                   
-                                    @endforeach
-                                </div>
+                                        @endforeach
+                                    </div>
                                     <div class="appending_div row"></div>
                                 </div>
                             </div>
@@ -183,8 +181,8 @@
                 $('.appending_div').append(field);
             });
 
-               // Event delegation for the cancel button
-               $('.appending_div').on('click', '.cancel-option', function(e) {
+            // Event delegation for the cancel button
+            $('.appending_div').on('click', '.cancel-option', function(e) {
                 e.preventDefault();
 
                 // Hide only the specific row containing the "Option Name" and "Icon" fields
@@ -192,15 +190,15 @@
             });
 
             if ($('#questionType_id').val() == 3) {
-              $('#ageHide').show();
+                $('#ageHide').show();
             }
-            $('#questionType_id').change(function (){
-                   if($(this).val() == 3){
+            $('#questionType_id').change(function() {
+                if ($(this).val() == 3) {
                     $('#ageHide').show();
-                   }else{
+                } else {
                     $('#ageHide').hide();
-                   }
-             });
+                }
+            });
         });
 
         // remove line
@@ -209,24 +207,24 @@
             $(button).closest('.added-option').remove();
         }
 
-         // question_id and question_name required
+        // question_id and question_name required
 
-         $('form').submit(function(e) {
-        var filledFields = 0;
+        $('form').submit(function(e) {
+            var filledFields = 0;
 
-        // Loop through each input field
-        $('input[name="option_name[]"]').each(function() {
-            if ($(this).val() !== '') {
-                filledFields++;
+            // Loop through each input field
+            $('input[name="option_name[]"]').each(function() {
+                if ($(this).val() !== '') {
+                    filledFields++;
+                }
+            });
+
+            // Check if at least two fields are filled
+            if (filledFields < 2) {
+                e.preventDefault(); // Prevent form submission
+                alert('Please fill out at least two fields.');
             }
         });
-
-        // Check if at least two fields are filled
-        if (filledFields < 2) {
-            e.preventDefault(); // Prevent form submission
-            alert('Please fill out at least two fields.');
-        }
-    });
     </script>
 
 @endsection

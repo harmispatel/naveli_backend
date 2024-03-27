@@ -21,14 +21,15 @@ trait ImageTrait
     }
 
     public function optionViewType(){
-     
-        $viewType = ['1'=>'calender','2'=>'text','3'=>'number'];        
+
+        $viewType = ['1'=>'calender','2'=>'text','3'=>'number'];
         return $viewType;
     }
 
     // Upload Single Image
     public function addSingleImage($path,$file,$old_image = null)
-    {     
+    {
+      
         // Delete old Image if Exists
         if ($old_image != null && file_exists('public/images/uploads/'.$path.'/'.$old_image))
         {
@@ -38,13 +39,13 @@ trait ImageTrait
         // Upload New Image
         if ($file != null)
         {
+           
             $filename = $this->randomMediaName(5).".".$file->getClientOriginalExtension();
 
             // Image Upload Path
             $image_path = public_path().'/images/uploads/'.$path;
 
-            //     // $image->save($image_path.'/'.$filename);
-                $file->move($image_path, $filename);
+            $file->move($image_path, $filename);
 
             return $filename;
         }

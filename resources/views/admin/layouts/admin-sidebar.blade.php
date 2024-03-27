@@ -1,9 +1,10 @@
 @php
-   
+
     $currentRouteName = Route::currentRouteName();
     $isCollQuickQuestion = !in_array($currentRouteName, ['questionType.index', 'questionType.create', 'questionType.edit', 'question.index', 'question.create', 'question.edit', 'question.optionView']);
     $isCollForum = !in_array($currentRouteName, ['forums.index', 'forums.create', 'forums.edit', 'forumcomments.index', 'forumcomments.reply']);
     $isCollSettings = !in_array($currentRouteName, ['roles', 'roles.create', 'roles.edit', 'notification', 'generalSetting', 'ContentUpload']);
+    $isCollAllAboutPeriods = ! in_array($currentRouteName,['aap.category.index','aap.category.create','aap.category.edit','aap.posts.index','aap.posts.create','aap.posts.edit']);
 @endphp
 
 <!-- ======= Sidebar ======= -->
@@ -116,6 +117,37 @@
             </li>
         @endcan
 
+        {{-- All About Periods --}}
+        <li class="nav-item">
+                <a class="nav-link {{ $isCollAllAboutPeriods ? 'collapsed' : '' }} {{ $isCollAllAboutPeriods ? '' : 'active-tab' }}" data-bs-target="#all-about-periods-nav" data-bs-toggle="collapse" href="#" aria-expanded="{{ !$isCollForum }}">
+                    <i class="bi bi-file-text-fill {{ !$isCollAllAboutPeriods ? 'icon-tab' : '' }}"></i>
+                    <span>{{ trans('label.all_about_periods') }}</span>
+                    <i class="bi bi-chevron-down ms-auto {{ !$isCollAllAboutPeriods ? 'icon-tab' : '' }}"></i>
+                </a>
+                <ul id="all-about-periods-nav" class="nav-content sidebar-ul collapse {{ !$isCollAllAboutPeriods ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+
+                    {{-- periods posts --}}
+                        <li>
+                            <a href="{{ route('aap.posts.index') }}" class="{{ (in_array($currentRouteName, ['aap.posts.index', 'aap.posts.create','aap.posts.edit'])) ? 'active-tab' : '' }}">
+                                <i class="bi bi-gear-fill {{ (in_array($currentRouteName, ['aap.posts.index', 'aap.posts.create','aap.posts.edit'])) ? 'icon-tab' : '' }}"></i>
+                                <span>{{ trans('label.posts') }}</span>
+                            </a>
+                        </li>
+
+
+                    {{-- All About periods category 
+
+                        <li class="nav-item">
+                            <a href="{{ route('aap.category.index') }}" class="{{ (in_array($currentRouteName, ['aap.category.index', 'aap.category.create','aap.category.edit'])) ? 'active-tab' : '' }}">
+                                <i class="bi bi-chat {{ (in_array($currentRouteName,['aap.category.index', 'aap.category.create','aap.category.edit'])) ? 'icon-tab' : '' }}"></i>
+                                <span>{{ trans('label.forums_category') }}</span>
+                            </a>
+                        </li>
+                    --}}    
+                </ul>
+            </li>
+
+            
         {{-- Woman in News --}}
         @can('woman-in-news.index')
             <li class="nav-item">
@@ -181,7 +213,7 @@
 
         {{-- Settings --}}
         @if (auth()->user()->role_id == 1)
-        
+
             @canany(['roles', 'notification', 'generalSetting'])
                 <li class="nav-item">
                     <a class="nav-link {{ $isCollSettings ? 'collapsed' : '' }} {{ $isCollSettings ? '' : 'active-tab' }}" data-bs-target="#setting-nav" data-bs-toggle="collapse" href="#" aria-expanded="{{ !$isCollSettings }}">

@@ -44,6 +44,11 @@
 {{-- text-editor --}}
 <script src="{{ asset('public/assets/vendor/js/ckeditorr.js') }}"></script>
 
+  
+<!-- Include jsPDF library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+
 {{-- daterangepicker --}}
 <script type="text/javascript" src="{{ asset('public/assets/vendor/js/moment.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('public/assets/vendor/js/daterangepicker.min.js') }}"></script>

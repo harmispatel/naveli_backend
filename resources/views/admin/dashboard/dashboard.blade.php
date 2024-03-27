@@ -44,13 +44,13 @@
                             <div class="row card-title text-center">
                                 <div style="display: flex; justify-content: center; align-items: center;">
                                     <h5>Total Users - </h5>
-                                    <h5 class="users_count ml-2"></h5>
-                                    <a class="btn btn-sm mr-2" href="{{route('export.users')}}"><i class="bi bi-download"></i></a>
+                                    <h5 class="users_count ml-2" id="userCount"></h5>
+                                    <a class="btn btn-sm mr-2" id="downloadButton"><i class="bi bi-download"></i></a>
                                 </div>
                             </div>
 
                             <!-- <a href="{{ route('users') }}" style="text-decoration: none; color: inherit;">
-                                                        </a> -->
+                                                                                                            </a> -->
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="card mb-3">
@@ -322,104 +322,173 @@
 
 @section('page-js')
 
-    <script>
+<script>
+    $(document).ready(function() {
+        // Calculate the start and end dates
+        var currentDate = moment(); // Current date
 
-        $(document).ready(function() {
-            // Calculate the start and end dates
-            var endDate = moment(); // Current date
-            var startDate = moment().subtract(1, 'month'); // One month ago
-
-            // Initialize date range picker with the calculated dates
-            $('#daterange').daterangepicker({
-                opens: 'left',
-                startDate: startDate,
-                endDate: endDate
-            });
-
-            // Trigger counting process when page loads
-            getCount('all', startDate, endDate);
-
-            // Event listener for age group selection change
-            $('#selectBox').change(function() {
-                var ageGroupId = $(this).val();
-                var startDate = $('#daterange').data('daterangepicker').startDate;
-                var endDate = $('#daterange').data('daterangepicker').endDate;
-
-                // Trigger counting process when age group selection changes
-                getCount(ageGroupId, startDate, endDate);
-            });
-
-            // Event listener for date range selection change
-            $('#daterange').on('apply.daterangepicker', function(ev, picker) {
-                var ageGroupId = $('#selectBox').val();
-                var startDate = picker.startDate;
-                var endDate = picker.endDate;
-
-                // Trigger counting process when date range selection changes
-                getCount(ageGroupId, startDate, endDate);
-            });
+        // Initialize date range picker with the same start and end dates
+        $('#daterange').daterangepicker({
+            opens: 'left',
+            startDate: currentDate,
+            endDate: currentDate
         });
 
-        // Function to get count based on age group and date range
-        function getCount(ageGroupId, startDate, endDate) {
-            // Format the dates as YYYY-MM-DD
-            var formattedStartDate = startDate.format('YYYY-MM-DD');
-            var formattedEndDate = endDate.format('YYYY-MM-DD');
+        // Trigger counting process when page loads
+        getCount('all', currentDate, currentDate);
 
-            // Call the server to get the counts based on the date range and age group
+        // Event listener for age group selection change
+        $('#selectBox').change(function() {
+            var ageGroupId = $(this).val();
+            var startDate = $('#daterange').data('daterangepicker').startDate;
+            var endDate = $('#daterange').data('daterangepicker').endDate;
+
+            // Trigger counting process when age group selection changes
+            getCount(ageGroupId, startDate, endDate);
+        });
+
+        // Event listener for date range selection change
+        $('#daterange').on('apply.daterangepicker', function(ev, picker) {
+            var ageGroupId = $('#selectBox').val();
+            var startDate = picker.startDate;
+            var endDate = picker.endDate;
+
+            // Trigger counting process when date range selection changes
+            getCount(ageGroupId, startDate, endDate);
+        });
+
+    });
+
+    // Function to get count based on age group and date range
+    function getCount(ageGroupId, startDate, endDate) {
+        // Format the dates as YYYY-MM-DD
+        var formattedStartDate = startDate.format('YYYY-MM-DD');
+        var formattedEndDate = endDate.format('YYYY-MM-DD');
+
+        // Call the server to get the counts based on the date range and age group
+        $.ajax({
+            url: '{{ route('users.count', ':ageGroupId') }}'.replace(':ageGroupId', ageGroupId),
+            type: 'GET',
+            data: {
+                age_group_id: ageGroupId,
+                start_date: formattedStartDate,
+                end_date: formattedEndDate
+            },
+            success: function(response) {
+                // Update counts based on the response
+                updateCounts(response);
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+
+    // Function to update counts
+    function updateCounts(response) {
+        // Update the total counts dynamically
+        $('.users_count').text(response.users_count);
+        $('.total_neow').text(response.total_neow);
+        $('.total_buddy').text(response.total_buddy);
+        $('.total_cycleExplorer').text(response.total_cycleExplorer);
+        $('.total_male').text(response.total_male);
+        $('.total_female').text(response.total_female);
+        $('.total_trans').text(response.total_trans);
+        $('.total_neow_female').text(response.total_neow_female);
+        $('.total_neow_trans').text(response.total_neow_trans);
+        $('.total_buddy_male').text(response.total_buddy_male);
+        $('.total_buddy_female').text(response.total_buddy_female);
+        $('.total_buddy_trans').text(response.total_buddy_trans);
+        $('.total_cycleExplorer_male').text(response.total_cycleExplorer_male);
+        $('.total_cycleExplorer_female').text(response.total_cycleExplorer_female);
+        $('.total_cycleExplorer_trans').text(response.total_cycleExplorer_trans);
+        $('.total_solo').text(response.total_solo);
+        $('.total_tied').text(response.total_tied);
+        $('.total_ofs').text(response.total_ofs);
+        $('.totalNeowCount').text(response.totalNeowCount);
+        $('.totalFemaleNeowCount').text(response.totalFemaleNeowCount);
+        $('.totalTransNeowCount').text(response.totalTransNeowCount);
+        $('.totalBuddyCount').text(response.totalBuddyCount);
+        $('.totalMaleBuddyCount').text(response.totalMaleBuddyCount);
+        $('.totalFemaleBuddyCount').text(response.totalFemaleBuddyCount);
+        $('.totalTransBuddyCount').text(response.totalTransBuddyCount);
+        $('.totalExplorerCount').text(response.totalExplorerCount);
+        $('.totalMaleExplorerCount').text(response.totalMaleExplorerCount);
+        $('.totalFemaleExplorerCount').text(response.totalFemaleExplorerCount);
+        $('.totalTransExplorerCount').text(response.totalTransExplorerCount);
+    }
+
+    $(document).ready(function() {
+        $('#downloadButton').click(function(event) {
+            event.preventDefault(); // Prevent default anchor tag behavior
+            
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+            var startDate = $('#daterange').data('daterangepicker').startDate.format('YYYY-MM-DD');
+            var endDate = $('#daterange').data('daterangepicker').endDate.format('YYYY-MM-DD');
+            var userCount = $('#userCount').text();
+            var ageGroupId = $('#selectBox').val();
+            //neow
+            var ageTotalNeow = $('.totalNeowCount').text();
+            var ageNeowFemale = $('.totalFemaleNeowCount').text();
+            var ageNeowTrans = $('.totalTransNeowCount').text();
+            //buddy
+            var ageTotalBuddy = $('.totalBuddyCount').text();
+            var ageBuddyMale = $('.totalMaleBuddyCount').text();
+            var ageBuddyFemale = $('.totalFemaleBuddyCount').text();
+            var ageBuddyTrans = $('.totalTransBuddyCount').text();
+            //cycleExplore
+            var ageTotalExplore = $('.totalExplorerCount').text();
+            var ageExploreMale = $('.totalMaleExplorerCount').text();
+            var ageExploreFemale = $('.totalFemaleExplorerCount').text();
+            var ageExploreTrans = $('.totalTransExplorerCount').text();
+
             $.ajax({
-                url: '{{ route('users.count', ':ageGroupId') }}'.replace(':ageGroupId', ageGroupId),
-                type: 'GET',
+                url: '{{ route('download.users') }}',
+                type: 'post',
+                cache: false,
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken // Include CSRF token in request headers
+                },
                 data: {
-                    age_group_id: ageGroupId,
-                    start_date: formattedStartDate,
-                    end_date: formattedEndDate
+                    start_date: startDate,
+                    end_date: endDate,
+                    user_count: userCount,
+                    ageGroupId: ageGroupId,
+
+                    ageTotalNeow: ageTotalNeow,
+                    ageNeowFemale: ageNeowFemale,
+                    ageNeowTrans: ageNeowTrans,
+
+                    ageTotalBuddy: ageTotalBuddy,
+                    ageBuddyMale: ageBuddyMale,
+                    ageBuddyFemale: ageBuddyFemale,
+                    ageBuddyTrans: ageBuddyTrans,
+
+                    ageTotalExplore: ageTotalExplore,
+                    ageExploreMale: ageExploreMale,
+                    ageExploreFemale: ageExploreFemale,
+                    ageExploreTrans: ageExploreTrans,
+
                 },
-                success: function(response) {
-                    // Update counts based on the response
-                    updateCounts(response);
+                success: function(data) {
+
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(data);
+                    link.download = `users.xlsx`;
+                    link.click();
+
                 },
-                error: function(xhr, status, error) {
-                    console.error(error);
+                fail: function(data) {
+                    alert('Not downloaded');
+                    //console.log('fail',  data);
                 }
             });
-        }
-
-        // Function to update counts
-        function updateCounts(response) {
-            // Update the total counts dynamically
-            $('.users_count').text(response.users_count);
-            $('.total_neow').text(response.total_neow);
-            $('.total_buddy').text(response.total_buddy);
-            $('.total_cycleExplorer').text(response.total_cycleExplorer);
-            $('.total_male').text(response.total_male);
-            $('.total_female').text(response.total_female);
-            $('.total_trans').text(response.total_trans);
-            $('.total_neow_female').text(response.total_neow_female);
-            $('.total_neow_trans').text(response.total_neow_trans);
-            $('.total_buddy_male').text(response.total_buddy_male);
-            $('.total_buddy_female').text(response.total_buddy_female);
-            $('.total_buddy_trans').text(response.total_buddy_trans);
-            $('.total_cycleExplorer_male').text(response.total_cycleExplorer_male);
-            $('.total_cycleExplorer_female').text(response.total_cycleExplorer_female);
-            $('.total_cycleExplorer_trans').text(response.total_cycleExplorer_trans);
-            $('.total_solo').text(response.total_solo);
-            $('.total_tied').text(response.total_tied);
-            $('.total_ofs').text(response.total_ofs);
-            $('.totalNeowCount').text(response.totalNeowCount);
-            $('.totalFemaleNeowCount').text(response.totalFemaleNeowCount);
-            $('.totalTransNeowCount').text(response.totalTransNeowCount);
-            $('.totalBuddyCount').text(response.totalBuddyCount);
-            $('.totalMaleBuddyCount').text(response.totalMaleBuddyCount);
-            $('.totalFemaleBuddyCount').text(response.totalFemaleBuddyCount);
-            $('.totalTransBuddyCount').text(response.totalTransBuddyCount);
-            $('.totalExplorerCount').text(response.totalExplorerCount);
-            $('.totalMaleExplorerCount').text(response.totalMaleExplorerCount);
-            $('.totalFemaleExplorerCount').text(response.totalFemaleExplorerCount);
-            $('.totalTransExplorerCount').text(response.totalTransExplorerCount);
-        }
-    </script>
-
+        });
+    });
+</script>
 
 
 @endsection
