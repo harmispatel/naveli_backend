@@ -98,6 +98,26 @@ class TrackController extends BaseController
         }
     }
 
+    public function getStoredBmiCalculatorDetail(){
+        try {
+            $login_user_id = auth()->user()->id;
+
+            if(!$login_user_id){
+                return $this->sendResponse(null, 'User Not Found!', false);
+            }else{
+                $getStoredBmiCalculatorDetail = TrackBmiCalculator::where('user_id',$login_user_id)->first();
+
+                if(isset($getStoredBmiCalculatorDetail)){
+                    return $this->sendResponse($getStoredBmiCalculatorDetail, 'User Bmi Calculator Detail Received Successfully', true);
+                }else{
+                    return $this->sendResponse(null, 'Empty Bmi Calculator Detail For This User', true);
+                }
+            }
+        } catch (\Throwable $th) {
+            return $this->sendResponse(null, 'Internal Server Error!', false);
+        }
+    }
+
     public function storeWeightDetail(Request $request)
     {
         try {
@@ -118,6 +138,27 @@ class TrackController extends BaseController
 
         } catch (\Throwable $th) {
             return $this->sendResponse(null, 'Something Went Wrong !', false);
+        }
+    }
+
+    public function getStoredWeightDetail(){
+        try {
+            $login_user_id = auth()->user()->id;
+
+            if(!$login_user_id){
+                return $this->sendResponse(null, 'User Not Found!', false);
+            }else{
+                $getStoredWeightDetail = TrackWeight::where('user_id',$login_user_id)->first();
+
+                if(isset($getStoredWeightDetail)){
+                    return $this->sendResponse($getStoredWeightDetail, 'User Weight Detail Received Successfully', true);
+                }else{
+                    return $this->sendResponse(null, 'Empty Weight Detail For This User', true);
+                }
+            }
+
+        } catch (\Throwable $th) {
+            return $this->sendResponse(null, 'Internal Server Error!', false);
         }
     }
 
@@ -254,12 +295,15 @@ class TrackController extends BaseController
     public function getStoredUserWaterReminders(){
         try {
             $authUserId = auth()->user()->id;
+            $today = Carbon::today()->toDateString();
             $getStoredUserWaterReminders = TrackWaterReminder::select('water_ml')
-                                        ->where('user_id',$authUserId)->first();
+                                        ->where('user_id',$authUserId)
+                                        ->whereDate('created_at', $today)
+                                        ->first();
             if(isset($getStoredUserWaterReminders)){
                 return $this->sendResponse($getStoredUserWaterReminders, 'User Water Reminder Received Successfully', true);
             }
-            return $this->sendResponse([], 'No Water Reminder Detail For This User', true);
+            return $this->sendResponse(null, 'No Water Reminder Detail For This User', true);
         } catch (\Throwable $th) {
             return $this->sendResponse(null, 'Something Went Wrong !', false);
         }

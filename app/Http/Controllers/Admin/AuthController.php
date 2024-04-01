@@ -22,52 +22,54 @@ class AuthController extends Controller
     // Authenticate the Admin User
     public function Adminlogin(Request $request)
     {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
         try {
             $user = User::where('email', $request->email)->first();
             $userstatus = $user ? $user->status : null;
 
             $input = $request->except('_token');
-            $request->validate([
-                'email' => 'required|email',
-                'password' => 'required'
-            ]);
-
-            if ($userstatus == 1) {
 
                 if (Auth::attempt($input)) {
-                    $username = Auth::user()->name;
-                    $otpGenrate = '';
-                    for ($i = 0; $i < 6; $i++) {
-                        $otpGenrate .= rand(0, 9);
+                    if ($userstatus == 1) {
+                        $username = Auth::user()->name;
+                        $otpGenrate = '';
+                        for ($i = 0; $i < 6; $i++) {
+                            $otpGenrate .= rand(0, 9);
+                        }
+    
+                        $otp = [
+                            'code' => $otpGenrate,
+                            'expires_at' => now()->addMinutes(2)->format('Y-m-d H:i:s') // Set expiry time for 2 minutes
+                        ];
+                        $request->session()->put('otp', $otp);
+                        
+                        Mail::send([], [], function ($message) use ($request, $otp) {
+                            $message->from('developers@harmistechnology.com');
+                            $message->to($request->email);
+                            $message->subject('OTP Verification');
+                            $message->setBody('Your OTP for verification is: ' . $otp['code']);
+                        });
+    
+                        // Start the countdown timer
+                        $request->session()->put('otp_start_time', now()->timestamp);
+    
+    
+                        return redirect()->route('verify.otp.form')->with('success', 'OTP sent successfully.');
+                      
+                    } else {
+                        return redirect()->route('admin.login')->with('error', 'Your account is deactivated!');
                     }
-
-                    $otp = [
-                        'code' => $otpGenrate,
-                        'expires_at' => now()->addMinutes(2)->format('Y-m-d H:i:s') // Set expiry time for 2 minutes
-                    ];
-                    $request->session()->put('otp', $otp);
-                    
-                    Mail::send([], [], function ($message) use ($request, $otp) {
-                        $message->from('developers@harmistechnology.com');
-                        $message->to($request->email);
-                        $message->subject('OTP Verification');
-                        $message->setBody('Your OTP for verification is: ' . $otp['code']);
-                    });
-
-                    // Start the countdown timer
-                    $request->session()->put('otp_start_time', now()->timestamp);
-
-                    // $previousUrl = session()->pull('previousUrl', route('dashboard'));
-                    // return redirect()->intended($previousUrl)->with('message', 'Welcome '.$username);
-                    return redirect()->route('verify.otp.form')->with('success', 'OTP sent successfully.');
-                    // return redirect()->route('dashboard')->with('message', 'Welcome '.$username);
+                   
                 }
-            } else {
-                return redirect()->route('admin.login')->with('error', 'Your account is deactivated!');
-            }
-
-            return back()->with('error', 'Please Enter Valid Email & Password');
+           
+                return redirect()->back()->withInput()->with('error', 'Invalid email or password');
+            
         } catch (\Throwable $th) {
+            dd($th);
             return redirect()->back()->with('error', 'Something went wrong');
         }
     }
@@ -90,7 +92,6 @@ class AuthController extends Controller
         
         if(isset($storedOTP)){
            
-          
             if ($request->otp === $storedOTP['code']) {
 
                 if ( now()->lt($storedOTP['expires_at'])) {
@@ -140,4 +141,6 @@ class AuthController extends Controller
             return response()->json(['success' => false]);
         }
     }
+
+    
 }

@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Api\AllAboutPeriodController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\QuestionController;
+use App\Http\Controllers\Api\CommonController;
 use App\Http\Controllers\Api\ForgotPasswordController;
 use App\Http\Controllers\Api\GeneralSettingController;
 use App\Http\Controllers\Api\HealthMixController;
@@ -98,6 +100,8 @@ Route::post('/track/storeUserSleepDetail',[TrackController::class,'storeUserSlee
 Route::post('/track/storeUserWaterReminders',[TrackController::class,'storeUserWaterReminders'])->middleware('auth:sanctum');
 Route::get('/track/getStoredUserSleepDetail',[TrackController::class,'getStoredUserSleepDetail'])->middleware('auth:sanctum');
 Route::get('/track/getStoredUserWaterReminders',[TrackController::class,'getStoredUserWaterReminders'])->middleware('auth:sanctum');
+Route::get('/track/getStoredWeightDetail',[TrackController::class,'getStoredWeightDetail'])->middleware('auth:sanctum');
+Route::get('/track/getStoredBmiCalculatorDetail',[TrackController::class,'getStoredBmiCalculatorDetail'])->middleware('auth:sanctum');
 
 //HealthMixController
 Route::post('/healthMixPostList',[HealthMixController::class,'index'])->middleware('auth:sanctum');
@@ -108,8 +112,17 @@ Route::get('/getUserLikesOrDislikes',[HealthMixController::class,'getUserLikesOr
 Route::get('/forumsList',[ForumController::class,'forumsList'])->middleware('auth:sanctum');
 Route::post('/forumCommentStore',[ForumController::class,'forumCommentStore'])->middleware('auth:sanctum');
 Route::post('/getUsersCommentList',[ForumController::class,'getUsersCommentList']);
+
+//stateList
+Route::get('stateList',[CommonController::class,'stateList']);
+Route::post('cityList',[CommonController::class,'cityList']);
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 
 // });
+
+//AllAboutPeriodController
+
+Route::get('/getAllAboutPeriodsList',[AllAboutPeriodController::class,'getAllAboutPeriodsList'])->middleware('auth:sanctum');
+Route::post('/getDetailOfAllAboutPeriod',[AllAboutPeriodController::class,'getDetailOfAllAboutPeriod'])->middleware('auth:sanctum');
 

@@ -1,6 +1,10 @@
 <?php
 
 return [
+    "festival_name" => "Festival Name",
+    "date" => "Date",
+    "festival" => "Festival",
+    "Back" => "Back",
     "lengthcycle" => "Length Cycle",
     "healthProfile" => "Health Profile",
     "reply" => "Reply",

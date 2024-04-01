@@ -49,43 +49,50 @@
 
     <tr></tr>
     <tr>
-        <th colspan="2">Total Users (GenderWise)</th>
-        <th colspan="2">Total Users(Relation Wise)</th>
+        <th>Total Users (Gender Wise)</th>
     </tr>
 
     <tr>
         <td>Male</td>
         <td> {{ $totalMale }} </td>
-        <td>Solo</td>
-        <td> {{ $total_solo }} </td>
     </tr>
 
     <tr>
         <td>Female</td>
         <td> {{ $totalFemale }} </td>
-        <td>Tied</td>
-        <td> {{ $total_tied }} </td> 
     </tr>
 
     <tr>
         <td>Transgender</td>
         <td> {{ $totalTrans }} </td>
+    </tr>
+
+    <tr></tr>
+    <tr>
+        <th>Total Users (Relation Wise)</th>
+    </tr>
+
+    <tr>
+        <td>Solo</td>
+        <td> {{ $total_solo }} </td>
+    </tr>
+
+    <tr>
+        <td>Tied</td>
+        <td> {{ $total_tied }} </td> 
+    </tr>
+
+    <tr>
         <td>OFS</td>
         <td> {{ $total_ofs }} </td>  
     </tr>
+  
        
     <tr></tr>
 
     <tr>
-        <th>Age Groups</th>
+        <td colspan="6">AgeGroups - {{ $ageGroupName }} - {{ $totalAgeGroupCount }}</td>
     </tr>
-
-    <tr>
-        <td>{{ $ageGroupName }}</td>
-        <td></td>
-    </tr>
-
-    <tr></tr>
     <tr>
         <th colspan="2">Total Neow - {{ $ageTotalNeow }} </th>
         <th colspan="2">Total Buddy - {{ $ageTotalBuddy }} </th>
@@ -115,7 +122,7 @@
         <td>Transgender</td>
         <td>{{ $ageBuddyTrans }} </td>
         <td>Transgender</td>
-        <td>{{ $cycleExploreTrans }} </td>
+        <td>{{ $ageExploreTrans }} </td>
     </tr>
 
     

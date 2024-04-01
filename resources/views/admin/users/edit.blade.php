@@ -20,7 +20,6 @@
         </div>
     </div>
 
-
     {{-- New Category add Section --}}
     <section class="section dashboard">
         <div class="row">
@@ -37,7 +36,7 @@
                                     <div class="form_box_info">
                                         <div class="row">
                                             <input type="hidden" name="id" id="id"
-                                                value="{{ encrypt($data->id) }}" disabled>
+                                                value="{{ encrypt($data->id) }}">
                                             <div class="col-md-6 mb-3">
                                                 <div class="form-group">
                                                     <label for="name" class="form-label"><strong>{{ trans('label.Name') }}</strong><span
@@ -101,7 +100,7 @@
                             </div>
                         </div>
                         <div class="card-footer text-center">
-                            <button class="btn form_button">{{ trans('label.Save') }}</button>
+                            <button class="btn form_button">{{ trans('label.Back') }}</button>
                         </div>
                     </form>
                 </div>

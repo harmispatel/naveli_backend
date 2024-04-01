@@ -10,10 +10,8 @@ use Illuminate\Http\Request;
 
 class AskYourQuestionController extends BaseController
 {
-    public function userQuestionStore(Request $request){
-        
+    public function userQuestionStore(Request $request){       
         try {
-
             if(isset($request->name) && !empty($request->name) && isset($request->user_question) && !empty($request->user_question)){
                 $input = $request->only('name','user_question');
                  $input['user_id'] = auth()->user()->id;
@@ -29,16 +27,13 @@ class AskYourQuestionController extends BaseController
         }
     }
 
-    public function adminAnswerList(){
-        
-        try {
-          
+    public function adminAnswerList(){        
+        try {    
             $adminAnswers = AskYourQuestion::get();
             $adminAnswer = AskYourQuestionResource::collection($adminAnswers);
             
           return $this->sendResponse($adminAnswer,'User Question retrived SuccessFully',true);
-        } catch (\Throwable $th) {
-          
+        } catch (\Throwable $th) {        
             return $this->sendResponse(null,'Internal server error!',false);
         }
     }

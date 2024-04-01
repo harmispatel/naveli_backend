@@ -55,9 +55,9 @@
                                                         <option value="2"
                                                             {{ $postsEdit->parent_title == 2 ? 'selected' : '' }}>
                                                             {{ trans('label.myth_vs_facts') }}</option>
-                                                        <option value="3"
+                                                        <!-- <option value="3"
                                                             {{ $postsEdit->parent_title == 3 ? 'selected' : '' }}>
-                                                            {{ trans('label.all_about_periods') }}</option>
+                                                            {{ trans('label.all_about_periods') }}</option> -->
                                                         <option value="4"
                                                             {{ $postsEdit->parent_title == 4 ? 'selected' : '' }}>
                                                             {{ trans('label.nutrition') }}</option>
@@ -130,8 +130,8 @@
                                                     @endif
                                                 </div>
                                             </div>
-                                         
-                                         
+
+
                                         </div>
                                     </div>
                                 </div>
@@ -203,8 +203,8 @@
                 var file_type = $('#file_type').val();
                 if (file_type === 'link') {
                     var linkValue = $('#link').val();
-                    var urlPattern =
-                /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/|shorts\/)|youtu\.be\/)[\w-]+(\?\S*)?$/;
+                    var urlPattern = "https://www.youtube.com/watch?v=l4BSJZnEX_c&list=RDMMzgJPTTiCK2E&index=10";
+
                     if (!urlPattern.test(linkValue)) {
                         e.preventDefault(); // Prevent form submission
                         $('#linkError').html('Please enter a valid URL'); // Show error message

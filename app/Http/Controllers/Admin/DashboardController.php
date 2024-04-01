@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exports\UsersExport;
+use App\Exports\UserNBCExport;
+use App\Exports\UserGenderExport;
+use App\Exports\UserRelationExport;
+use App\Exports\UserAgeGroupExport;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Carbon\Carbon;
@@ -42,12 +46,13 @@ class DashboardController extends Controller
                 $ageExploreFemale = $request->ageExploreFemale;
                 $ageExploreTrans = $request->ageExploreTrans;
 
-                
+                //totalAgeCount
+                $totalAgeGroupCount = $request->totalAgeGroupCount; 
+             
                 $ageGroup = DB::table('question_type_ages')->where('id',$ageGroupId)->first();
-
-                
+          
                 if($ageGroupId == 5){
-                    $ageGroupName = "more than 60";
+                    $ageGroupName = "more than 60 Year";
                 }elseif($ageGroupId == 'all'){
                     $ageGroupName = "All"; 
                 }elseif($ageGroupId == $ageGroup->id){
@@ -56,11 +61,131 @@ class DashboardController extends Controller
 
                 // Generate the file and store it
                 return Excel::download(new UsersExport($startDate, $endDate, $userCount, $ageGroupName, $ageTotalNeow, $ageNeowFemale, $ageNeowTrans, $ageTotalBuddy, $ageBuddyMale, $ageBuddyFemale, $ageBuddyTrans, $ageTotalExplore, $ageExploreMale, $ageExploreFemale,
-                $ageExploreTrans), 'users.xlsx', null, [\Maatwebsite\Excel\Excel::XLSX]);
+                $ageExploreTrans, $totalAgeGroupCount), 'users.xlsx', null, [\Maatwebsite\Excel\Excel::XLSX]);
             }
         } catch (\Exception $e) {
            
             // Log the error
+            \Log::error('Error exporting users: ' . $e->getMessage());
+
+            // Return an error response
+            return response()->json(['error' => 'Error exporting users'], 500);
+        }
+    }
+
+    public function downloadAgeGroup(Request $request)
+    {       
+        try {
+            if ($request->ajax()) {
+                $startDate = $request->start_date;
+                $endDate = $request->end_date;
+                $userCount = $request->user_count;
+                $ageGroupId = $request->ageGroupId;
+
+                //neow
+                $ageTotalNeow = $request->ageTotalNeow;
+                $ageNeowFemale = $request->ageNeowFemale;
+                $ageNeowTrans = $request->ageNeowTrans;
+
+                //buddy
+                $ageTotalBuddy = $request->ageTotalBuddy;
+                $ageBuddyMale = $request->ageBuddyMale;
+                $ageBuddyFemale = $request->ageBuddyFemale;
+                $ageBuddyTrans = $request->ageBuddyTrans;
+
+                //Explore
+                $ageTotalExplore = $request->ageTotalExplore;
+                $ageExploreMale = $request->ageExploreMale;
+                $ageExploreFemale = $request->ageExploreFemale;
+                $ageExploreTrans = $request->ageExploreTrans;
+
+                //totalAgeCount
+                $totalAgeGroupCount = $request->totalAgeGroupCount; 
+             
+                $ageGroup = DB::table('question_type_ages')->where('id',$ageGroupId)->first();
+          
+                if($ageGroupId == 5){
+                    $ageGroupName = "more than 60 Year";
+                }elseif($ageGroupId == 'all'){
+                    $ageGroupName = "All"; 
+                }elseif($ageGroupId == $ageGroup->id){
+                    $ageGroupName = $ageGroup->name . ' Year';
+                }
+
+                // Generate the file and store it
+                return Excel::download(new UserAgeGroupExport($startDate, $endDate, $userCount, $ageGroupName, $ageTotalNeow, $ageNeowFemale, $ageNeowTrans, $ageTotalBuddy, $ageBuddyMale, $ageBuddyFemale, $ageBuddyTrans, $ageTotalExplore, $ageExploreMale, $ageExploreFemale,
+                $ageExploreTrans, $totalAgeGroupCount), 'usersAgeGroup.xlsx', null, [\Maatwebsite\Excel\Excel::XLSX]);
+            }
+        } catch (\Exception $e) {
+            // Log the error
+            \Log::error('Error exporting users: ' . $e->getMessage());
+
+            // Return an error response
+            return response()->json(['error' => 'Error exporting users'], 500);
+        }
+    }
+
+    public function downloadUserRelation(Request $request)
+    {
+        
+        try {
+            if ($request->ajax()) {
+                $startDate = $request->start_date;
+                $endDate = $request->end_date;
+                $userCount = $request->user_count;
+
+                // Generate the file and store it
+                return Excel::download(new UserRelationExport($startDate, $endDate, $userCount), 'usersRelation.xlsx', null, [\Maatwebsite\Excel\Excel::XLSX]);
+            }
+        } catch (\Exception $e) {
+           
+            // Log the error
+            \Log::error('Error exporting users: ' . $e->getMessage());
+
+            // Return an error response
+            return response()->json(['error' => 'Error exporting users'], 500);
+        }
+    }
+
+    public function downloadUserGender(Request $request)
+    {
+        
+        try {
+            if ($request->ajax()) {
+                $startDate = $request->start_date;
+                $endDate = $request->end_date;
+                $userCount = $request->user_count;
+              
+                // Generate the file and store it
+                return Excel::download(new UserGenderExport($startDate, $endDate, $userCount), 'usersGender.xlsx', null, [\Maatwebsite\Excel\Excel::XLSX]);
+            }
+        } catch (\Exception $e) {
+            // Log the error
+
+            \Log::error('Error exporting users: ' . $e->getMessage());
+
+            // Return an error response
+            return response()->json(['error' => 'Error exporting users'], 500);
+        }
+    }
+
+
+    public function downloadNBC(Request $request)
+    {
+        
+        try {
+            if ($request->ajax()) {
+                $startDate = $request->start_date;
+                $endDate = $request->end_date;
+                $userCount = $request->user_count;
+              
+                // Generate the file and store it
+                return Excel::download(new UserNBCExport($startDate, $endDate, $userCount), 'usersNBC.xlsx', null, [\Maatwebsite\Excel\Excel::XLSX]);
+            }
+        } catch (\Exception $e) {
+           dd($e);
+            // Log the error
+
             \Log::error('Error exporting users: ' . $e->getMessage());
 
             // Return an error response
@@ -108,6 +233,8 @@ class DashboardController extends Controller
             $totalMaleExplorerCount = 0;
             $totalFemaleExplorerCount = 0;
             $totalTransExplorerCount = 0;
+
+            $totalAgeGroupCount = 0;
 
             // Fetch users based on date range if provided, otherwise fetch all users
             if (isset($startDate) && isset($endDate) && $startDate != $endDate) {
@@ -160,6 +287,8 @@ class DashboardController extends Controller
             $total_cycleExplorer_trans = $users->where('role_id', 4)->where('gender', 3)->where('status', 1)->count();
 
             if ($ageGroupId == 'all') {
+                //AgeGrouptotalCount
+
                 // Neow
                 $totalNeowCount = $users->where('role_id', 2)->count();
                 $totalFemaleNeowCount = $users->where('role_id', 2)->where('gender', 2)->count();
@@ -189,6 +318,7 @@ class DashboardController extends Controller
                     'totalMaleExplorerCount' => 0,
                     'totalFemaleExplorerCount' => 0,
                     'totalTransExplorerCount' => 0,
+                    'totalAgeGroupCount'=> 0,
                 ]);
             } elseif ($ageGroup) {
 
@@ -203,6 +333,7 @@ class DashboardController extends Controller
                     if ($ageGroupId == 5) {
                         // Increment counts for users with age greater than 60
                         if ($age > 60) {
+                    
                             if ($user->role_id === 2) {
                                 $totalNeowCount++;
                                 if ($user->gender === 2) { // Female
@@ -234,54 +365,67 @@ class DashboardController extends Controller
 
                         // { Neow }
                         // Check if the user's age falls within the specified range
-                        if ($age >= $ageRange[0] && $age <= $ageRange[1] && $user->role_id === 2) {
-                            // Increment total count
-                            $totalNeowCount++;
+                        if ($age >= $ageRange[0] && $age <= $ageRange[1]) {
 
-                            // Increment gender-specific count based on user's gender and role
-                            if ($user->gender === 2) { // Assuming 2 is for female
-                                $totalFemaleNeowCount++;
-                            } elseif ($user->gender === 3) { // Assuming 3 is for trans
-                                $totalTransNeowCount++;
+                            if($user->role_id === 2){
+                                // Increment total count
+                                $totalNeowCount++;
+                                // Increment gender-specific count based on user's gender and role
+                                if ($user->gender === 2) { // Assuming 2 is for female
+                                    $totalFemaleNeowCount++;
+                                } elseif ($user->gender === 3) { // Assuming 3 is for trans
+                                    $totalTransNeowCount++;
+                                }
                             }
+                          
                         }
 
                         // { Buddy }
                         // Check if the user's age falls within the specified range
-                        if ($age >= $ageRange[0] && $age <= $ageRange[1] && $user->role_id === 3) {
-                            // Increment total count
-                            $totalBuddyCount++;
+                        if ($age >= $ageRange[0] && $age <= $ageRange[1]) {
+                            
+                            if($user->role_id === 3){
+                                // Increment total count
+                                $totalBuddyCount++;
 
-                            // Increment gender-specific count based on user's gender and role
-                            if ($user->gender === 1) { // Assuming 1 is for male
-                                $totalMaleBuddyCount++;
-                            } elseif ($user->gender === 2) { // Assuming 2 is for female
-                                $totalFemaleBuddyCount++;
-                            } elseif ($user->gender === 3) { // Assuming 3 is for trans
-                                $totalTransBuddyCount++;
+                                // Increment gender-specific count based on user's gender and role
+                                if ($user->gender === 1) { // Assuming 1 is for male
+                                    $totalMaleBuddyCount++;
+                                } elseif ($user->gender === 2) { // Assuming 2 is for female
+                                    $totalFemaleBuddyCount++;
+                                } elseif ($user->gender === 3) { // Assuming 3 is for trans
+                                    $totalTransBuddyCount++;
+                                }
                             }
+                           
                         }
 
                         // { cycle Explorer }
                         // Check if the user's age falls within the specified range
-                        if ($age >= $ageRange[0] && $age <= $ageRange[1] && $user->role_id === 4) {
-                            // Increment total count
-                            $totalExplorerCount++;
+                        if ($age >= $ageRange[0] && $age <= $ageRange[1]) {
 
-                            // Increment gender-specific count based on user's gender and role
-                            if ($user->gender === 1) { // Assuming 1 is for male
-                                $totalMaleExplorerCount++;
-                            } elseif ($user->gender === 2) { // Assuming 2 is for female
-                                $totalFemaleExplorerCount++;
-                            } elseif ($user->gender === 3) { // Assuming 3 is for trans
-                                $totalTransExplorerCount++;
+                            if($user->role_id === 4){
+                                // Increment total count
+                                $totalExplorerCount++;
+
+                                // Increment gender-specific count based on user's gender and role
+                                if ($user->gender === 1) { // Assuming 1 is for male
+                                    $totalMaleExplorerCount++;
+                                } elseif ($user->gender === 2) { // Assuming 2 is for female
+                                    $totalFemaleExplorerCount++;
+                                } elseif ($user->gender === 3) { // Assuming 3 is for trans
+                                    $totalTransExplorerCount++;
+                                }
                             }
+                           
                         }
 
                     }
 
                 }
             }
+
+            $totalAgeGroupCount = $totalNeowCount + $totalBuddyCount + $totalExplorerCount;
 
             return response()->json([
                 'users_count' => $users_count,
@@ -323,6 +467,9 @@ class DashboardController extends Controller
                 'totalMaleExplorerCount' => $totalMaleExplorerCount,
                 'totalFemaleExplorerCount' => $totalFemaleExplorerCount,
                 'totalTransExplorerCount' => $totalTransExplorerCount,
+
+                //ageGroupTotalCount
+                'totalAgeGroupCount' => $totalAgeGroupCount,
             ]);
         }
 

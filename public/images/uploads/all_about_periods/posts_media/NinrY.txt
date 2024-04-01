@@ -1,0 +1,33 @@
+LayOut 1 (Mobile)
+Carusel Bug is not Fixed
+
+LayOut 2 
+Home
+1. Header Image missing the delete button Done
+2. Where I add/edit the Header text (OPEN 00:00 to 23:55) & (Happy Time 02:00 to 06:30) Done
+3. Search Not OK Done
+Inner
+1. header color & Trasparency Done
+2. Bigger "Back" Icon and Center verticaly the Category Name Done
+3. Center the Tags Ver & Hor Done
+4. when closing search Module Items a Jumbing Done
+
+LayOut 2 (Mobile)
+Inner
+1. Larger Categories carousel Done
+
+LayOut 2 (Tab)
+Issues
+
+===============================
+LayOut 3
+1. Sticky Header ? Done
+2. Background Control? Done
+
+LayOut 3 (mobile)
+1. Language Flag done
+2. Back Arrow need to be centered and color Controled Done
+3. TAG COLOR Need Control Done
+
+LayOut 3 (Tab)
+Issues

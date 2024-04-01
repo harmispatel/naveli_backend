@@ -151,9 +151,9 @@ class UserController extends Controller
     public function update(Request $request)
     {
         try {
-            $input = $request->except('_token', 'id', 'password', 'confirm_password', 'image');
             $id = decrypt($request->id);
-
+            $input = $request->except('_token', 'id', 'password', 'confirm_password', 'image');
+          
             if (!empty($request->password) || $request->password != null) {
                 $input['password'] = Hash::make($request->password);
             }
@@ -175,6 +175,7 @@ class UserController extends Controller
 
             return redirect()->route('users')->with('message', 'User updated successfully');
         } catch (\Throwable $th) {
+            dd($th);
             return redirect()->route('users')->with('error', 'Something with wrong');
         }
     }

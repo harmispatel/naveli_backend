@@ -35,6 +35,7 @@
                             <h2>{{ trans('label.all_about_periods') }} {{ trans('label.posts') }}</h2>
                         </div>
                         <div class="form_box_info">
+                            <input type="hidden" name="id" value="{{encrypt($findedPost->id)}}">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <div class="form-group">
@@ -43,7 +44,7 @@
                                                 class="text-danger">*</span></label>
                                         <input type="text" name="category_name"
                                             class="form-control {{ $errors->has('category_name') ? 'is-invalid' : '' }}"
-                                            value="{{$findedPost->category_name }}">
+                                            value="{{ old('category_name') ?? $findedPost->category_name }}">
                                         @if ($errors->has('category_name'))
                                         <div class="invalid-feedback">
                                             {{ $errors->first('category_name') }}
@@ -73,6 +74,12 @@
                                         </div>
                                     </div>
                                 </div>
+                                @foreach($findedPost->media as $media)
+                                    @php
+                                        $allMediaStore[] = $media;
+                                    @endphp
+                                @endforeach
+
                                 <div class="col-md-6 mb-3">
                                     <div class="form-group">
                                         <label for="file_type"
@@ -80,10 +87,8 @@
                                                 class="text-danger">*</span></label>
                                         <select name="file_types[]" id="file_type"
                                             class="form-control {{ $errors->has('file_type') ? 'is-invalid' : '' }} ">
-                                            <option value="link" {{ old('file_type') == 'link' ? 'selected' : '' }}>Link
-                                            </option>
-                                            <option value="image" {{ old('file_type') == 'image' ? 'selected' : '' }}>
-                                                Image</option>
+                                            <option value="link" {{ ($allMediaStore[0]->media_type == 'link') ? 'selected' : '' }}>Link</option>
+                                            <option value="image" {{ ($allMediaStore[0]->media_type == 'image') ? 'selected' : '' }}>Image</option>
                                         </select>
                                         @if ($errors->has('file_types'))
                                         <div class="invalid-feedback">
@@ -93,11 +98,11 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <div id="linkInput" class="form-group">
+                                    <div id="linkInput" class="form-group" style="display: none;">
                                         <label for="media"
                                             class="form-label"><strong>{{ trans('label.enterlink')}}</strong></label>
                                         <input type="text" name="media_links[]" id="media_link"
-                                            placeholder="Enter Media Link"
+                                            placeholder="Enter Media Link" value="{{ ($allMediaStore[0]->media_type === 'link') ? $allMediaStore[0]->media : ''}}"
                                             class="form-control {{ $errors->has('media_link') ? 'is-invalid' : '' }} ">
                                         @if ($errors->has('media_links'))
                                         <div class="invalid-feedback">
@@ -116,6 +121,12 @@
                                             {{ $errors->first('media_file') }}
                                         </div>
                                         @endif
+                                        <div class="mt-2 text-end">
+                                            @if ($allMediaStore[0]->media_type === 'image' )
+                                                <img src="{{ asset('public/images/uploads/all_about_periods/posts_media/' . $allMediaStore[0]->media) }}"
+                                                    alt="" width="60" height="60">
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-12 mb-3">
@@ -124,7 +135,7 @@
                                             class="form-label"><strong>{{ trans('label.description') }}</strong>
                                             <span class="text-danger">*</span></label>
                                         <textarea name="descriptions[]" id="description" rows="5"
-                                            class="form-control {{ $errors->has('descriptions') ? 'is-invalid' : '' }}"></textarea>
+                                            class="form-control {{ $errors->has('descriptions') ? 'is-invalid' : '' }}">{{$allMediaStore[0]->description}}</textarea>
                                         @if ($errors->has('descriptions'))
                                         <div class="invalid-feedback">
                                             {{ $errors->first('descriptions') }}
@@ -139,7 +150,7 @@
                                         <i class="bi bi-plus-lg"></i>
                                     </button>
                                 </div>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -159,70 +170,121 @@
 @section('page-js')
 
 <script>
+
+
+$(document).ready(function(){
+    // Assuming `allMediaStore` is an array passed from PHP containing media data
+    var allMediaStore = <?php echo json_encode($allMediaStore); ?>;
+    var mediaCount = allMediaStore.length; // Get the number of media items
+
+    if (mediaCount > 1) {
+        // Start the loop from index 1 to skip the first media item
+        for (var i = 1; i < mediaCount; i++) {
+            var media = allMediaStore[i]; // Get the current media item
+            var html = `
+            <div class="row media-row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                        <label for="file_type" class="form-label"><strong>{{ trans('label.mediatype')}}</strong></label>
+                        <select name="file_types[]" class="form-control file_type">
+                            <option value="link" ${media.media_type === 'link' ? 'selected' : ''}>Link</option>
+                            <option value="image" ${media.media_type === 'image' ? 'selected' : ''}>Image</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="form-group linkInput" style="${media.media_type === 'link' ? 'display: block;' : 'display: none;'}">
+                        <label for="media" class="form-label"><strong>{{ trans('label.enterlink')}}</strong></label>
+                        <input type="text" name="media_links[]" class="form-control media_link" value="${media.media_type === 'link' ? media.media : ''}">
+                    </div>
+                    <div class="form-group posts" style="${media.media_type === 'image' ? 'display: block;' : 'display: none;'}">
+                        <label for="media" class="form-label"><strong>{{ trans('label.media') }}</strong></label>
+                        <input type="file" name="media_files[]" class="form-control media_file">
+                        <div class="mt-2 text-end">
+                            <img src="{{ asset('public/images/uploads/all_about_periods/posts_media/') }}/${(media.media) ? media.media : ''}" alt="" width="60" height="60">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <div class="form-group descriptions">
+                        <label for="description" class="form-label"><strong>{{ trans('label.description') }}</strong></label>
+                        <textarea name="descriptions[]" id="description" rows="5" class="form-control">${((media.description) ? media.description : '' )}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-12 text-end mb-3">
+                    <button type="button" class="btn btn-sm new-category btn-danger remove-media"><i class="bi bi-trash"></i></button>
+                </div>
+            </div>`;
+
+            $('.media-container').append(html);
+        }
+    }
+});
+
+
 $(document).ready(function() {
-    var initialFileType = $('#file_type').val();
-    if (initialFileType === 'link') {
+    var media_type = $('#file_type :selected').val();
+    if(media_type == 'link'){
         $('#linkInput').show();
         $('#mediaInput').hide();
-    } else if (initialFileType === 'image') {
+    }else{
         $('#mediaInput').show();
         $('#linkInput').hide();
     }
-    $('#file_type').change(function() {
-        var file_type = $(this).val();
-        // Hide all input fields
-        $('#linkInput, #mediaInput').hide();
-        // Show input field based on selected option
-        if (file_type === 'link') {
-            $('#linkInput').show();
-            $('#mediaInput').hide();
-        } else if (file_type === 'image') {
-            $('#mediaInput').show();
-            $('#linkInput').hide();
-        }
+});
+
+$('#file_type').on('change', function () {
+    if($(this).val() == 'link'){
+        $('#linkInput').show();
+        $('#mediaInput').hide();
+    }else{
+        $('#mediaInput').show();
+        $('#linkInput').hide();
+    }
+});
+
+$(document).ready(function() {
+    // Event handler for adding new media
+    $(document).on('click', '#add-media', function() {
+        var html = `
+            <div class="row media-row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                        <label for="file_type" class="form-label"><strong>{{ trans('label.mediatype')}}</strong></label>
+                        <select name="file_types[]" class="form-control file_type">
+                            <option value="link">Link</option>
+                            <option value="image">Image</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="form-group linkInput">
+                        <label for="media" class="form-label"><strong>{{ trans('label.enterlink')}}</strong></label>
+                        <input type="text" name="media_links[]" class="form-control media_link">
+                    </div>
+                    <div class="form-group posts" style="display: none;">
+                        <label for="media" class="form-label"><strong>{{ trans('label.media') }}</strong></label>
+                        <input type="file" name="media_files[]" class="form-control media_file">
+                    </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <div class="form-group descriptions">
+                        <label for="description" class="form-label"><strong>{{ trans('label.description') }}</strong></label>
+                        <textarea name="descriptions[]" id="description" rows="5" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-12 text-end mb-3">
+                    <button type="button" class="btn btn-sm new-category btn-danger remove-media"><i class="bi bi-trash"></i></button>
+                </div>
+            </div>`;
+        $('.media-container').append(html);
     });
-});
 
-$(document).on('click', '#add-media', function() {
-    var html = `
-        <div class="row media-row">
-            <div class="col-md-6 mb-3">
-                <div class="form-group">
-                    <label for="file_type" class="form-label"><strong>{{ trans('label.mediatype')}}</strong></label>
-                    <select name="file_types[]" class="form-control file_type">
-                        <option value="link">Link</option>
-                        <option value="image">Image</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-6 mb-3">
-                <div class="form-group linkInput">
-                    <label for="media" class="form-label"><strong>{{ trans('label.enterlink')}}</strong></label>
-                    <input type="text" name="media_links[]" class="form-control media_link">
-                </div>
-                <div class="form-group posts" style="display: none;">
-                    <label for="media" class="form-label"><strong>{{ trans('label.media') }}</strong></label>
-                    <input type="file" name="media_files[]" class="form-control media_file">
-                </div>
-            </div>
-            <div class="col-md-12 mb-3">
-                <div class="form-group descriptions">
-                    <label for="description"
-                        class="form-label"><strong>{{ trans('label.description') }}</strong>
-                       </label>
-                    <textarea name="descriptions[]" id="description" rows="5"
-                        class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}">{{ old('description') }}</textarea>
-                </div>
-            </div>
-            <div class="col-md-12 text-end mb-3">
-                <button type="button" class="btn btn-sm new-category btn-danger remove-media"><i class="bi bi-trash"></i></button>
-            </div>
-        </div>`;
-    $('.media-container').append(html);
-});
+    // Event handler for removing media
+    $(document).on('click', '.remove-media', function() {
+        $(this).closest('.media-row').remove();
+    });
 
-$(document).on('click', '.remove-media', function() {
-    $(this).closest('.media-row').remove();
 });
 
 $(document).on('change', '.file_type', function() {

@@ -29,6 +29,16 @@
             </li>
         @endcan
 
+        {{-- festival --}}
+        @can('festival.index')
+        <li class="nav-item">
+            <a href="{{ route('festival.index') }}" class="nav-link {{ (in_array($currentRouteName, ['festival.index', 'festival.create', 'festival.edit'])) ? 'active-tab' : '' }}">
+                <i class="bi bi-gear-fill {{ (in_array($currentRouteName, ['festival.index', 'festival.create', 'festival.edit'])) ? 'icon-tab' : '' }}"></i>
+                <span>{{ trans('label.festival') }}</span>
+            </a>
+        </li>
+        @endcan
+
         {{-- Users --}}
         @can ('users')
             <li class="nav-item">
@@ -118,7 +128,7 @@
         @endcan
 
         {{-- All About Periods --}}
-        <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a class="nav-link {{ $isCollAllAboutPeriods ? 'collapsed' : '' }} {{ $isCollAllAboutPeriods ? '' : 'active-tab' }}" data-bs-target="#all-about-periods-nav" data-bs-toggle="collapse" href="#" aria-expanded="{{ !$isCollForum }}">
                     <i class="bi bi-file-text-fill {{ !$isCollAllAboutPeriods ? 'icon-tab' : '' }}"></i>
                     <span>{{ trans('label.all_about_periods') }}</span>
@@ -127,7 +137,7 @@
                 <ul id="all-about-periods-nav" class="nav-content sidebar-ul collapse {{ !$isCollAllAboutPeriods ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
 
                     {{-- periods posts --}}
-                        <li>
+                        <li class="nav-item">
                             <a href="{{ route('aap.posts.index') }}" class="{{ (in_array($currentRouteName, ['aap.posts.index', 'aap.posts.create','aap.posts.edit'])) ? 'active-tab' : '' }}">
                                 <i class="bi bi-gear-fill {{ (in_array($currentRouteName, ['aap.posts.index', 'aap.posts.create','aap.posts.edit'])) ? 'icon-tab' : '' }}"></i>
                                 <span>{{ trans('label.posts') }}</span>
@@ -135,7 +145,7 @@
                         </li>
 
 
-                    {{-- All About periods category 
+                    {{-- All About periods category
 
                         <li class="nav-item">
                             <a href="{{ route('aap.category.index') }}" class="{{ (in_array($currentRouteName, ['aap.category.index', 'aap.category.create','aap.category.edit'])) ? 'active-tab' : '' }}">
@@ -143,11 +153,18 @@
                                 <span>{{ trans('label.forums_category') }}</span>
                             </a>
                         </li>
-                    --}}    
+                    --}}
                 </ul>
+            </li> -->
+            @can('aap.posts.index')
+            <li class="nav-item">
+                <a href="{{ route('aap.posts.index') }}" class="nav-link {{ (in_array($currentRouteName, ['aap.posts.index', 'aap.posts.create','aap.posts.edit'])) ? 'active-tab' : '' }}">
+                <i class="fa-solid fa-seedling {{ (in_array($currentRouteName, ['aap.posts.index', 'aap.posts.create','aap.posts.edit'])) ? 'active-tab' : '' }}"></i>
+                    <span>{{ trans('label.all_about_periods') }}</span>
+                </a>
             </li>
+            @endcan
 
-            
         {{-- Woman in News --}}
         @can('woman-in-news.index')
             <li class="nav-item">
@@ -253,18 +270,11 @@
                             </li>
                         {{-- @endcan --}}
 
-                        {{-- @can('ContentUpload')
-                            <li class="nav-item">
-                                <a href="{{ route('ContentUpload') }}" class="{{ ($currentRouteName == 'ContentUpload') ? 'active-tab' : '' }}">
-                                    <i class="bi bi-gear-fill {{ ($currentRouteName == 'ContentUpload') ? 'active-tab' : '' }}"></i>
-                                    <span>{{ trans('label.ContentUpload') }}</span>
-                                </a>
-                            </li>
-                        @endcan --}}
+                    
 
                     </ul>
                 </li>
-            @endcan
+            @endcanany
 
         @endif
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TrackBmiCalculator;
 use App\Models\User;
 use App\Models\UserSymptomsLogs;
 use Carbon\Carbon;
@@ -78,7 +79,7 @@ class HealthProfileController extends Controller
             $period_ofs_query = $this->CommonConditionsForCycleAndPreiod(User::where('relationship_status', 3)->where('role_id', 2), $age_group_start_date, $age_group_end_date, $age_group_bod)->whereNotBetween('average_period_length', [3, 6]);
             $period_ofs_irregular[0] = $period_ofs_query->count();
             $period_ofs_irregular[1] = serialize($period_ofs_query->pluck('id')->toArray());
-            
+
             $period_normal_total = $period_solo_normal + $period_tied_normal + $period_ofs_normal;
             $period_irregular_total[0] = $period_solo_irregular[0] + $period_tied_irregular[0] + $period_ofs_irregular[0];
             $period_irregular_total[1] = serialize(array_merge(unserialize($period_solo_irregular[1]), unserialize($period_tied_irregular[1]), unserialize($cycle_ofs_irregular[1])));
@@ -246,6 +247,20 @@ class HealthProfileController extends Controller
             $day_3_high = $this->commonCountForWorkingAbility($high_arr, 2);
 
 
+
+            // BMI
+            // Severely Underweight
+            $bmi_severely_underweight = $this->commonConditions(TrackBmiCalculator::where('bmi_type', 'Severely Underweight'), $age_group_start_date, $age_group_end_date, $age_group_bod, $month, $year)->count();
+            // Underweight
+            $bmi_underweight = $this->commonConditions(TrackBmiCalculator::where('bmi_type', 'Underweight'), $age_group_start_date, $age_group_end_date, $age_group_bod, $month, $year)->count();
+            // Normal Weight
+            $bmi_normal_weight = $this->commonConditions(TrackBmiCalculator::where('bmi_type', 'Normal Weight'), $age_group_start_date, $age_group_end_date, $age_group_bod, $month, $year)->count();
+            // Overweight
+            $bmi_over_weight = $this->commonConditions(TrackBmiCalculator::where('bmi_type', 'Overweight'), $age_group_start_date, $age_group_end_date, $age_group_bod, $month, $year)->count();
+            // Obese
+            $bmi_obese = $this->commonConditions(TrackBmiCalculator::where('bmi_type', 'Obese'), $age_group_start_date, $age_group_end_date, $age_group_bod, $month, $year)->count();
+            $total_bmi = $bmi_severely_underweight + $bmi_underweight + $bmi_normal_weight + $bmi_over_weight + $bmi_obese;
+
             $datas = [
                 [
                     'sr' => 1,
@@ -380,6 +395,16 @@ class HealthProfileController extends Controller
                     'day_1_high' => $day_1_high,
                     'day_2_high' => $day_2_high,
                     'day_3_high' => $day_3_high,
+                ],
+                [
+                    'sr' => 11,
+                    'title' => 'BMI',
+                    'bmi_severely_underweight' => $bmi_severely_underweight,
+                    'bmi_underweight' => $bmi_underweight,
+                    'bmi_normal_weight' => $bmi_normal_weight,
+                    'bmi_over_weight' => $bmi_over_weight,
+                    'bmi_obese' => $bmi_obese,
+                    'total_bmi' => $total_bmi,
                 ],
             ];
 

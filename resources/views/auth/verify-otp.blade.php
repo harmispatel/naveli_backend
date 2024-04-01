@@ -117,13 +117,13 @@
     {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> --}}
 
     <script>
-
         // Variable to track if the resend button was clicked
         var resendButtonClicked = false;
-
+        document.getElementById('resendButton').style.display = 'none';
         // Function to update the countdown timer
-        function updateCountdownTimer() {
-            document.getElementById('errorMessage').innerText = '';
+        function updateCountdownTimer(errorMessage = '') {
+          
+            document.getElementById('errorMessage').innerText = errorMessage;
             var startTime = "{{ session('otp_start_time') }}";
             var expiryTime = new Date("{{ session('otp.expires_at') }}").getTime();
             var currentTime = new Date().getTime();
@@ -149,11 +149,19 @@
                     // Show the resend button
                     document.getElementById('resendButton').style.display = 'inline-block';
                 }
+
             }
         }
 
-        // Check OTP expiry and update countdown timer initially
-        updateCountdownTimer();
+        function displayInvalidOTPMessage() {
+            updateCountdownTimer('Invalid OTP');
+            // Reset the message after 5 seconds
+            setTimeout(function() {
+                updateCountdownTimer('');
+            }, 5000);
+        }
+        // // Check OTP expiry and update countdown timer initially
+        // updateCountdownTimer();
 
         // Update countdown timer every second
         setInterval(function() {
@@ -198,8 +206,8 @@
 
         // Resend Button
         document.getElementById('resendButton').addEventListener('click', function() {
-               // Set resendButtonClicked to true when resend button is clicked
-                 resendButtonClicked = true;
+            // Set resendButtonClicked to true when resend button is clicked
+            resendButtonClicked = true;
 
             // Hide error message
             document.getElementById('errorMessage').innerText = '';

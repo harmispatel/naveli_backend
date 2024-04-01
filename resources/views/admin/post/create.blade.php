@@ -49,8 +49,8 @@
                                                     {{ trans('label.do_you_know') }}</option>
                                                 <option value="2" {{ old('parent_title') == 2 ? 'selected' : '' }}>
                                                     {{ trans('label.myth_vs_facts') }}</option>
-                                                <option value="3" {{ old('parent_title') == 3 ? 'selected' : '' }}>
-                                                    {{ trans('label.all_about_periods') }}</option>
+                                                <!-- <option value="3" {{ old('parent_title') == 3 ? 'selected' : '' }}>
+                                                    {{ trans('label.all_about_periods') }}</option> -->
                                                 <option value="4" {{ old('parent_title') == 4 ? 'selected' : '' }}>
                                                     {{ trans('label.nutrition') }}</option>
                                             </select>

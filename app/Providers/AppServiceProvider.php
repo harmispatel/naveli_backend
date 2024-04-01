@@ -25,7 +25,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Validator::extend('first_not_null', function ($attribute, $value, $parameters, $validator) {
-            return !is_null($value[0]);
+            if (!is_null($value) && is_array($value) && count($value) > 0) {
+                return !is_null($value[0]);
+            }
+            return false;
         });
 
         Validator::replacer('first_not_null', function ($message, $attribute, $rule, $parameters) {

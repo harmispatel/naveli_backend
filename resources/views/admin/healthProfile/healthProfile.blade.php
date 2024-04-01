@@ -283,6 +283,19 @@
                 html += '</tr>';
             html += '</table>';
             return html;
+        }else if(details.sr == 11){
+            var html = '';
+            html += '<table class="table w-100">';
+                html += '<tr>';
+                    html += '<td>Severely Underweight : ' + details.bmi_severely_underweight + '</td>';
+                    html += '<td>Underweight : ' + details.bmi_underweight + '</td>';
+                    html += '<td>Normal Weight : ' + details.bmi_normal_weight + '</td>';
+                    html += '<td>Overweight : ' + details.bmi_over_weight + '</td>';
+                    html += '<td>Obese : ' + details.bmi_obese + '</td>';
+                    html += '<td>Total : ' + details.total_bmi + '</td>';
+                html += '</tr>';
+            html += '</table>';
+            return html;
         }
     }
 

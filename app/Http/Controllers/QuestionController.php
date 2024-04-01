@@ -85,7 +85,6 @@ class QuestionController extends Controller
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Internal Server Error');
         }
-
     }
 
     public function create()

@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\UserSymptomsLogsController;
 use App\Http\Controllers\GeneralSettingController;
 use App\Http\Controllers\ContentUploadController;
 use App\Http\Controllers\HealthMixController;
+use App\Http\Controllers\FestivalController;
 use App\Http\Controllers\MedicineController;
 use App\Http\Controllers\NewsController;
 use Illuminate\Support\Facades\Auth;
@@ -96,7 +97,10 @@ Route::group(['prefix' => 'admin'], function () {
         //export users data
         Route::get('/export/users', [ExportController::class, 'exportUsers'])->name('export.users');
         Route::post('/download/users',[DashboardController::class, 'download'])->name('download.users');
-
+        Route::post('/download/userNBC',[DashboardController::class, 'downloadNBC'])->name('download.usersNBC');
+        Route::post('/download/userGender',[DashboardController::class, 'downloadUserGender'])->name('download.usersGender');
+        Route::post('/download/userRelation',[DashboardController::class, 'downloadUserRelation'])->name('download.usersRelation');
+        Route::post('/download/userAgeGroup',[DashboardController::class, 'downloadAgeGroup'])->name('download.usersAgeGroup');
         //health profile
 
         Route::get('health-profile', [HealthProfileController::class, 'index'])->name('healthProfile');
@@ -117,8 +121,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('users/create', [UserController::class, 'create'])->name('users.create');
         Route::post('users/store', [UserController::class, 'store'])->name('users.store');
         Route::post('users/status', [UserController::class, 'status'])->name('users.status');
-        Route::post('users/update', [UserController::class, 'update'])->name('users.update');
         Route::get('users/edit/{id}', [UserController::class, 'edit'])->name('users.edit');
+        Route::post('users/update', [UserController::class, 'update'])->name('users.update');      
         Route::post('users/destroy', [UserController::class, 'destroy'])->name('users.destroy');
         Route::get('profile/edit/{id}', [UserController::class, 'profileEdit'])->name('profile.edit');
         Route::post('profile/update', [UserController::class, 'profileUpdate'])->name('profile.update');
@@ -171,10 +175,18 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('woman-in-news/destroy/{id}', 'destroy')->name('woman-in-news.destroy');
         });
 
-
+        //Festival
+        Route::controller(FestivalController::class)->group(function (){
+            Route::get('festival','index')->name('festival.index');
+            Route::get('festival/create','create')->name('festival.create');
+            Route::post('festival/store','store')->name('festival.store');
+            Route::get('festival/edit/{id}','edit')->name('festival.edit');
+            Route::post('festival/update','update')->name('festival.update');
+            Route::get('festival/destroy/{id}','destroy')->name('festival.destroy');
+        });
         //posts
         Route::controller(PostController::class)->group(function () {
-            Route::get('posts',  'index')->name('posts.index');
+            Route::get('posts','index')->name('posts.index');
             Route::get('posts/create',  'create')->name('posts.create');
             Route::post('posts/store',  'store')->name('posts.store');
             Route::get('posts/edit/{id}',  'edit')->name('posts.edit');
