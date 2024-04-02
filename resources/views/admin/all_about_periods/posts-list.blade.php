@@ -11,8 +11,7 @@
                         <li class="breadcrumb-item active"> <a
                                 href="{{ route('dashboard') }}">{{ trans('label.dashboard') }}</a>
                         </li>
-                        <li class="breadcrumb-item">{{ trans('label.all_about_periods') }}</li>
-                        <li class="breadcrumb-item active">{{ trans('label.posts') }}</li>
+                        <li class="breadcrumb-item active">{{ trans('label.all_about_periods') }}</li>
                     </ol>
                 </nav>
             </div>

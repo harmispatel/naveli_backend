@@ -23,14 +23,15 @@ class GeneralSettingController extends Controller
         try {
             $generallData = GeneralSetting::first();
 
-            if ($generallData && $generallData->id > 0) {
+            if ($generallData && $generallData->id > 0 ) {
 
                 $generalSetting = GeneralSetting::find($request->id);
                 $generalSetting->term_and_condition = $request->term_and_condition;
                 $generalSetting->contact_us_page = $request->contact_us_page;
                 $generalSetting->description = $request->description;
-                $generalSetting->title_page = $request->title_page;
-
+                $generalSetting->about_us = $request->about_us;
+             //   $generalSetting->title_page = $request->title_page;
+                
                 if ($request->has('flash_screen')) {
                     File::delete(public_path('/images/uploads/general_image/' . $generalSetting->flash_screen));
                     $file = $request->file('flash_screen');

@@ -1,6 +1,7 @@
 <?php
 
 return [
+    "about_us" => "About us",
     "festival_name" => "Festival Name",
     "date" => "Date",
     "festival" => "Festival",

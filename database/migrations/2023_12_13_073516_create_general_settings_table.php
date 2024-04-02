@@ -20,6 +20,7 @@ class CreateGeneralSettingsTable extends Migration
             $table->longText('contact_us_page')->nullable();
             $table->longText('description')->nullable();
             $table->longText('contact_us_page')->nullable();
+            $table->longText('about_us')->nullable();
             $table->string('title_page')->nullable();
             $table->timestamps();
         });

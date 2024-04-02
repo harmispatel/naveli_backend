@@ -9,13 +9,12 @@
     <h1>{{ trans('label.all_about_periods') }}</h1>
     <div class="row">
         <div class="col-md-8">
-            <nav>
+             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item active"> <a
                             href="{{ route('dashboard') }}">{{ trans('label.dashboard') }}</a> </li>
-                    <li class="breadcrumb-item">{{ trans('label.all_about_periods') }}</li>
                     <li class="breadcrumb-item active"> <a
-                            href="{{ route('aap.posts.index') }}">{{ trans('label.posts') }}</a> </li>
+                            href="{{ route('aap.posts.index') }}">{{ trans('label.all_about_periods') }}</a> </li>
                     <li class="breadcrumb-item active">{{ trans('label.edit') }}</li>
                 </ol>
             </nav>
@@ -27,8 +26,9 @@
     <div class="card">
 
         <form class="form" action="{{ route('aap.posts.update') }}" method="POST" enctype="multipart/form-data">
+            @csrf
             <div class="card-body">
-                @csrf
+
                 <div class="form_box">
                     <div class="form_box_inr">
                         <div class="box_title">
@@ -79,7 +79,7 @@
                                         $allMediaStore[] = $media;
                                     @endphp
                                 @endforeach
-
+                                @if(isset($allMediaStore))
                                 <div class="col-md-6 mb-3">
                                     <div class="form-group">
                                         <label for="file_type"
@@ -135,7 +135,7 @@
                                             class="form-label"><strong>{{ trans('label.description') }}</strong>
                                             <span class="text-danger">*</span></label>
                                         <textarea name="descriptions[]" id="description" rows="5"
-                                            class="form-control {{ $errors->has('descriptions') ? 'is-invalid' : '' }}">{{$allMediaStore[0]->description}}</textarea>
+                                            class="form-control {{ $errors->has('descriptions') ? 'is-invalid' : '' }}">{{$allMediaStore[0]->description ?? ''}}</textarea>
                                         @if ($errors->has('descriptions'))
                                         <div class="invalid-feedback">
                                             {{ $errors->first('descriptions') }}
@@ -143,6 +143,7 @@
                                         @endif
                                     </div>
                                 </div>
+                                @endif
                                 <div class="media-container">
                                 </div>
                                 <div class="col-md-12 text-end mb-3">
@@ -222,6 +223,7 @@ $(document).ready(function(){
 });
 
 
+
 $(document).ready(function() {
     var media_type = $('#file_type :selected').val();
     if(media_type == 'link'){
@@ -285,6 +287,17 @@ $(document).ready(function() {
         $(this).closest('.media-row').remove();
     });
 
+    // // Retrieve the stored HTML from localStorage when the document is ready
+    // var storedHtml = localStorage.getItem('appendedHtml');
+    // // If stored HTML exists, append it to the media container
+    // if (storedHtml) {
+    //     $('.media-container').append(storedHtml);
+    // }
+
+    // // Store the updated HTML in localStorage whenever a media row is added or removed
+    // $(document).on('click', '#add-media, .remove-media', function() {
+    //     localStorage.setItem('appendedHtml', $('.media-container').html());
+    // });
 });
 
 $(document).on('change', '.file_type', function() {

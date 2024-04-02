@@ -13,9 +13,8 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item active"> <a
                             href="{{ route('dashboard') }}">{{ trans('label.dashboard') }}</a> </li>
-                    <li class="breadcrumb-item">{{ trans('label.all_about_periods') }}</li>
                     <li class="breadcrumb-item active"> <a
-                            href="{{ route('aap.posts.index') }}">{{ trans('label.posts') }}</a> </li>
+                            href="{{ route('aap.posts.index') }}">{{ trans('label.all_about_periods') }}</a> </li>
                     <li class="breadcrumb-item active">{{ trans('label.create') }}</li>
                 </ol>
             </nav>

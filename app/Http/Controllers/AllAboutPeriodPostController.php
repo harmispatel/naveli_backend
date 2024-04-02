@@ -23,6 +23,8 @@ class AllAboutPeriodPostController extends Controller
         $this->middleware('permission:aap.posts.destroy', ['only' => ['destroy']]);
     }
 
+
+
     public function index(Request $request){
         try {
             $allAboutPeriodPosts = AllAboutPeriodPost::with('category')->get();
@@ -69,6 +71,7 @@ class AllAboutPeriodPostController extends Controller
 
     public function store(Request $request)
     {
+
         $customMessages = [
             'category_name.required' => 'The category name field is required.',
             'category_name.unique' => 'The category name has already been taken.',
@@ -108,6 +111,7 @@ class AllAboutPeriodPostController extends Controller
         }
 
         try {
+
             $input = $request->only('category_name');
             // Save icon
             $icon = $request->icon;
@@ -119,31 +123,33 @@ class AllAboutPeriodPostController extends Controller
             foreach ($request->file_types as $key => $fileType) {
 
                 // Check if both media_links or media_files and descriptions are empty at the same index
-                if (($fileType === 'link' && empty($request->media_links[$key])) ||
-                ($fileType === 'image' && (!$request->hasFile("media_files.$key") || empty($request->media_files[$key]))) ||
-                empty($request->descriptions[$key])) {
-                continue; // Skip this iteration if any condition is met
-                }
+                if (($fileType === 'link' && isset($request->media_links[$key])) ||
+                ($fileType === 'image' && ($request->hasFile("media_files.$key") || isset($request->media_files[$key]))) &&
+                (isset($request->descriptions[$key]) && $request->descriptions[$key] != null)) {
 
-                $media = null;
-                if ($fileType === 'link') {
-                    $media = $request->media_links[$key];
-                } else {
-                    if ($request->hasFile("media_files.$key")) {
-                        $icon = $request->media_files[$key];
-                        $filename =  $this->addSingleImage('all_about_periods/posts_media', $icon, $old_image = '');
-                        $media = $filename;
+                    $media = null;
+
+                    if ($fileType === 'link') {
+                        $media = isset($request->media_links[$key]) ? $request->media_links[$key] : '';
+                    } else {
+                        if ($request->hasFile("media_files.$key")) {
+                            $icon = $request->media_files[$key];
+                            $filename =  $this->addSingleImage('all_about_periods/posts_media', $icon, $old_image = '');
+                            $media = $filename;
+                        }
                     }
+
+                    // Save media and description to Media table
+                    $mediaModel = new AllAboutPeriodPostMedia();
+                    $mediaModel->post_id = $newPost->id;
+                    $mediaModel->media = $media;
+                    $mediaModel->media_type = $fileType;
+                    $mediaModel->description = $request->descriptions[$key];
+                    $mediaModel->save();
                 }
 
-                // Save media and description to Media table
-                $mediaModel = new AllAboutPeriodPostMedia();
-                $mediaModel->post_id = $newPost->id;
-                $mediaModel->media = $media;
-                $mediaModel->media_type = $fileType;
-                $mediaModel->description = $request->descriptions[$key];
-                $mediaModel->save();
             }
+
 
             return redirect()->route('aap.posts.index')->with('message','All About Periods Post Created Successfully.');
         } catch (\Throwable $th) {
@@ -259,46 +265,40 @@ class AllAboutPeriodPostController extends Controller
         // }
 
         if ($request->has('media_links') || $request->hasFile('media_files')) {
-            // Remove existing media associated with the post from the database
-            foreach ($post->media as $media) {
-                $media->delete();
-            }
 
-            // Loop through the provided media data
+           $post->media()->delete();
+
             foreach ($request->file_types as $key => $fileType) {
-                switch ($fileType) {
-                    case 'link':
-                        // Check if description and media_link are not null
-                        if ($request->descriptions[$key] !== null && $request->media_links[$key] !== null) {
-                            $media = new AllAboutPeriodPostMedia();
-                            $media->media_type = $fileType;
-                            $media->media = $request->media_links[$key];
-                            $media->description = $request->descriptions[$key];
-                            // Save media associated with the post
-                            $post->media()->save($media);
-                        }
-                        break;
+                // Check if both media_links or media_files and descriptions are not null or empty at the same index
+                if (($fileType === 'link' && isset($request->media_links[$key])) ||
+                    ($fileType === 'image' && $request->hasFile('media_files') && isset($request->media_files[$key]) || isset($post->media[$key]->media)) ||
+                    isset($request->descriptions[$key]) && ($request->descriptions[$key] != null)) {
 
-                    case 'image':
-                        // Check if description and media_files are not null and media_files has key $key
-                        if ($request->descriptions[$key] !== null && $request->hasFile('media_files') && isset($request->media_files[$key])) {
-                            $media = new AllAboutPeriodPostMedia();
-                            $media->media_type = $fileType;
-                            $mediaFile = $request->media_files[$key];
+                    $media = new AllAboutPeriodPostMedia();
+                    $media->media_type = $fileType;
+
+                    if ($fileType === 'link') {
+                         $media->media = $request->media_links[$key] ?? '';
+                    } else {
+                       // Handle file upload for media files only if files are provided
+                        if ($request->hasFile('media_files') && $request->file('media_files')[$key]->isValid()) {
+                            $mediaFile = $request->file('media_files')[$key];
                             $mediaFileName = $this->addSingleImage('all_about_periods/posts_media/', $mediaFile, $old_image = '');
                             $media->media = $mediaFileName;
-                            $media->description = $request->descriptions[$key];
-                            // Save media associated with the post
-                            $post->media()->save($media);
+                        } else {
+                            // If media_files are not provided or invalid, keep the existing media file
+                            $media->media = $post->media[$key]->media ?? '';
                         }
-                        break;
+                    }
 
-                    default:
-                        // Handle invalid file types or other conditions
-                        break;
+                    $media->description = $request->descriptions[$key] ?? '';
+                    // Save media associated with the post
+                    $post->media()->save($media);
                 }
             }
+
         }
+
 
 
          $post->save();

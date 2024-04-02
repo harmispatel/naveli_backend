@@ -5,12 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class GeneralSetting extends Model
+class DailyDairy extends Model
 {
     use HasFactory;
 
-    
     protected $guarded = [];
-
-    protected $table = "general_settings";
 }

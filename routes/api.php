@@ -60,6 +60,7 @@ Route::get('adminAnswer',[AskYourQuestionController::class,'adminAnswerList']);
 
 //generalsetting
 Route::post('getGeneralSetting',[GeneralSettingController::class,'getGeneralSetting']);
+Route::get('getAboutAndDescription',[GeneralSettingController::class,'getAboutAndDescription']);
 
 //periods-info
 Route::post('periods-info',[PeriodsInfoController::class,'periodsInfo']);
@@ -116,6 +117,8 @@ Route::post('/getUsersCommentList',[ForumController::class,'getUsersCommentList'
 //stateList
 Route::get('stateList',[CommonController::class,'stateList']);
 Route::post('cityList',[CommonController::class,'cityList']);
+Route::get('FestivalList',[CommonController::class,'festivalList']);
+Route::post('StoreDailydairy',[CommonController::class,'storeDailydairy']);
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 
