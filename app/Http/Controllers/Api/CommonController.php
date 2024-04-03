@@ -65,7 +65,6 @@ class CommonController extends BaseController
             if(isset($request->mood) && !empty($request->mood) && isset($request->music) && !empty($request->music) && isset($request->learning) && !empty($request->learning) && isset($request->cleaning) && !empty($request->cleaning) && isset($request->body_care) && !empty($request->body_care) && isset($request->gratitude) && !empty($request->gratitude) && isset($request->hang_out) && !empty($request->hang_out) && isset($request->work_out) && !empty($request->work_out) && isset($request->screen_time) && !empty($request->screen_time) && isset($request->food) && !empty($request->food) && isset($request->edit) && !empty($request->edit) && isset($request->key_activities) && !empty($request->key_activities) && isset($request->to_do_list) && !empty($request->to_do_list)){
                 $dailydairys = DailyDairy::first();
                 
-             
                 if($dailydairys && $dailydairys->id > 0){
                    
                     if ($request->has('mood')) {
@@ -126,7 +125,8 @@ class CommonController extends BaseController
                     $dailydairys->gratitude = $request->gratitude;
                     $dailydairys->edit = $request->edit;
                     $dailydairys->key_activities = $request->key_activities;
-                    $dailydairys->to_do_list = $request->to_do_list; 
+                    $dailydairys->to_do_list = $request->to_do_list;
+                    $dailydairys->user_id = auth()->user()->id; 
     
                     $dailydairys->save();
 
@@ -180,6 +180,8 @@ class CommonController extends BaseController
                         $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
                         $input['food'] = $image_url;
                     }
+
+                    $input['user_id'] = auth()->user()->id; 
     
                     $dailydairys = DailyDairy::create($input);
 

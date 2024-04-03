@@ -298,9 +298,6 @@ class AllAboutPeriodPostController extends Controller
             }
 
         }
-
-
-
          $post->save();
          return redirect()->route('aap.posts.index')->with('message','All About Periods Post updated successfully');
        } catch (\Throwable $th) {

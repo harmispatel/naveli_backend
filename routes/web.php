@@ -122,7 +122,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('users/store', [UserController::class, 'store'])->name('users.store');
         Route::post('users/status', [UserController::class, 'status'])->name('users.status');
         Route::get('users/edit/{id}', [UserController::class, 'edit'])->name('users.edit');
-        Route::post('users/update', [UserController::class, 'update'])->name('users.update');      
+        Route::post('users/update', [UserController::class, 'update'])->name('users.update');
         Route::post('users/destroy', [UserController::class, 'destroy'])->name('users.destroy');
         Route::get('profile/edit/{id}', [UserController::class, 'profileEdit'])->name('profile.edit');
         Route::post('profile/update', [UserController::class, 'profileUpdate'])->name('profile.update');
@@ -262,11 +262,11 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/all-about-periods/categories/destroy/{id}',[AllAboutPeriodCategoryController::class,'destroy'])->name('aap.category.destroy');
 
        //all about periods-posts
-        Route::get('/all-about-periods/posts',[AllAboutPeriodPostController::class,'index'])->name('aap.posts.index');
-        Route::get('/all-about-periods/posts/create',[AllAboutPeriodPostController::class,'create'])->name('aap.posts.create');
-        Route::post('/all-about-periods/posts/store',[AllAboutPeriodPostController::class,'store'])->name('aap.posts.store');
-        Route::get('/all-about-periods/posts/edit/{id}',[AllAboutPeriodPostController::class,'edit'])->name('aap.posts.edit');
-        Route::post('/all-about-periods/posts/update',[AllAboutPeriodPostController::class,'update'])->name('aap.posts.update');
-        Route::get('/all-about-periods/posts/destroy/{id}',[AllAboutPeriodPostController::class,'destroy'])->name('aap.posts.destroy');
+        Route::get('/all-about-periods',[AllAboutPeriodPostController::class,'index'])->name('aap.posts.index');
+        Route::get('/all-about-periods/create',[AllAboutPeriodPostController::class,'create'])->name('aap.posts.create');
+        Route::post('/all-about-periods/store',[AllAboutPeriodPostController::class,'store'])->name('aap.posts.store');
+        Route::get('/all-about-periods/edit/{id}',[AllAboutPeriodPostController::class,'edit'])->name('aap.posts.edit');
+        Route::post('/all-about-periods/update',[AllAboutPeriodPostController::class,'update'])->name('aap.posts.update');
+        Route::get('/all-about-periods/destroy/{id}',[AllAboutPeriodPostController::class,'destroy'])->name('aap.posts.destroy');
     });
 });

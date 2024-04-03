@@ -175,7 +175,7 @@
 
 $(document).ready(function(){
     // Assuming `allMediaStore` is an array passed from PHP containing media data
-    var allMediaStore = <?php echo json_encode($allMediaStore); ?>;
+    var allMediaStore = <?php echo isset($allMediaStore) ? json_encode($allMediaStore) : 0 ; ?>;
     var mediaCount = allMediaStore.length; // Get the number of media items
 
     if (mediaCount > 1) {
@@ -201,9 +201,9 @@ $(document).ready(function(){
                     <div class="form-group posts" style="${media.media_type === 'image' ? 'display: block;' : 'display: none;'}">
                         <label for="media" class="form-label"><strong>{{ trans('label.media') }}</strong></label>
                         <input type="file" name="media_files[]" class="form-control media_file">
-                        <div class="mt-2 text-end">
-                            <img src="{{ asset('public/images/uploads/all_about_periods/posts_media/') }}/${(media.media) ? media.media : ''}" alt="" width="60" height="60">
-                        </div>
+                        ${media.media_type === 'image' ? `<div class="mt-2 text-end">
+                                <img src="{{ asset('public/images/uploads/all_about_periods/posts_media/') }}/${(media.media) ? media.media : ''}" alt="" width="60" height="60">
+                            </div>` : ''}
                     </div>
                 </div>
                 <div class="col-md-12 mb-3">
@@ -221,6 +221,7 @@ $(document).ready(function(){
         }
     }
 });
+
 
 
 

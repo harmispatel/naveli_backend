@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\BaseController as BaseController;
-use App\Models\{Ailment, Medicine, User,News,Post, TrackBmiCalculator, TrackWeight, UserSymptomsLogs,UserActivityStatus};
+use App\Models\{Ailment, Medicine, User,News,Post, TrackBmiCalculator, TrackSleep, TrackWaterReminder, TrackWeight, UserSymptomsLogs,UserActivityStatus};
 // use App\Models\News;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -16,8 +16,7 @@ use App\Http\Resources\PostResource;
 use App\Http\Resources\UserResource;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Carbon;
-
+use Carbon\Carbon;
 
 
 class UserController extends BaseController
@@ -500,35 +499,61 @@ class UserController extends BaseController
             $user = auth()->user();
 
             if (!$user) {
-                return $this->sendResponse(null,'Users Not Authorize!',false);
+                return $this->sendResponse(null,'User Not Authorize!',false);
             }
 
-            // Increment active user count for the current date
-            $date = now()->toDateString(); // Get current date
-            $activity = UserActivityStatus::where('user_id', $user->id)
-                                     ->whereDate('created_at', $date)
-                                     ->first();
+            // Get current date and month
+            $currentDate = now();
+            $currentMonth = $currentDate->format('Y-m');
 
-            if ($activity) {
-                $activity->increment('activity_counts');
-            } else {
+            // Check if the user has activity in the current month
+            $activityInCurrentMonth = UserActivityStatus::where('user_id', $user->id)
+                                                        ->whereYear('created_at', $currentDate->year)
+                                                        ->whereMonth('created_at', $currentDate->month)
+                                                        ->first();
 
-               $activity = UserActivityStatus::create([
+            if (!isset($activityInCurrentMonth)) {
+                // No activity recorded for the current month, delete previous month's activity counts
+                // $previousMonth = $currentDate->subMonth()->format('Y-m');
+                // UserActivityStatus::where('user_id', $user->id)
+                //                   ->whereYear('created_at', $currentDate->year)
+                //                   ->whereMonth('created_at', $currentDate->month)
+                //                   ->delete();
+
+                $activity = UserActivityStatus::create([
                     'user_id' => $user->id,
                     'activity_counts' => 1,
                 ]);
+
+            }else{
+                // Check if the user has already had activity on the current day
+                $activityToday = $activityInCurrentMonth->whereDate('updated_at', $currentDate->toDateString())->first();
+                // // Check if the user has already had activity on the current month
+
+                if ($activityToday) {
+                    // User has already had activity on the current day, no need to increment count again
+                    return $this->sendResponse($activityToday, 'User activity already counted for today', true);
+                } else {
+
+                    $activityInCurrentMonth->increment('activity_counts');
+                    return $this->sendResponse($activityInCurrentMonth, 'User activity count updated', true);
+                }
+
             }
-            return $this->sendResponse($activity ,'User activity counted successfully',true);
+
 
         } catch (\Exception $e) {
-            return $this->sendResponse(null,'Something went wrong!',false);
+            return $this->sendResponse(null, 'Something went wrong!', false);
         }
     }
 
+
     public function userResponse($userdata)
     {
+        $today = Carbon::today();
         if(isset($userdata->id)){
-            // $getUserWeightDetail = TrackWeight::select('weight','weight_type')->where('user_id',$userdata->id)->first();
+            $getUserSleepDetail = TrackSleep::select('bad_time','wake_up_time','total_sleep_time')->where('user_id',$userdata->id)->whereDate('created_at', $today)->first();
+            $getUserWaterReminderDetail = TrackWaterReminder::select('water_ml')->where('user_id',$userdata->id)->whereDate('created_at', $today)->first();
             $getUserBmiCalculater = TrackBmiCalculator::select('age','height','weight','bmi_score','bmi_type')->where('user_id',$userdata->id)->first();
         }
         $data['id'] = $userdata->id;
@@ -538,10 +563,14 @@ class UserController extends BaseController
         $data['uuId'] = $userdata->unique_id;
         $data['birthdate'] = $userdata->birthdate;
         $data['age'] = isset($userdata->birthdate) ? calculateAge($userdata->birthdate) : null;
-        $data['height'] = isset($getUserBmiCalculater->height) ? $getUserBmiCalculater->height : null;
-        $data['weight'] = isset($getUserBmiCalculater->weight) ? $getUserBmiCalculater->weight : null;
-        $data['bmi_score'] = isset($getUserBmiCalculater->bmi_score) ? $getUserBmiCalculater->bmi_score : null;
+        $data['height'] = isset($getUserBmiCalculater->height) ? number_format($getUserBmiCalculater->height,2) : null;
+        $data['weight'] = isset($getUserBmiCalculater->weight) ? number_format($getUserBmiCalculater->weight,2) : null;
+        $data['bmi_score'] = isset($getUserBmiCalculater->bmi_score) ? number_format($getUserBmiCalculater->bmi_score,2) : null;
         $data['bmi_type'] = isset($getUserBmiCalculater->bmi_type) ? $getUserBmiCalculater->bmi_type : null;
+        $data['bad_time'] = isset($getUserSleepDetail->bad_time) ? $getUserSleepDetail->bad_time : null;
+        $data['wake_up_time'] = isset($getUserSleepDetail->wake_up_time) ? $getUserSleepDetail->wake_up_time : null;
+        $data['total_sleep_time'] = isset($getUserSleepDetail->total_sleep_time) ? $getUserSleepDetail->total_sleep_time : null;
+        $data['water_ml'] = isset($getUserWaterReminderDetail->water_ml) ? $getUserWaterReminderDetail->water_ml : null;
         $data['gender'] = isset($userdata->gender) ? strval($userdata->gender) : null;
         $data['gender_type'] = isset($userdata->gender_type) ? $userdata->gender_type : null ;
         $data['mobile'] = $userdata->mobile;

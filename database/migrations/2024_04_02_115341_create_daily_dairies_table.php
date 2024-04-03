@@ -15,6 +15,7 @@ class CreateDailyDairiesTable extends Migration
     {
         Schema::create('daily_dairies', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->string('mood')->nullable();
             $table->string('music')->nullable();
             $table->string('learning')->nullable();
@@ -28,6 +29,7 @@ class CreateDailyDairiesTable extends Migration
             $table->text('edit')->nullable();
             $table->text('key_activities')->nullable();
             $table->text('to_do_list')->nullable();
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

@@ -59,7 +59,7 @@ Route::post('userQuestionStore',[AskYourQuestionController::class,'userQuestionS
 Route::get('adminAnswer',[AskYourQuestionController::class,'adminAnswerList']);
 
 //generalsetting
-Route::post('getGeneralSetting',[GeneralSettingController::class,'getGeneralSetting']);
+Route::post('getGeneralSettingFlashScreen',[GeneralSettingController::class,'getGeneralSettingFlashScreen']);
 Route::get('getAboutAndDescription',[GeneralSettingController::class,'getAboutAndDescription']);
 
 //periods-info
@@ -118,7 +118,7 @@ Route::post('/getUsersCommentList',[ForumController::class,'getUsersCommentList'
 Route::get('stateList',[CommonController::class,'stateList']);
 Route::post('cityList',[CommonController::class,'cityList']);
 Route::get('FestivalList',[CommonController::class,'festivalList']);
-Route::post('StoreDailydairy',[CommonController::class,'storeDailydairy']);
+Route::post('StoreDailydairy',[CommonController::class,'storeDailydairy'])->middleware('auth:sanctum');;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 

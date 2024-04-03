@@ -14,8 +14,6 @@
                         <li class="breadcrumb-item active"> <a
                                 href="{{ route('dashboard') }}">{{ trans('label.dashboard') }}</a> </li>
                                 <li class="breadcrumb-item active"> <a href="{{ route('festival.index') }}">{{ trans('label.festival') }}</a> </li>
-                                <li class="breadcrumb-item active"> <a
-                                href="{{ route('festival.index') }}">{{ trans('label.festival') }}</a> </li>
                         <li class="breadcrumb-item active">{{ trans('label.edit') }}</li>
                     </ol>
                 </nav>
