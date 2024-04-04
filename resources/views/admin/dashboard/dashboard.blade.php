@@ -218,16 +218,19 @@
                 <div class="col-md-12">
                     <div class="card mb-3">
                         <div class="card-body">
-                            <h5 class="card-title text-center">Total Active Users</h5>
+                            <div class="d-flex justify-content align-items-center mb-3">
+                                <h5 class="card-title text-center">Total Active Users</h5>
+                                <a class="btn btn-sm btn-primary ms-3" id="downloadActiveUserButton"><i
+                                        class="bi bi-download"></i></a>
+                            </div>   
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="card mb-3">
                                         <div class="card-body">
                                             <h5 class="card-title text-center">Total Male</h5>
                                             <div class="text-center">
-                                                <h1>0</h1>
+                                                <h1 class="totalMaleActiveUsers"></h1>
                                                 <br>
-                                                <!-- <strong>{{ auth()->user()->name }}</strong> -->
                                             </div>
                                         </div>
                                     </div>
@@ -237,7 +240,7 @@
                                         <div class="card-body">
                                             <h5 class="card-title text-center">Total Female</h5>
                                             <div class="text-center">
-                                                <h1>0</h1>
+                                                <h1 class="totalFemaleActiveUsers"></h1>
                                                 <br>
                                                 <!-- <strong>{{ auth()->user()->name }}</strong> -->
                                             </div>
@@ -249,7 +252,7 @@
                                         <div class="card-body">
                                             <h5 class="card-title text-center">Total Trans.</h5>
                                             <div class="text-center">
-                                                <h1>0</h1>
+                                                <h1 class="totalTransActiveUsers"></h1>
                                                 <br>
                                                 <!-- <strong>{{ auth()->user()->name }}</strong> -->
                                             </div>
@@ -441,6 +444,10 @@
             $('.totalFemaleExplorerCount').text(response.totalFemaleExplorerCount);
             $('.totalTransExplorerCount').text(response.totalTransExplorerCount);
             $('.totalAgeGroupCount').text(response.totalAgeGroupCount);
+            $('.totalMaleActiveUsers').text(response.totalMaleActiveUsers);
+            $('.totalFemaleActiveUsers').text(response.totalFemaleActiveUsers);
+            $('.totalTransActiveUsers').text(response.totalTransActiveUsers);
+            
         }
 
         //dowload all data
@@ -635,6 +642,48 @@
                         var link = document.createElement('a');
                         link.href = window.URL.createObjectURL(data);
                         link.download = `usersRelation.xlsx`;
+                        link.click();
+
+                    },
+                    fail: function(data) {
+                        alert('Not downloaded');
+                        //console.log('fail',  data);
+                    }
+                });
+            });
+        });
+
+        //dowload ActiveUser data
+        $(document).ready(function() {
+            $('#downloadActiveUserButton').click(function(event) {
+                event.preventDefault(); // Prevent default anchor tag behavior
+
+                var csrfToken = $('meta[name="csrf-token"]').attr('content');
+                var startDate = $('#daterange').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                var endDate = $('#daterange').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                var userCount = $('#userCount').text();
+
+                $.ajax({
+                    url: '{{ route('download.downloadActiveUsers') }}',
+                    type: 'post',
+                    cache: false,
+                    xhrFields: {
+                        responseType: 'blob'
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken // Include CSRF token in request headers
+                    },
+                    data: {
+                        start_date: startDate,
+                        end_date: endDate,
+                        user_count: userCount,
+
+                    },
+                    success: function(data) {
+
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(data);
+                        link.download = `activeUsers.xlsx`;
                         link.click();
 
                     },

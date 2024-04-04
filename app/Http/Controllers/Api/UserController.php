@@ -122,7 +122,14 @@ class UserController extends BaseController
 
             $createNewRegistration = User::create($input);
             if(isset($createNewRegistration)){
-                $createUsersActivity = UserActivityStatus::create([ 'user_id' => $createNewRegistration->id]);
+                 $currentDate = now();
+                $currentMonth = $currentDate->format('Y-m');
+                 $currentMonthYear = $currentDate->format('F-Y');
+                $createUsersActivity = UserActivityStatus::create([
+                    'user_id' => $createNewRegistration->id,
+                    'activity_counts' => 1,
+                    'activity_month' => $currentMonthYear
+                ]);
             }
             Auth::login($createNewRegistration);
             $userDetail = $this->userResponse($createNewRegistration);
@@ -176,7 +183,7 @@ class UserController extends BaseController
     {
         try {
             $demo = $this->userResponse(Auth::user());
-            return  $this->sendResponse($demo, 'User login successful', true);
+            return  $this->sendResponse($demo, 'User Details Received successfully', true);
         } catch (\Throwable $th) {
             return  $this->sendResponse(null, 'Something went wrong', false);
         }
@@ -513,32 +520,24 @@ class UserController extends BaseController
                                                         ->first();
 
             if (!isset($activityInCurrentMonth)) {
-                // No activity recorded for the current month, delete previous month's activity counts
-                // $previousMonth = $currentDate->subMonth()->format('Y-m');
-                // UserActivityStatus::where('user_id', $user->id)
-                //                   ->whereYear('created_at', $currentDate->year)
-                //                   ->whereMonth('created_at', $currentDate->month)
-                //                   ->delete();
 
+                $currentMonthYear = $currentDate->format('F-Y');
                 $activity = UserActivityStatus::create([
                     'user_id' => $user->id,
                     'activity_counts' => 1,
+                    'activity_month' => $currentMonthYear,
                 ]);
 
             }else{
-                // Check if the user has already had activity on the current day
-                $activityToday = $activityInCurrentMonth->whereDate('updated_at', $currentDate->toDateString())->first();
-                // // Check if the user has already had activity on the current month
 
-                if ($activityToday) {
-                    // User has already had activity on the current day, no need to increment count again
-                    return $this->sendResponse($activityToday, 'User activity already counted for today', true);
-                } else {
-
-                    $activityInCurrentMonth->increment('activity_counts');
-                    return $this->sendResponse($activityInCurrentMonth, 'User activity count updated', true);
-                }
-
+               if($activityInCurrentMonth->updated_at->isToday()){
+                    return $this->sendResponse($activityInCurrentMonth, 'User activity already counted for today', true);
+               }else{
+                    $updateUser =  UserActivityStatus::find($activityInCurrentMonth->id);
+                    $updateUser->activity_counts = $activityInCurrentMonth->activity_counts + 1;
+                    $updateUser->save();
+                        return $this->sendResponse($updateUser, 'User activity count updated', true);
+               }
             }
 
 

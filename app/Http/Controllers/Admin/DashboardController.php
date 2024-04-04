@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exports\UsersExport;
+use App\Exports\ActiveUserExport;
 use App\Exports\UserNBCExport;
 use App\Exports\UserGenderExport;
 use App\Exports\UserRelationExport;
 use App\Exports\UserAgeGroupExport;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserActivityStatus;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
@@ -147,9 +149,30 @@ class DashboardController extends Controller
         }
     }
 
-    public function downloadUserGender(Request $request)
+    public function downloadActiveUsers(Request $request)
     {
         
+        try {
+            if ($request->ajax()) {
+                $startDate = $request->start_date;
+                $endDate = $request->end_date;
+                $userCount = $request->user_count;
+
+                // Generate the file and store it
+                return Excel::download(new ActiveUserExport($startDate, $endDate, $userCount), 'activeUsers.xlsx', null, [\Maatwebsite\Excel\Excel::XLSX]);
+            }
+        } catch (\Exception $e) {
+           dd($e);
+            // Log the error
+            \Log::error('Error exporting users: ' . $e->getMessage());
+
+            // Return an error response
+            return response()->json(['error' => 'Error exporting users'], 500);
+        }
+    }
+
+    public function downloadUserGender(Request $request)
+    {
         try {
             if ($request->ajax()) {
                 $startDate = $request->start_date;
@@ -168,7 +191,6 @@ class DashboardController extends Controller
             return response()->json(['error' => 'Error exporting users'], 500);
         }
     }
-
 
     public function downloadNBC(Request $request)
     {
@@ -234,13 +256,26 @@ class DashboardController extends Controller
             $totalFemaleExplorerCount = 0;
             $totalTransExplorerCount = 0;
 
+            // { active users }
+            $totalMaleActiveUsers = 0;  
+            $totalFemaleActiveUsers = 0;
+            $totalTransActiveUsers = 0;
+
             $totalAgeGroupCount = 0;
 
             // Fetch users based on date range if provided, otherwise fetch all users
             if (isset($startDate) && isset($endDate) && $startDate != $endDate) {
                 $users = User::whereBetween('created_at', [$startDate, $endDate])->get();
+
+                $activeUsers = UserActivityStatus::with('user')
+                ->whereBetween('created_at',[$startDate,$endDate])
+                ->where('activity_counts', '>=', 15)
+                ->get();
             } else {
                 $users = User::all();
+                $activeUsers = UserActivityStatus::with('user') 
+                ->where('activity_counts', '>=', 15)
+                ->get();
             }
 
             $ageGroup = DB::table('question_type_ages')->where('id', $ageGroupId)->first();
@@ -281,10 +316,10 @@ class DashboardController extends Controller
             $total_cycleExplorer_female = $users->where('role_id', 4)->where('gender', 2)->count();
             $total_cycleExplorer_trans = $users->where('role_id', 4)->where('gender', 3)->count();
 
-            //cycleExplore active
-            $total_cycleExplorer_male = $users->where('role_id', 4)->where('gender', 1)->where('status', 1)->count();
-            $total_cycleExplorer_female = $users->where('role_id', 4)->where('gender', 2)->where('status', 1)->count();
-            $total_cycleExplorer_trans = $users->where('role_id', 4)->where('gender', 3)->where('status', 1)->count();
+            // activeUsers
+            $totalMaleActiveUsers = $activeUsers->where('user.gender', 1)->count();
+            $totalFemaleActiveUsers = $activeUsers->where('user.gender', 2)->count();
+            $totalTransActiveUsers = $activeUsers->where('user.gender', 3)->count();
 
             if ($ageGroupId == 'all') {
                 //AgeGrouptotalCount
@@ -301,7 +336,6 @@ class DashboardController extends Controller
                 $totalTransBuddyCount = $users->where('role_id', 3)->where('gender', 3)->count();
 
                 //  cycle Explorer
-                $totalExplorerCount = $users->where('role_id', 4)->count();
                 $totalMaleExplorerCount = $users->where('role_id', 4)->where('gender', 1)->count();
                 $totalFemaleExplorerCount = $users->where('role_id', 4)->where('gender', 2)->count();
                 $totalTransExplorerCount = $users->where('role_id', 4)->where('gender', 3)->count();
@@ -319,6 +353,9 @@ class DashboardController extends Controller
                     'totalFemaleExplorerCount' => 0,
                     'totalTransExplorerCount' => 0,
                     'totalAgeGroupCount'=> 0,
+                    'totalMaleActiveUsers' => 0,
+                    'totalFemaleActiveUsers' => 0,
+                    'totalTransActiveUsers' => 0,
                 ]);
             } elseif ($ageGroup) {
 
@@ -421,7 +458,7 @@ class DashboardController extends Controller
                         }
 
                     }
-
+                    
                 }
             }
 
@@ -468,6 +505,11 @@ class DashboardController extends Controller
                 'totalFemaleExplorerCount' => $totalFemaleExplorerCount,
                 'totalTransExplorerCount' => $totalTransExplorerCount,
 
+                // { activeUsers}
+                 'totalMaleActiveUsers' => $totalMaleActiveUsers,
+                 'totalFemaleActiveUsers' => $totalFemaleActiveUsers,
+                 'totalTransActiveUsers' => $totalTransActiveUsers,
+    
                 //ageGroupTotalCount
                 'totalAgeGroupCount' => $totalAgeGroupCount,
             ]);

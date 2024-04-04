@@ -101,6 +101,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('/download/userGender',[DashboardController::class, 'downloadUserGender'])->name('download.usersGender');
         Route::post('/download/userRelation',[DashboardController::class, 'downloadUserRelation'])->name('download.usersRelation');
         Route::post('/download/userAgeGroup',[DashboardController::class, 'downloadAgeGroup'])->name('download.usersAgeGroup');
+        Route::post('/download/downloadActiveUsers',[DashboardController::class, 'downloadActiveUsers'])->name('download.downloadActiveUsers');
         //health profile
 
         Route::get('health-profile', [HealthProfileController::class, 'index'])->name('healthProfile');

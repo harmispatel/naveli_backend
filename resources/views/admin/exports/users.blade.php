@@ -87,7 +87,26 @@
         <td> {{ $total_ofs }} </td>  
     </tr>
   
-       
+    <tr></tr>
+    <tr>
+        <th>Total Active Users - {{ $totalActiveUsers }} </th>
+    </tr>
+
+    <tr>
+        <td>Male</td>
+        <td> {{ $totalMaleActiveUsers }} </td>
+    </tr>
+
+    <tr>
+        <td>Female</td>
+        <td> {{ $totalFemaleActiveUsers }} </td> 
+    </tr>
+
+    <tr>
+        <td>Trans</td>
+        <td> {{ $totalTransActiveUsers }} </td>  
+    </tr>
+      
     <tr></tr>
 
     <tr>

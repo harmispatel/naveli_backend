@@ -73,13 +73,13 @@ Route::post('Super-Woman',[SuperWomancontroller::class,'SuperWoman']);
 Route::get('logout',[UserController::class,'logout'])->middleware('auth:sanctum');
 
 //news
-Route::get('newsDetails',[UserController::class,'newsDetails'])->middleware('auth:sanctum');
+Route::get('newsDetails',[UserController::class,'newsDetails']);
 
 //medicine
-Route::get('medicineList',[UserController::class,'medicineList'])->middleware('auth:sanctum');
+Route::get('medicineList',[UserController::class,'medicineList']);
 
 //ailmentsList
-Route::get('/ailmentsList',[UserController::class,'ailmentsList'])->middleware('auth:sanctum');
+Route::get('/ailmentsList',[UserController::class,'ailmentsList']);
 
 //posts
 Route::post('get-all-posts',[UserController::class,'getAllPosts'])->middleware('auth:sanctum');
