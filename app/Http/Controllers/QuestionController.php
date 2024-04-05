@@ -133,10 +133,11 @@ class QuestionController extends Controller
                 }
             }
 
-            return redirect()->route('question.index')->with('message', 'Question Saved Successfully');
+            // return redirect()->route('question.index')->with('message', 'Question Saved Successfully');
+            return redirect()->back()->with('message', 'Question Saved Successfully');
         } catch (\Throwable $th) {
 
-            return redirect()->route('question.index')->with('error', 'Internal Server Error');
+            return redirect()->back()->with('error', 'Internal Server Error');
         }
     }
 

@@ -18,6 +18,7 @@ class CreateUserActivityStatusesTable extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->bigInteger('activity_counts')->nullable()->default(0);
+            $table->string('activity_month',255)->nullable();
             $table->timestamps();
         });
     }

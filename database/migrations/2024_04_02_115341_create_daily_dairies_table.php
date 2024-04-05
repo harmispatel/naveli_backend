@@ -29,7 +29,7 @@ class CreateDailyDairiesTable extends Migration
             $table->text('edit')->nullable();
             $table->text('key_activities')->nullable();
             $table->text('to_do_list')->nullable();
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->timestamps();
         });
     }

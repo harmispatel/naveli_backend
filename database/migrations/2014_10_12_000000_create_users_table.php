@@ -32,6 +32,8 @@ class CreateUsersTable extends Migration
             $table->string('previous_periods_begin')->nullable();
             $table->string('average_period_length')->nullable();
             $table->timestamp('email_verified_at')->nullable();
+            $table->string('state')->nullable();
+            $table->string('city')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

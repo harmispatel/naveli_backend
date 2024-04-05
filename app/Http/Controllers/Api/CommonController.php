@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BaseController as BaseController;
 use App\Models\Festival;
+use App\Models\User;
 use App\Traits\ImageTrait;
 use App\Models\DailyDairy;
 use Illuminate\Support\Facades\File;
@@ -14,6 +15,32 @@ class CommonController extends BaseController
 {
     use ImageTrait;
 
+    public function storeState(Request $request){
+        try {
+          $state_id = $request->state_id;
+
+          $state = DB::table('states')->where('id',$state_id)->first();
+
+            if($state){
+                    $stateName = $state->name;
+            
+                      $user = User::find(auth()->user()->id);
+            
+                      $storeState = $user->update([
+                           'state' => $stateName,
+                      ]);
+                      
+            }else{
+                 return $this->sendResponse(null,'State not found',false);
+            }
+      
+          return $this->sendResponse($storeState,'State Saved SuccsseFully',true);
+        } catch (\Throwable $th) {
+          
+            return $this->sendResponse(null,'Internal Server Error!',false);
+        }
+    }
+
     public function stateList(){
     
         try {
@@ -21,6 +48,32 @@ class CommonController extends BaseController
 
             return $this->sendResponse($stateList,'stateList retrived SuccessFully',true);
         } catch (\Throwable $th) {
+            return $this->sendResponse(null,'Internal Server Error!',false);
+        }
+    }
+    
+    public function storeCity(Request $request){
+        try {
+          $city_id = $request->city_id;
+
+          $city = DB::table('cities')->where('id',$city_id)->first();
+
+            if($city){
+                    $cityName = $city->name;
+            
+                      $user = User::find(auth()->user()->id);
+            
+                      $storeState = $user->update([
+                           'city' => $cityName,
+                      ]);
+                      
+            }else{
+                 return $this->sendResponse(null,'City not found',false);
+            }
+      
+          return $this->sendResponse($storeState,'City Saved SuccsseFully',true);
+        } catch (\Throwable $th) {
+          
             return $this->sendResponse(null,'Internal Server Error!',false);
         }
     }

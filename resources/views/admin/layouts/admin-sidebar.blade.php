@@ -235,9 +235,9 @@
 
         <li class="nav-item">
             <a href="{{ route('healthProfile') }}"
-                class="nav-link {{ in_array($currentRouteName, ['healthProfile']) ? 'active-tab' : '' }}">
+                class="nav-link {{ in_array($currentRouteName, ['healthProfile','healthProfile.users']) ? 'active-tab' : '' }}">
                 <i
-                    class="fa-solid fa-heart-pulse {{ in_array($currentRouteName, ['healthProfile']) ? 'active-tab' : '' }}">
+                    class="fa-solid fa-heart-pulse {{ in_array($currentRouteName, ['healthProfile','healthProfile.users']) ? 'active-tab' : '' }}">
                 </i>
                 <span>{{ trans('label.healthProfile') }}</span>
             </a>

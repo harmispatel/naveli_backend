@@ -49,11 +49,11 @@
                     <div class="card mb-3">
                         <div class="card-body">
 
-                            <div class="row card-title text-center">
-                                <div style="display: flex; justify-content: center; align-items: center;">
-                                    <h5>Total Users - </h5>
-                                    <h5 class="users_count ms-2" id="userCount"></h5>
-                                    <a class="btn btn-sm btn-primary ms-3" id="downloadusersButton"><i
+                            <div class="row">
+                                <div style="display: flex; justify-content: center;">
+                                    <h5 class="card-title">Total Users - </h5>
+                                    <h5 class="users_count ms-2 card-title" id="userCount"></h5>
+                                    <a class="btn btn-sm btn-primary m-3" id="downloadusersButton"><i
                                             class="bi bi-download"></i></a>
                                 </div>
                             </div>
@@ -222,7 +222,7 @@
                                 <h5 class="card-title text-center">Total Active Users</h5>
                                 <a class="btn btn-sm btn-primary ms-3" id="downloadActiveUserButton"><i
                                         class="bi bi-download"></i></a>
-                            </div>   
+                            </div>
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="card mb-3">
@@ -447,7 +447,7 @@
             $('.totalMaleActiveUsers').text(response.totalMaleActiveUsers);
             $('.totalFemaleActiveUsers').text(response.totalFemaleActiveUsers);
             $('.totalTransActiveUsers').text(response.totalTransActiveUsers);
-            
+
         }
 
         //dowload all data
@@ -753,7 +753,7 @@
                         ageExploreFemale: ageExploreFemale,
                         ageExploreTrans: ageExploreTrans,
 
-                        totalAgeGroupCount: totalAgeGroupCount,                 
+                        totalAgeGroupCount: totalAgeGroupCount,
 
                     },
                     success: function(data) {
