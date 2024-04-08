@@ -28,7 +28,7 @@ class AilmentController extends Controller
                     ->addColumn('actions', function ($ailment) {
                         return '<div class="btn-group">
                    <a href=' . route("ailments.edit", ["id" => encrypt($ailment->id)]) . ' class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil" aria-hidden="true"></i></a>
-                   <a href=' . route("ailments.destroy", ["id" => $ailment->id]) . ' class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
+                   <a onclick="deleteUsers(\'' . $ailment->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
                    </div>';
                     })
                     ->rawColumns(['actions'])
@@ -101,15 +101,22 @@ class AilmentController extends Controller
 
     }
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         try {
+            $id = $request->id;
             $ailments = Ailment::find($id);
             $ailments->delete();
 
-            return redirect()->route('ailments.index')->with('message', 'Ailment Deleted Successfully');
+            return response()->json([
+                'success' => 1,
+                'message' => "Ailment deleted Successfully..",
+            ]);
         } catch (\Throwable $th) {
-            return redirect()->route('ailments.index')->with('error', 'Internal Server error!');
+            return response()->json([
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
         }
 
     }

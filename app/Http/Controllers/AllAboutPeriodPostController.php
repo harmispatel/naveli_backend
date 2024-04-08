@@ -23,8 +23,6 @@ class AllAboutPeriodPostController extends Controller
         $this->middleware('permission:aap.posts.destroy', ['only' => ['destroy']]);
     }
 
-
-
     public function index(Request $request){
         try {
             $allAboutPeriodPosts = AllAboutPeriodPost::with('category')->get();
@@ -48,7 +46,7 @@ class AllAboutPeriodPostController extends Controller
                 ->addColumn('actions', function ($row) {
                     return '<div class="btn-group">
                             <a href=' . route("aap.posts.edit", ["id" => encrypt($row->id)]) . ' class="btn btn-sm custom-btn me-1"> <i class="bi bi-pencil" aria-hidden="true"></i></a>
-                            <a href=' . route("aap.posts.destroy", ["id" => encrypt($row->id)]) . ' class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
+                            <a onclick="deleteUsers(\'' . $row->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
                             </div>';
                 })
                 ->rawColumns(['actions', 'media','media_type','category','icon'])
@@ -305,9 +303,9 @@ class AllAboutPeriodPostController extends Controller
        }
     }
 
-    public function destroy($id){
+    public function destroy(Request $request){
         try {
-            $id = decrypt($id);
+            $id = $request->id;
 
             $post = AllAboutPeriodPost::with('media')->find($id);
 
@@ -324,10 +322,15 @@ class AllAboutPeriodPostController extends Controller
                 File::delete(public_path('images/uploads/all_about_periods/category_icons/' . $post->icon));
             }
             $post->delete();
-            return redirect()->route('aap.posts.index')->with('message','All About Periods Post Deleted successfully');
+            return response()->json([
+                'success' => 1,
+                'message' => "AllAboutPeriod deleted Successfully..",
+            ]);
         } catch (\Throwable $th) {
-
-            return redirect()->route('aap.posts.index')->with('error','something went wrong!');
+            return response()->json([
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
         }
 
     }

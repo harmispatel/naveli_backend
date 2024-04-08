@@ -58,7 +58,7 @@ class QuestionController extends Controller
                     ->addColumn('actions', function ($question) {
                         return '<div class="btn-group">
                                 <a href=' . route("question.edit", ["id" => encrypt($question->id)]) . ' class="btn btn-sm custom-btn me-1"> <i class="bi bi-pencil" aria-hidden="true"></i></a>
-                                <a href=' . route("question.destroy", ["id" => $question->id]) . ' class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
+                                <a onclick="deleteUsers(\'' . $question->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
                                 <a href=' . route("question.optionView", ["id" => encrypt($question->id)]) . ' class="btn btn-sm btn-info me-1"><i class="bi bi-eye" aria-hidden="true"></i></a>
                                 </div>';
                     })
@@ -301,15 +301,22 @@ class QuestionController extends Controller
 //     }
 // }
 
-    public function delete($id)
+    public function delete(Request $request)
     {
         try {
+            $id = $request->id;
             $question = Question::find($id);
             $question->delete();
 
-            return redirect()->route('question.index')->with('message', 'Question Deleted Successfully');
+            return response()->json([
+                'success' => 1,
+                'message' => "QuestionType deleted Successfully..",
+            ]);
         } catch (\Throwable $th) {
-            return redirect()->route('question.index')->with('error', 'Internal Server Error');
+            return response()->json([
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
         }
 
     }

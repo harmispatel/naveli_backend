@@ -33,26 +33,28 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive custom_dt_table">
-                        <div class="form_box">
-                            <div class="form_box_inr">
-                                <div class="box_title">
-                                    <h2>{{ trans('label.askquestion') }}</h2>
-                                </div>
-                                <div class="form_box_info">
-                                    <div class="table-responsive">
-                                        <table class="table w-100 dataTable no-footer" id="AskQuestionTable" aria-describedby="UsersTable_info" style="width: 948px;">
-                                            <thead>
-                                                <tr>
-                                                    <th>{{ trans('label.Id') }}</th>
-                                                    <th>{{ trans('label.username') }}</th>
-                                                    <th>{{ trans('label.userquestion') }}</th>
-                                                    <th>{{ trans('label.adminanswer')}}</th>
-                                                    <th>{{ trans('label.media')}}</th>
-                                                    <th>{{ trans('label.actions') }}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody></tbody>
-                                        </table>
+                            <div class="form_box">
+                                <div class="form_box_inr">
+                                    <div class="box_title">
+                                        <h2>{{ trans('label.askquestion') }}</h2>
+                                    </div>
+                                    <div class="form_box_info">
+                                        <div class="table-responsive">
+                                            <table class="table w-100 dataTable no-footer" id="AskQuestionTable"
+                                                aria-describedby="UsersTable_info" style="width: 948px;">
+                                                <thead>
+                                                    <tr>
+                                                        <th>{{ trans('label.Id') }}</th>
+                                                        <th>{{ trans('label.username') }}</th>
+                                                        <th>{{ trans('label.userquestion') }}</th>
+                                                        <th>{{ trans('label.adminanswer') }}</th>
+                                                        <th>{{ trans('label.media') }}</th>
+                                                        <th>{{ trans('label.actions') }}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -60,7 +62,6 @@
                     </div>
                 </div>
             </div>
-        </div>
     </section>
 
 @endsection
@@ -76,10 +77,9 @@
                 serverSide: true,
                 pageLength: 50,
                 ajax: "{{ route('userAskQuestion.index') }}",
-                columns: [
-                    {
+                columns: [{
                         data: 'id',
-                        name:'id',
+                        name: 'id',
                         'searchable': false
                     },
                     {
@@ -90,28 +90,62 @@
                         data: 'user_question',
                         name: 'user_question',
                         orderable: false,
-                        searchable:false
+                        searchable: false
                     },
                     {
                         data: 'question_answer',
                         name: 'question_answer',
                         orderable: false,
-                        searchable:false
+                        searchable: false
                     },
                     {
                         data: 'file_type',
                         name: 'file_type',
                         orderable: false,
-                        searchable:false
+                        searchable: false
                     },
                     {
                         data: 'actions',
                         name: 'actions',
                         orderable: false,
-                        searchable:false
+                        searchable: false
                     },
                 ]
             });
         });
+
+        // Function for Delete Table
+        function deleteUsers(askQuestionId) {
+            swal({
+                    title: "Are you sure You want to Delete It ?",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                .then((willDeleteUsers) => {
+                    if (willDeleteUsers) {
+                        $.ajax({
+                            type: "POST",
+                            url: '{{ route('userAskQuestion.destroy') }}',
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                'id': askQuestionId,
+                            },
+                            dataType: 'JSON',
+                            success: function(response) {
+                                if (response.success == 1) {
+                                  //    toastr.success(response.message);
+                                  swal(response.message, "", "success");
+                                    $('#AskQuestionTable').DataTable().ajax.reload();
+                                } else {
+                                    swal(response.message, "", "error");
+                                }
+                            }
+                        });
+                    } else {
+                        swal("Cancelled", "", "error");
+                    }
+                });
+        }
     </script>
 @endsection

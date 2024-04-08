@@ -158,7 +158,8 @@
                             dataType: 'JSON',
                             success: function(response) {
                                 if (response.success == 1) {
-                                    toastr.success(response.message);
+                                   //    toastr.success(response.message);
+                                   swal(response.message, "", "success");
                                     $('#UsersTable').DataTable().ajax.reload();
                                 } else {
                                     swal(response.message, "", "error");

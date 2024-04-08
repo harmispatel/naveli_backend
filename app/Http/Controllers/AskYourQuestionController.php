@@ -32,7 +32,7 @@ class AskYourQuestionController extends Controller
                     ->addColumn('actions', function ($ask) {
                         return '<div class="btn-group">
                     <a href=' . route("userAskQuestion.edit", ["id" => encrypt($ask->id)]) . ' class="btn btn-sm custom-btn me-1"><i class="bi bi-reply-fill" aria-hidden="true"></i></a>
-                    <a href=' . route("userAskQuestion.destroy", ["id" => $ask->id]) . ' class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
+                    <a onclick="deleteUsers(\'' . $ask->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
                     </div>';
                     })
                     ->rawColumns(['actions'])
@@ -122,16 +122,23 @@ class AskYourQuestionController extends Controller
         }
     }
 
-    public function delete($id){
+    public function delete(Request $request){
         try {
+            $id = $request->id;
             $askquestion = AskYourQuestion::find($id);
          
             $askquestion->delete();
 
-            return redirect()->route('userAskQuestion.index')->with('Message', 'Question Deleted SuccessFully');
+            return response()->json([
+                'success' => 1,
+                'message' => "AskQuestion deleted Successfully..",
+            ]);
 
         } catch (\Throwable $th) {
-            return redirect()->route('userAskQuestion.index')->with('errors', 'internal server error');
+            return response()->json([
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
         }
     }
 }

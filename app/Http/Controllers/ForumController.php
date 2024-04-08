@@ -53,7 +53,7 @@ class ForumController extends Controller
         ->addColumn('actions', function ($row) {
             return '<div class="btn-group">
                 <a href=' . route("forums.edit", ["id" => encrypt($row->id)]) . ' class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil" aria-hidden="true"></i></a>
-                <a href=' . route("forums.destroy", ["id" => $row->id]) . ' class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
+                <a onclick="deleteUsers(\'' . $row->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
                 </div>';
         })
         ->rawColumns(['actions','forums_category','forums_subcategory'])
@@ -143,14 +143,22 @@ class ForumController extends Controller
             return redirect()->route('forums.index')->with('error', 'Internal Server Error!');
         }
     }
-    public function destroy($id){
+    public function destroy(Request $request){
         try {
+            $id = $request->id;
+
             $forumRecord = Forum::find($id);
             $forumRecord->delete();
 
-            return redirect()->route('forums.index')->with('message', 'Forum Deleted Successfully');
+            return response()->json([
+                'success' => 1,
+                'message' => "Forum deleted Successfully..",
+            ]);
         } catch (\Throwable $th) {
-            return redirect()->route('forums.index')->with('error', 'Internal Server Error!');
+            return response()->json([
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
         }
     }
 

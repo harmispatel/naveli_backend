@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BaseController as BaseController;
 use App\Models\Festival;
+use App\Models\Home;
 use App\Models\User;
 use App\Traits\ImageTrait;
 use App\Models\DailyDairy;
@@ -248,6 +249,16 @@ class CommonController extends BaseController
         } catch (\Throwable $th) {
 
             return $this->sendResponse(null,'Internal Server Error!',false);
+        }
+    }
+
+    public function getHomePage(){
+        try {
+            $getHome = Home::all();
+
+            return $this->sendResponse($getHome,'Home page Retrived SuccessFully',true);
+        } catch (\Throwable $th) {
+            return $this->sendResponse(null,'Internal Server Error',false);
         }
     }
 

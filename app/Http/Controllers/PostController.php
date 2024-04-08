@@ -61,7 +61,7 @@ class PostController extends Controller
                     ->addColumn('actions', function ($posts) {
                         $html_actions = '<div class="btn-group">';
                         $html_actions .= '<a href=' . route("posts.edit", ["id" => encrypt($posts->id)]) . ' class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil" aria-hidden="true"></i></a>';
-                        $html_actions .= '<a href=' . route("posts.destroy", ["id" => $posts->id]) . ' class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>';
+                        $html_actions .= '<a onclick="deleteUsers(\'' . $posts->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>';
                         $html_actions .= "</div>";
 
                         return $html_actions;
@@ -167,16 +167,23 @@ class PostController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         try {
+            $id = $request->id;
             $posts = Post::find($id);
             File::delete(public_path('/images/uploads/newsPosts/' . $posts->posts));
             $posts->delete();
 
-            return redirect()->route('posts.index')->with('message', 'Post Deleted Successfully');
+            return response()->json([
+                'success' => 1,
+                'message' => "Post deleted Successfully..",
+            ]);
         } catch (\Throwable $th) {
-            return redirect()->route('posts.index')->with('error', 'Internal Server Error!');
+            return response()->json([
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
         }
 
     }

@@ -28,7 +28,7 @@ class FestivalController extends Controller
                 ->addColumn('actions', function($event){
                     return '<div class="btn-group">
                    <a href=' . route("festival.edit", ["id" => encrypt($event->id)]) . ' class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil" aria-hidden="true"></i></a>
-                   <a href=' . route("festival.destroy", ["id" => $event->id]) . ' class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
+                   <a onclick="deleteUsers(\'' . $event->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
                    </div>';
                 })
                 ->rawColumns(['actions'])
@@ -91,15 +91,23 @@ class FestivalController extends Controller
         }
     }
 
-    public function destroy($id){
+    public function destroy(Request $request){
          try {
+
+            $id = $request->id;
              $festival = Festival::find($id);
 
              $festival->delete();
 
-             return redirect()->route('festival.index')->with('Message','Festival Deleted Successfully');
+             return response()->json([
+                'success' => 1,
+                'message' => "Festival deleted Successfully..",
+            ]);
          } catch (\Throwable $th) {
-            return redirect()->route('festival.index')->with('error','Internal Server Error');
+            return response()->json([
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
          }
     }
 

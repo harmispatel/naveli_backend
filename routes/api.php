@@ -45,6 +45,7 @@ Route::post('questiondestroy',[QuestionController::class,'destroy'])->middleware
 Route::post('question-answer',[QuestionController::class,'questionAnswer'])->middleware('auth:sanctum');
 Route::get('question-answers',[QuestionController::class,'getQuestionAnswers'])->middleware('auth:sanctum');
 
+
 //questionType
 Route::get('questionType',[QuestionController::class,'questionTypeList']);
 
@@ -121,6 +122,7 @@ Route::get('FestivalList',[CommonController::class,'festivalList']);
 Route::post('StoreDailydairy',[CommonController::class,'storeDailydairy'])->middleware('auth:sanctum');
 Route::post('storeState',[CommonController::class,'storeState'])->middleware('auth:sanctum');
 Route::post('storeCity',[CommonController::class,'storeCity'])->middleware('auth:sanctum');
+Route::get('getHomePage',[CommonController::class,'getHomePage']);
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 

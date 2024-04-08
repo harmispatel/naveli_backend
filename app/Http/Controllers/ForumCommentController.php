@@ -54,7 +54,7 @@ class ForumCommentController extends Controller
         ->addColumn('actions', function ($row) {
             return '<div class="btn-group">
                 <a href=' . route("forumcomments.reply", ["id" => encrypt($row->id)]) . ' class="btn btn-sm custom-btn me-1"><i class="bi bi-reply" aria-hidden="true"></i></a>
-                <a href=' . route("forumcomments.destroy", ["id" => $row->id]) . ' class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
+                <a onclick="deleteUsers(\'' . $row->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
                 </div>';
         })
         ->rawColumns(['actions','user','forum_title','comment_time'])
@@ -92,14 +92,22 @@ class ForumCommentController extends Controller
         }
    }
 
-   public function destroy($id){
+   public function destroy(Request $request){
 
         try {
+            $id = $request->id;
+
             $forumComment = ForumComment::findOrFail($id);
             $forumComment->delete();
-            return redirect()->back()->with('message', 'Forum Comment Deleted Successfully By Admin');
+            return response()->json([
+                'success' => 1,
+                'message' => "ForumComment deleted Successfully..",
+            ]);
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Something Went Wrong!');
+            return response()->json([
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
         }
    }
 

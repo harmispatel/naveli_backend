@@ -37,7 +37,7 @@ class QuestionTypeController extends Controller
                         $action_html .= '<a href="' . route('questionType.edit', encrypt($question->id)) . '" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
                         
                         if(!in_array($questionType_id, [1, 2, 3])){
-                            $action_html .= '<a href=' . route("questionType.destroy", ["id" => $question->id]) . ' class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>';
+                            $action_html .= '<a onclick="deleteUsers(\'' . $question->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>';
                         }
                         $action_html .= '</div>';
 
@@ -104,8 +104,7 @@ class QuestionTypeController extends Controller
             'name' => 'required|unique:question_types,name,'.$id,
         ]);
 
-        try {
-           
+        try {         
             $questionType = QuestionType::find($id);
             $questionType->name = $request->name;
 
@@ -121,23 +120,29 @@ class QuestionTypeController extends Controller
 
             return redirect()->route('questionType.index')->with('message', 'QuestionType Updated SuccessFully');
         } catch (\Throwable $th) {
-            dd($th);
+          
             return redirect()->route('questionType.index')->with('error', 'Internal Server Error!');
         }
     }
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         try {
-            
+            $id = $request->id;
             $questionType = QuestionType::find($id);
 
             File::delete(public_path('/images/uploads/QuestionType/' . $questionType->icon));
             $questionType->delete();
 
-            return redirect()->route('questionType.index')->with('message', 'QuestionType Deleted Successfully');
+            return response()->json([
+                'success' => 1,
+                'message' => "QuestionType deleted Successfully..",
+            ]);
         } catch (\Throwable $th) {
-            return redirect()->route('questionType.index')->with('error', 'Internal Server Error!');
+            return response()->json([
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
         }
     }
 }

@@ -68,7 +68,7 @@ class HealthMixController extends Controller
                     ->addColumn('actions', function ($health) {
                         return '<div class="btn-group">
                             <a href=' . route("healthMix.edit", ["id" => encrypt($health->id)]) . ' class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil" aria-hidden="true"></i></a>
-                            <a href=' . route("healthMix.destroy", ["id" => $health->id]) . ' class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
+                            <a onclick="deleteUsers(\'' . $health->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
                             </div>';
                     })
                     ->rawColumns(['actions','health_type'])
@@ -195,16 +195,23 @@ class HealthMixController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         try {
+            $id = $request->id;
             $HealthMix = HealthMix::find($id);
             File::delete(public_path('/images/uploads/healthmix/' . $HealthMix->media));
             $HealthMix->delete();
 
-            return redirect()->route('healthMix.index')->with('message', 'Healthmix Deleted Successfully');
+            return response()->json([
+                'success' => 1,
+                'message' => "HealthMix deleted Successfully..",
+            ]);
         } catch (\Throwable $th) {
-            return redirect()->route('healthMix.index')->with('error', 'Internal Server Error!');
+            return response()->json([
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
         }
 
     }

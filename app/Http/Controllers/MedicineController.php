@@ -28,7 +28,7 @@ class MedicineController extends Controller
                     ->addColumn('actions', function ($medicine) {
                         return '<div class="btn-group">
                   <a href=' . route("medicine.edit", ["id" => encrypt($medicine->id)]) . ' class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil" aria-hidden="true"></i></a>
-                  <a href=' . route("medicine.destroy", ["id" => $medicine->id]) . ' class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
+                  <a onclick="deleteUsers(\'' . $medicine->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
                   </div>';
                     })
                     ->rawColumns(['actions'])
@@ -96,15 +96,22 @@ class MedicineController extends Controller
 
     }
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         try {
+            $id = $request->id;
             $medicine = Medicine::find($id);
             $medicine->delete();
 
-            return redirect()->route('medicine.index')->with('message', 'Medicine Deleted Successfully');
+            return response()->json([
+                'success' => 1,
+                'message' => "Medicine deleted Successfully..",
+            ]);
         } catch (\Throwable $th) {
-            return redirect()->route('medicine.index')->with('error', 'Internal server error');
+            return response()->json([
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
         }
 
     }

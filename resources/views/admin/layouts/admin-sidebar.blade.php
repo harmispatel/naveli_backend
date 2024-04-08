@@ -48,6 +48,15 @@
             </a>
         </li>
 
+        <li class="nav-item">
+            <a href="{{ route('home.index') }}"
+                class="nav-link {{ in_array($currentRouteName, ['home.index', 'home.create']) ? 'active-tab' : '' }}">
+                <i
+                    class="bi bi-house {{ in_array($currentRouteName, ['home.index', 'home.create']) ? 'icon-tab' : '' }}"></i>
+                <span>{{ trans('label.home') }}</span>
+            </a>
+        </li>
+
         {{-- Age Group --}}
         <!-- @can('age.index')
             <li class="nav-item">

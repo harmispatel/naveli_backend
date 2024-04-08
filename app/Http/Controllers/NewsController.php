@@ -25,7 +25,6 @@ class NewsController extends Controller
         return view('admin.woman_in_news.index');
     }
 
-
     // Load all woman news with helping AJAX Datatable
     public function load(Request $request)
     {
@@ -182,18 +181,25 @@ class NewsController extends Controller
 
 
     // Remove the specified resource from storage.
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         try {
-            $woman_in_news = News::find(decrypt($id));
+            $id = $request->id;
+            $woman_in_news = News::find($id);
             $post = (isset($woman_in_news->posts)) ? $woman_in_news->posts : '';
             if (isset($post) && !empty($post) && file_exists('public/images/uploads/newsPosts/' . $post)) {
                 unlink('public/images/uploads/newsPosts/' . $post);
             }
             $woman_in_news->delete();
-            return redirect()->route('woman-in-news.index')->with('message', 'Woman news has been Deleted.');
+            return response()->json([
+                'success' => 1,
+                'message' => "WomenInNews deleted Successfully..",
+            ]);
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'Oops, something went wrong!');
+            return response()->json([
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
         }
     }
 }

@@ -76,10 +76,10 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="col-md-7">
+                                    <div class="col-md-6 mb-3">
                                         <div id="linkInput" class="form-group" style="display: none;">
                                             <label for="media" class="form-label"><strong>{{ trans('label.enterlink')}}</strong></label>
-                                            <input type="text" name="media" id="posts"
+                                            <input type="text" name="media" id="posts" value="{{old('media')}}"
                                                 placeholder="Enter Media Link" class="form-control {{ $errors->has('media') ? 'is-invalid' : '' }} ">
                                             @if ($errors->has('media'))
                                                 <div class="invalid-feedback">
@@ -87,8 +87,6 @@
                                                 </div>
                                             @endif
                                         </div>
-                                    </div>
-                                    <div class="col-md-7 mb-3">
                                         <div class="form-group posts" style="display: none;">
                                             <label for="media"
                                                 class="form-label"><strong>{{ trans('label.media') }}</strong>

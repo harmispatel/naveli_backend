@@ -43,11 +43,10 @@
                                     </select>
                                 </div>
                             </div>
-
                             <div class="col-md-4 mb-3">
                                 <div class="form-group">
                                     <select class="form-control" id="question_type_filter">
-                                        <option value="">{{ trans('label.select_option_view_type') }}</option>
+                                        <option value="">{{ trans('label.question_type') }}</option>
                                         @foreach ($questionTypes as $questionType)
                                             <option value="{{ $questionType->id }}">{{ $questionType->name }}</option>
                                         @endforeach
@@ -73,7 +72,7 @@
                                                         <th>{{ trans('label.ageType') }}</th>
                                                         <th>{{ trans('label.actions') }}</th>
                                                     </tr>
-                                            </thead>
+                                                </thead>
                                                 <tbody></tbody>
                                             </table>
                                         </div>
@@ -142,5 +141,39 @@
                table.draw();
             });
         });
+
+        // Function for Delete Table
+        function deleteUsers(questionId) {
+            swal({
+                    title: "Are you sure You want to Delete It ?",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                .then((willDeleteUsers) => {
+                    if (willDeleteUsers) {
+                        $.ajax({
+                            type: "POST",
+                            url: '{{ route('question.destroy') }}',
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                'id': questionId,
+                            },
+                            dataType: 'JSON',
+                            success: function(response) {
+                                if (response.success == 1) {
+                                     //    toastr.success(response.message);
+                                     swal(response.message, "", "success");
+                                    $('#QuestionTable').DataTable().ajax.reload();
+                                } else {
+                                    swal(response.message, "", "error");
+                                }
+                            }
+                        });
+                    } else {
+                        swal("Cancelled", "", "error");
+                    }
+                });
+        }
     </script>
 @endsection

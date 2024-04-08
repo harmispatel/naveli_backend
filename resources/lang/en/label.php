@@ -1,6 +1,8 @@
 <?php
 
 return [
+    "home" => "Home Page",
+    "question_type" => "-- Select Question Type --",
     "about_us" => "About us",
     "festival_name" => "Festival Name",
     "date" => "Date",
@@ -161,5 +163,6 @@ return [
     "Posts Detail" => "Posts Detail",
     "hashtags" => "HashTags",
     "admin_reply" => "Admin Reply",
-    "comment_time" => "Comment Time"
+    "comment_time" => "Comment Time",
+    "link" => "Link"
 ];

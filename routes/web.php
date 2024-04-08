@@ -9,6 +9,7 @@ use App\Http\Controllers\AgeController;
 use App\Http\Controllers\Api\UserSymptomsLogsController;
 use App\Http\Controllers\GeneralSettingController;
 use App\Http\Controllers\ContentUploadController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HealthMixController;
 use App\Http\Controllers\FestivalController;
 use App\Http\Controllers\MedicineController;
@@ -62,6 +63,11 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/', function () {
         return redirect()->route('admin.login');
     });
+
+    //Home
+    Route::get('home',[HomeController::class,'home'])->name('home.index');
+    Route::post('home/create',[HomeController::class,'homeCreateUpdate'])->name('home.create');
+
 
     Route::get('/login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
     Route::post('/do/login', [AuthController::class, 'Adminlogin'])->name('admin.do.login');
@@ -146,7 +152,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('question/store', [QuestionController::class, 'store'])->name('question.store');
         Route::get('question/edit/{id}', [QuestionController::class, 'edit'])->name('question.edit');
         Route::post('/question/update', [QuestionController::class, 'update'])->name('question.update');
-        Route::get('question/destroy/{id}', [QuestionController::class, 'delete'])->name('question.destroy');
+        Route::post('question/destroy', [QuestionController::class, 'delete'])->name('question.destroy');
         Route::get('question/optionView/{id}', [QuestionController::class, 'questionOptionView'])->name('question.optionView');
 
         //User Ask Question
@@ -155,7 +161,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('userAskQuestion/store', [AskYourQuestionController::class, 'store'])->name('userAskQuestion.store');
         Route::get('userAskQuestion/edit/{id}', [AskYourQuestionController::class, 'edit'])->name('userAskQuestion.edit');
         Route::post('userAskQuestion/update', [AskYourQuestionController::class, 'update'])->name('userAskQuestion.update');
-        Route::get('userAskQuestion/destroy/{id}', [AskYourQuestionController::class, 'delete'])->name('userAskQuestion.destroy');
+        Route::post('userAskQuestion/destroy', [AskYourQuestionController::class, 'delete'])->name('userAskQuestion.destroy');
 
         //question Type
         Route::get('questionType', [QuestionTypeController::class, 'index'])->name('questionType.index');
@@ -163,7 +169,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('questionType/store', [QuestionTypeController::class, 'store'])->name('questionType.store');
         Route::get('questionType/edit/{id}', [QuestionTypeController::class, 'edit'])->name('questionType.edit');
         Route::post('questionType/update', [QuestionTypeController::class, 'update'])->name('questionType.update');
-        Route::get('questionType/destroy/{id}', [QuestionTypeController::class, 'destroy'])->name('questionType.destroy');
+        Route::post('questionType/destroy', [QuestionTypeController::class, 'destroy'])->name('questionType.destroy');
 
         // Woman in News
         Route::controller(NewsController::class)->group(function () {
@@ -173,7 +179,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('woman-in-news/store', 'store')->name('woman-in-news.store');
             Route::get('woman-in-news/edit/{id}', 'edit')->name('woman-in-news.edit');
             Route::post('woman-in-news/update', 'update')->name('woman-in-news.update');
-            Route::get('woman-in-news/destroy/{id}', 'destroy')->name('woman-in-news.destroy');
+            Route::post('woman-in-news/destroy', 'destroy')->name('woman-in-news.destroy');
         });
 
         //Festival
@@ -183,7 +189,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('festival/store','store')->name('festival.store');
             Route::get('festival/edit/{id}','edit')->name('festival.edit');
             Route::post('festival/update','update')->name('festival.update');
-            Route::get('festival/destroy/{id}','destroy')->name('festival.destroy');
+            Route::post('festival/destroy','destroy')->name('festival.destroy');
         });
         //posts
         Route::controller(PostController::class)->group(function () {
@@ -192,7 +198,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('posts/store',  'store')->name('posts.store');
             Route::get('posts/edit/{id}',  'edit')->name('posts.edit');
             Route::post('posts/update',  'update')->name('posts.update');
-            Route::get('posts/destroy/{id}',  'destroy')->name('posts.destroy');
+            Route::post('posts/destroy',  'destroy')->name('posts.destroy');
         });
 
         //healthMix
@@ -201,7 +207,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('healthMix/store', [HealthMixController::class, 'store'])->name('healthMix.store');
         Route::get('healthMix/edit/{id}', [HealthMixController::class, 'edit'])->name('healthMix.edit');
         Route::post('healthMix/update', [HealthMixController::class, 'update'])->name('healthMix.update');
-        Route::get('healthMix/destroy/{id}', [HealthMixController::class, 'destroy'])->name('healthMix.destroy');
+        Route::post('healthMix/destroy', [HealthMixController::class, 'destroy'])->name('healthMix.destroy');
 
         //notification
         Route::get('notification', [UserController::class, 'notification'])->name('notification');
@@ -225,7 +231,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('medicine/store', 'store')->name('medicine.store');
             Route::get('medicine/edit/{id}', 'edit')->name('medicine.edit');
             Route::post('medicine/update', 'update')->name('medicine.update');
-            Route::get('medicine/destroy/{id}', 'destroy')->name('medicine.destroy');
+            Route::post('medicine/destroy', 'destroy')->name('medicine.destroy');
         });
 
         // ailments
@@ -234,7 +240,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('ailments/store', [AilmentController::class, 'store'])->name('ailments.store');
         Route::get('ailments/edit/{id}', [AilmentController::class, 'edit'])->name('ailments.edit');
         Route::post('ailments/update', [AilmentController::class, 'update'])->name('ailments.update');
-        Route::get('ailments/destroy/{id}', [AilmentController::class, 'destroy'])->name('ailments.destroy');
+        Route::post('ailments/destroy', [AilmentController::class, 'destroy'])->name('ailments.destroy');
 
         //pdf
         Route::get('/generate-pdf', [pdfController::class, 'generatePDF']);
@@ -246,13 +252,13 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/getsubcategory/{categoryId}', [ForumController::class, 'getSubCategory'])->name('forums.getsubcategory');
         Route::get('forums/edit/{id}', [ForumController::class, 'edit'])->name('forums.edit');
         Route::post('forums/update', [ForumController::class, 'update'])->name('forums.update');
-        Route::get('forums/destroy/{id}', [ForumController::class, 'destroy'])->name('forums.destroy');
+        Route::post('forums/destroy', [ForumController::class, 'destroy'])->name('forums.destroy');
 
         //forum-comments
         Route::get('/forum-comments', [ForumCommentController::class, 'index'])->name('forumcomments.index');
         Route::get('/forum-comments/reply/{id}', [ForumCommentController::class, 'reply'])->name('forumcomments.reply');
         Route::Post('/forum-comments/reply/store', [ForumCommentController::class, 'storeReply'])->name('forumcomments.reply.store');
-        Route::get('/forum-comments/destroy/{id}', [ForumCommentController::class, 'destroy'])->name('forumcomments.destroy');
+        Route::post('/forum-comments/destroy', [ForumCommentController::class, 'destroy'])->name('forumcomments.destroy');
 
         //all about periods-category
         Route::get('/all-about-periods/categories',[AllAboutPeriodCategoryController::class,'index'])->name('aap.category.index');
@@ -268,6 +274,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('/all-about-periods/store',[AllAboutPeriodPostController::class,'store'])->name('aap.posts.store');
         Route::get('/all-about-periods/edit/{id}',[AllAboutPeriodPostController::class,'edit'])->name('aap.posts.edit');
         Route::post('/all-about-periods/update',[AllAboutPeriodPostController::class,'update'])->name('aap.posts.update');
-        Route::get('/all-about-periods/destroy/{id}',[AllAboutPeriodPostController::class,'destroy'])->name('aap.posts.destroy');
+        Route::post('/all-about-periods/destroy',[AllAboutPeriodPostController::class,'destroy'])->name('aap.posts.destroy');
     });
+
+
 });

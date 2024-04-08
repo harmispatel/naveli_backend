@@ -74,7 +74,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-7">
+                                    <div class="col-md-6 mb-2">
                                         <div id="linkInput" class="form-group" style="display: none;">
                                             <label for="posts" class="form-label"><strong>{{ trans('label.enterlink') }}</strong><span class="text-danger"> *</span></label>
                                             <input type="text" name="posts" id="link" value="{{ old('posts') }}"
@@ -82,8 +82,6 @@
                                                 class="form-control">
                                             <div id="linkError" class="text-danger"></div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-7 mb-3">
                                         <div class="form-group" id="postInput" style="display: none;">
                                             <label for="posts"
                                                 class="form-label"><strong>{{ trans('label.posts') }}</strong>

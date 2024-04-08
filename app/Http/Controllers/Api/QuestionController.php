@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 
 class QuestionController extends BaseController
 {
+
     // public function questionlist(Request $request)
     // {
     //     try {

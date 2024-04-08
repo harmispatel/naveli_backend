@@ -100,5 +100,39 @@
             ]
         });
 
+        // Function for Delete Table
+        function deleteUsers(womenInNewsId) {
+            swal({
+                    title: "Are you sure You want to Delete It ?",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                .then((willDeleteUsers) => {
+                    if (willDeleteUsers) {
+                        $.ajax({
+                            type: "POST",
+                            url: '{{ route('woman-in-news.destroy') }}',
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                'id': womenInNewsId,
+                            },
+                            dataType: 'JSON',
+                            success: function(response) {
+                                if (response.success == 1) {
+                                     //    toastr.success(response.message);
+                                     swal(response.message, "", "success");
+                                    $('#WomanInNewsTable').DataTable().ajax.reload();
+                                } else {
+                                    swal(response.message, "", "error");
+                                }
+                            }
+                        });
+                    } else {
+                        swal("Cancelled", "", "error");
+                    }
+                });
+        }
+
     </script>
 @endsection
