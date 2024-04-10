@@ -83,9 +83,9 @@ class ForumController extends Controller
             $createNewForum->description = $request->description;
             $createNewForum->save();
 
-            return redirect()->back()->with('message','Forum Created Successfully');
+            return redirect()->route('forums.index')->with('message','Forum Created Successfully');
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error','internal server error !');
+            return redirect()->route('forums.index')->with('error','internal server error !');
         }
    }
 
@@ -109,7 +109,7 @@ class ForumController extends Controller
 
         return view('admin.forums.edit', compact('forumRecord','mainCategories','childCategories'));
     } catch (\Throwable $th) {
-        return redirect()->route('healthMix.index')->with('error', 'Internal Server Error!');
+        return redirect()->route('forums.index')->with('error', 'Internal Server Error!');
     }
    }
 

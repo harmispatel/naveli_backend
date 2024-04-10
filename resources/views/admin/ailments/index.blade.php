@@ -21,7 +21,7 @@
     </div><!-- End Page Title -->
 
     <div class="add_age_data text-end mb-3">
-         <a href="{{ route('ailments.create') }}" class="btn btn-sm new-category custom-btn">
+        <a href="{{ route('ailments.create') }}" class="btn btn-sm new-category custom-btn">
             <i class="bi bi-plus-lg"></i>
         </a>
     </div>
@@ -33,23 +33,25 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive custom_dt_table">
-                        <div class="form_box">
-                            <div class="form_box_inr">
-                                <div class="box_title">
-                                    <h2>{{ trans('label.ailments_group') }}</h2>
-                                </div>
-                                <div class="form_box_info">
-                                    <div class="table-responsive">
-                                        <table class="table w-100 dataTable no-footer" id="AilmentTable" aria-describedby="UsersTable_info" style="width: 948px;">
-                                            <thead>
-                                                <tr>
-                                                    <th>{{ trans('label.Id') }}</th>
-                                                    <th>{{ trans('label.Name') }}</th>
-                                                    <th>{{ trans('label.actions') }}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody></tbody>
-                                        </table>
+                            <div class="form_box">
+                                <div class="form_box_inr">
+                                    <div class="box_title">
+                                        <h2>{{ trans('label.ailments_group') }}</h2>
+                                    </div>
+                                    <div class="form_box_info">
+                                        <div class="table-responsive">
+                                            <table class="table w-100 dataTable no-footer" id="AilmentTable"
+                                                aria-describedby="UsersTable_info" style="width: 948px;">
+                                                <thead>
+                                                    <tr>
+                                                        <th>{{ trans('label.Id') }}</th>
+                                                        <th>{{ trans('label.Name') }}</th>
+                                                        <th>{{ trans('label.actions') }}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -57,7 +59,6 @@
                     </div>
                 </div>
             </div>
-        </div>
     </section>
 
 @endsection
@@ -73,10 +74,9 @@
                 serverSide: true,
                 pageLength: 50,
                 ajax: "{{ route('ailments.index') }}",
-                columns: [
-                    {
+                columns: [{
                         data: 'id',
-                        name:'id',
+                        name: 'id',
                         'searchable': false
                     },
                     {
@@ -93,8 +93,8 @@
             });
         });
 
-          // Function for Delete Table
-          function deleteUsers(ailmentId) {
+        // Function for Delete Table
+        function deleteUsers(ailmentId) {
             swal({
                     title: "Are you sure You want to Delete It ?",
                     icon: "warning",

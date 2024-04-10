@@ -23,11 +23,11 @@ class CreateDailyDairiesTable extends Migration
             $table->string('body_care')->nullable();
             $table->text('gratitude')->nullable();
             $table->string('hang_out')->nullable();
+            $table->string('sleep')->nullable();
             $table->string('work_out')->nullable();
             $table->string('screen_time')->nullable();
             $table->string('food')->nullable();
             $table->text('edit')->nullable();
-            $table->text('key_activities')->nullable();
             $table->text('to_do_list')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->timestamps();

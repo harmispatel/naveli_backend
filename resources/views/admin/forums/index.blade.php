@@ -36,7 +36,7 @@
                                 <div class="col-md-4 mb-3">
                                     <div class="form-group">
                                         <select class="form-control mt-2" id="option_view_filter">
-                                            <option value="">{{ trans('label.select_option_view_type') }}</option>
+                                            <option value="">{{ trans('label.view_forums_category_wise') }}</option>
                                             @foreach ( $forum_categories as $forum_category)
                                             <option value="{{$forum_category->id}}">{{ $forum_category->name }}</option>
                                             @endforeach 

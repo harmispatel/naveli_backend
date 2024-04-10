@@ -95,7 +95,7 @@
             var table = $('#QuestionTable').DataTable({
                 processing: true,
                 serverSide: true,
-                pageLength: 50,
+                pageLength: 10,
                 ajax:{
                     url : "{{ route('question.index') }}",
                     data : function(d) {

@@ -37,7 +37,6 @@ class CommonController extends BaseController
       
           return $this->sendResponse($storeState,'State Saved SuccsseFully',true);
         } catch (\Throwable $th) {
-          
             return $this->sendResponse(null,'Internal Server Error!',false);
         }
     }
@@ -62,11 +61,11 @@ class CommonController extends BaseController
             if($city){
                     $cityName = $city->name;
             
-                      $user = User::find(auth()->user()->id);
+                    $user = User::find(auth()->user()->id);
             
-                      $storeState = $user->update([
+                    $storeState = $user->update([
                            'city' => $cityName,
-                      ]);
+                    ]);
                       
             }else{
                  return $this->sendResponse(null,'City not found',false);
@@ -116,7 +115,7 @@ class CommonController extends BaseController
 
     public function storeDailydairy(Request $request){
         try {
-            if(isset($request->mood) && !empty($request->mood) && isset($request->music) && !empty($request->music) && isset($request->learning) && !empty($request->learning) && isset($request->cleaning) && !empty($request->cleaning) && isset($request->body_care) && !empty($request->body_care) && isset($request->gratitude) && !empty($request->gratitude) && isset($request->hang_out) && !empty($request->hang_out) && isset($request->work_out) && !empty($request->work_out) && isset($request->screen_time) && !empty($request->screen_time) && isset($request->food) && !empty($request->food) && isset($request->edit) && !empty($request->edit) && isset($request->key_activities) && !empty($request->key_activities) && isset($request->to_do_list) && !empty($request->to_do_list)){
+            if(isset($request->mood) && !empty($request->mood) && isset($request->music) && !empty($request->music) && isset($request->learning) && !empty($request->learning) && isset($request->cleaning) && !empty($request->cleaning) && isset($request->body_care) && !empty($request->body_care) && isset($request->gratitude) && !empty($request->gratitude) && isset($request->hang_out) && !empty($request->hang_out) && isset($request->work_out) && !empty($request->work_out) && isset($request->screen_time) && !empty($request->screen_time) && isset($request->food) && !empty($request->food) && isset($request->edit) && !empty($request->edit) && isset($request->to_do_list) && !empty($request->to_do_list) && isset($request->sleep) && !empty($request->sleep) && isset($request->created_at) && !empty($request->created_at)){
                 $dailydairys = DailyDairy::first();
                 
                 if($dailydairys && $dailydairys->id > 0){
@@ -157,6 +156,12 @@ class CommonController extends BaseController
                         $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
                         $dailydairys->hang_out = $image_url;
                     }
+                    if ($request->has('sleep')) {
+                        File::delete(public_path('/images/uploads/Daily_dairys/' . $dailydairys->sleep));
+                        $file = $request->file('sleep');
+                        $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
+                        $dailydairys->sleep = $image_url;
+                    }
                     if ($request->has('work_out')) {
                         File::delete(public_path('/images/uploads/Daily_dairys/' . $dailydairys->work_out));
                         $file = $request->file('work_out');
@@ -178,8 +183,9 @@ class CommonController extends BaseController
 
                     $dailydairys->gratitude = $request->gratitude;
                     $dailydairys->edit = $request->edit;
-                    $dailydairys->key_activities = $request->key_activities;
                     $dailydairys->to_do_list = $request->to_do_list;
+                    $dailydairys->created_at = $request->created_at;
+                    $dailydairys->updated_at = $request->created_at;
                     $dailydairys->user_id = auth()->user()->id; 
     
                     $dailydairys->save();
@@ -187,7 +193,7 @@ class CommonController extends BaseController
                     return $this->sendResponse($dailydairys,'Daily_dairy updated SuccessFully',true);
                    
                 }else{
-                    $input = $request->except('mood','music','learning','cleaning','body_care','hang_out','work_out','screen_time','food');
+                    $input = $request->except('mood','music','learning','cleaning','body_care','hang_out','work_out','screen_time','food','sleep','created_at');
                    
                     if ($request->has('mood')) {
                         $file = $request->file('mood');
@@ -219,6 +225,11 @@ class CommonController extends BaseController
                         $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
                         $input['hang_out'] = $image_url;
                     }
+                    if ($request->has('sleep')) {
+                        $file = $request->file('sleep');
+                        $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
+                        $input['sleep'] = $image_url;
+                    }
                     if ($request->has('work_out')) {
                         $file = $request->file('work_out');
                         $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
@@ -236,6 +247,8 @@ class CommonController extends BaseController
                     }
 
                     $input['user_id'] = auth()->user()->id; 
+                    $input['created_at'] = $request->created_at;
+                    $input['updated_at'] = $request->created_at;
     
                     $dailydairys = DailyDairy::create($input);
 

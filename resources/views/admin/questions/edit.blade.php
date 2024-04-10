@@ -45,13 +45,24 @@
                                             <label for="questionType_id"
                                                 class="form-label"><strong>{{ trans('label.questionType') }}</strong>
                                                 <span class="text-danger">*</span></label>
-                                            <select type="text" name="questionType_id" id="questionType_id"
-                                                class="form-control {{ $errors->has('questionType_id') ? 'is-invalid' : '' }}">
+                                            <input type="hidden" class="form-control" name="questionType_id"
+                                                id="questionType_id" value="{{ $question->questionType_id }}">
+                                            @if (isset($question->questionType_id))
+                                                @foreach ($questionTypes as $questionType)
+                                                    @if ($questionType->id == $question->questionType_id)
+                                                        <input type="text" class="form-control"
+                                                            value="{{ $questionType->name }}" readonly>
+                                                    @endif
+                                                @endforeach
+                                            @endif
+
+                                            {{-- <select type="text" name="questionType_id" id="cc"
+                                                class="form-control {{ $errors->has('questionType_id') ? 'is-invalid' : '' }}" readonly>
                                                 <option value="">-- Select Question Type</option>
                                                 @foreach ($questionTypes as $questionType)
                                                     <option value="{{ $questionType->id }}"
                                                         {{ old('questionType_id', $question->questionType_id == $questionType->id) ? 'selected' : '' }}>
-                                                        {{ $questionType->name }}
+                                                        {{ $questionType->name }}   
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -59,15 +70,25 @@
                                                 <div class="invalid-feedback">
                                                     {{ $errors->first('questionType_id') }}
                                                 </div>
-                                            @endif
+                                            @endif --}}
                                         </div>
                                     </div>
                                     <div class="col-md-6" id="ageHide" style="display: none">
                                         <div class="form-group">
                                             <label for="age_group_id"
                                                 class="form-label"><strong>{{ trans('label.ageType') }}</strong></label>
-                                            <select type="text" name="age_group_id" id="age_group_id"
-                                                class="form-control">
+                                            <input type="hidden" class="form-control" name="age_group_id" id="age_group_id"
+                                                value="{{ $question->age_group_id }}">
+                                            @if (isset($question->age_group_id))
+                                                @foreach ($ageTypes as $ageType)
+                                                    @if ($ageType->id == $question->age_group_id)
+                                                        <input type="text" class="form-control"
+                                                            value="{{ $ageType->name }}" readonly>
+                                                    @endif
+                                                @endforeach
+                                            @endif
+                                            {{-- <select type="text" name="age_group_id" id="age_group_id"
+                                                class="form-control" readonly>
                                                 <option value="">-- Select Age Type --</option>
                                                 @foreach ($ageTypes as $ageType)
                                                     <option value="{{ $ageType->id }}"
@@ -75,7 +96,7 @@
                                                         {{ $ageType->name }}
                                                     </option>
                                                 @endforeach
-                                            </select>
+                                            </select> --}}
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-3">
@@ -94,32 +115,33 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-12 mb-3 additional-info text-end ">
-                                        <a class="btn btn-sm new-category custom-btn" id="addOption"><i
-                                                class="bi bi-plus-lg"></i></a>
+                                    <div class="col-md-12 mb-3 additional-info text-end">
+                                        {{-- <a class="btn btn-sm new-category custom-btn" id="addOption"><i
+                                                class="bi bi-plus-lg"></i></a> --}}
                                     </div>
-                                    <div class="row">
+                                    {{-- <div class="row"> --}}
                                         <!-- Populate options -->
                                         @foreach ($options as $option)
                                             <div class="col-md-6">
-                                                <div class="row align-items-end added-option">
+                                                {{-- <div class="row align-items-end added-option"> --}}
                                                     <!-- Populate option_name and icon if they exist in your Option model -->
-                                                    <div class="col-md-10 mb-3 additional-info">
+                                                    {{-- <div class="col-md-12 mb-3 additional-info"> --}}
                                                         <label for="option_name"
                                                             class="form-label"><strong>{{ trans('label.option_name') }}</strong></label>
                                                         <input type="text" name="option_name[]" id="option_name1"
-                                                            value="{{ $option->option_name }}" class="form-control" />
+                                                            value="{{ $option->option_name }}" class="form-control"
+                                                            readonly />
                                                         <div id="option_name1_error" class="invalid-feedback"></div>
-                                                    </div>
-                                                    <div class="col-md-2 mb-3 pt-2 additional-info">
+                                                    {{-- </div> --}}
+                                                    {{-- <div class="col-md-2 mb-3 pt-2 additional-info">
                                                         <button class="btn btn-sm btn-danger cancel-option"
                                                             onclick="removeOption(this)"><i class="bi bi-trash"
                                                                 aria-hidden="true"></i></button>
-                                                    </div>
-                                                </div>
+                                                    </div> --}}
+                                                {{-- </div> --}}
                                             </div>
                                         @endforeach
-                                    </div>
+                                    {{-- </div> --}}
                                     <div class="appending_div row"></div>
                                 </div>
                             </div>

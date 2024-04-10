@@ -56,11 +56,15 @@ class QuestionController extends Controller
                         return $ageGroup ? $ageGroup->name : '--';
                     })
                     ->addColumn('actions', function ($question) {
-                        return '<div class="btn-group">
-                                <a href=' . route("question.edit", ["id" => encrypt($question->id)]) . ' class="btn btn-sm custom-btn me-1"> <i class="bi bi-pencil" aria-hidden="true"></i></a>
-                                <a onclick="deleteUsers(\'' . $question->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
-                                <a href=' . route("question.optionView", ["id" => encrypt($question->id)]) . ' class="btn btn-sm btn-info me-1"><i class="bi bi-eye" aria-hidden="true"></i></a>
-                                </div>';
+
+                        $action_html = '<div class="btn-group">';
+                        $action_html .= '<a href=' . route("question.edit", ["id" => encrypt($question->id)]) . ' class="btn btn-sm custom-btn me-1"> <i class="bi bi-pencil" aria-hidden="true"></i></a>';
+                        if(!in_array($question->questionType_id, [1, 2, 3, 4])){
+                            $action_html .= '<a onclick="deleteUsers(\'' . $question->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>';
+                        }
+                        $action_html .= '<a href=' . route("question.optionView", ["id" => encrypt($question->id)]) . ' class="btn btn-sm btn-info me-1"><i class="bi bi-eye" aria-hidden="true"></i></a>';
+                        $action_html .= '</div>';
+                        return $action_html;
                     })
                     ->rawColumns(['actions', 'questionType_id'])
                     ->make(true);
@@ -122,22 +126,19 @@ class QuestionController extends Controller
                         // Check if $optionName is not null or an empty string
                         if ($optionName !== null && $optionName !== '') {
                             $questionOption = new Question_option;
-
                             $questionOption->question_id = $question->id;
                             $questionOption->option_name = $optionName;
-                            $questionOption->option_slug =  strtolower(Str::slug($questionOption->option_name, "_"));
+                            $questionOption->option_slug = strtolower(Str::slug($questionOption->option_name, "_"));
                             $questionOption->save();
-
                         }
                     }
                 }
             }
 
             // return redirect()->route('question.index')->with('message', 'Question Saved Successfully');
-            return redirect()->back()->with('message', 'Question Saved Successfully');
+            return redirect()->route('question.index')->with('message', 'Question Saved Successfully');
         } catch (\Throwable $th) {
-
-            return redirect()->back()->with('error', 'Internal Server Error');
+            return redirect()->route('question.index')->with('error', 'Internal Server Error');
         }
     }
 
@@ -160,10 +161,10 @@ class QuestionController extends Controller
 
     public function update(Request $request)
     {
-
+       
         $request->validate([
             'question_name' => 'required',
-            'questionType_id' => 'required',
+            // 'questionType_id' => 'required',
 
         ]);
 
@@ -173,43 +174,58 @@ class QuestionController extends Controller
             $question = Question::find($id);
 
             if ($question) {
-                $question->questionType_id = $request->questionType_id;
-                $question->question_name = $request->question_name;
-                $question->age_group_id = $request->age_group_id;
+                $question->update([
+                //  'questionType_id' => $request->questionType_id,
+                    'question_name' => $request->question_name,
+                //  'age_group_id' => $request->age_group_id
+                ]);
+                // $question->questionType_id = $request->questionType_id;
+                // $question->question_name = $request->question_name;
+                // $question->age_group_id = $request->age_group_id;
 
-                $question->save(); // Save the changes to the database
+                // $question->save(); // Save the changes to the database
 
-                $existingOptionIds = [];
+                // $existingOptionIds = [];
 
-                foreach ($request->option_name as $index => $optionName) {
-                    if (!is_null($optionName)) {
-                        $questionOption = Question_option::findOrNew($index); // Find existing Question_option or create a new one
+                // foreach ($request->option_name as $index => $optionName) {
+    
+                //     if (!is_null($optionName)) {
+                //         $questionOption = Question_option::where('question_id', $id)
+                //                           ->first(); // Find existing Question_option or create a new one
 
-                        $questionOption->question_id = $id;
-                        $questionOption->option_name = $optionName;
-                        $questionOption->option_slug = strtolower(Str::slug($questionOption->option_name,"_"));
-                        $questionOption->save();
+                //       $update =  $questionOption->update([
+                //            'question_id' => $id,
+                //            'option_name' => $optionName,
+                //            'option_slug' => strtolower(Str::slug($questionOption->option_name,"_")),
+                //         ]);
 
-                        $existingOptionIds[] = $questionOption->id;
-                    }
-                }
+                       
+                //         // $questionOption->question_id = $id;
+                //         // $questionOption->option_name = $optionName;
+                //         // $questionOption->option_slug = strtolower(Str::slug($questionOption->option_name,"_"));
+                //         // $questionOption->save();
 
-                if(isset($question->questionType_id) && $question->questionType_id != 3) {
-                    $updateAgeGroup = Question::where('id',$id)->update([
-                         'age_group_id' => null,
-                    ]);
-                }
+                //         $existingOptionIds[] = $questionOption->id;
+                //     }
+                // }
 
+                // if(isset($question->questionType_id) && $question->questionType_id != 3) {
+                //     $updateAgeGroup = Question::where('id',$id)->update([
+                //          'age_group_id' => null,
+                //     ]);
+                // }
 
                 // Delete records whose IDs are not in the $existingOptionIds array
-                Question_option::where('question_id', $id)
-                    ->whereNotIn('id', $existingOptionIds)
-                    ->delete();
+                //    $questionOption =  Question_option::where('question_id', $id)
+                //                       ->whereNotIn('id', $existingOptionIds)
+                //                       ->delete();
+
 
                 return redirect()->route('question.index')->with('message', 'Question Updated Successfully');
             }
             return redirect()->route('question.index')->with('error', 'Question Not Found');
         } catch (\Throwable $th) {
+            dd($th);
             // Log the error for further investigation
             return redirect()->route('question.index')->with('error', 'Internal Server Error');
         }

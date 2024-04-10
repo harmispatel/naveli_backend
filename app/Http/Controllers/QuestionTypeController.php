@@ -35,8 +35,8 @@ class QuestionTypeController extends Controller
                         $questionType_id = isset($question->id) ? $question->id : '';
                         $action_html = '<div class="btn-group">';
                         $action_html .= '<a href="' . route('questionType.edit', encrypt($question->id)) . '" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
-                        
-                        if(!in_array($questionType_id, [1, 2, 3])){
+
+                        if(!in_array($questionType_id, [1, 2, 3, 4])){
                             $action_html .= '<a onclick="deleteUsers(\'' . $question->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>';
                         }
                         $action_html .= '</div>';
@@ -104,7 +104,7 @@ class QuestionTypeController extends Controller
             'name' => 'required|unique:question_types,name,'.$id,
         ]);
 
-        try {         
+        try {
             $questionType = QuestionType::find($id);
             $questionType->name = $request->name;
 
@@ -120,7 +120,7 @@ class QuestionTypeController extends Controller
 
             return redirect()->route('questionType.index')->with('message', 'QuestionType Updated SuccessFully');
         } catch (\Throwable $th) {
-          
+
             return redirect()->route('questionType.index')->with('error', 'Internal Server Error!');
         }
     }

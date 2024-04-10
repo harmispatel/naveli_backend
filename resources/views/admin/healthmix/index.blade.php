@@ -36,7 +36,7 @@
                                 <div class="col-md-4 mb-3">
                                     <div class="form-group">
                                         <select class="form-control mt-2" id="option_view_filter">
-                                            <option value="">{{ trans('label.select_option_view_type') }}</option>
+                                            <option value="">{{ trans('label.view_healthmix_category_wise') }}</option>
                                             <option value="1" >Expert Advice</option>
                                             <option value="2" >Cycle Wisdom</option>
                                             <option value="3" >Groove With Neow</option>

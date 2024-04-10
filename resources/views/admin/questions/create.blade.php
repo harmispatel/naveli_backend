@@ -184,9 +184,11 @@
         
              $('#questionType_id').change(function (){
                    if($(this).val() == 3){
+                    $('#addOption').hide();
                     $('#ageHide').show();
                    }else{
                     $('#ageHide').hide();
+                    $('#addOption').show();
                    }
              });
         });

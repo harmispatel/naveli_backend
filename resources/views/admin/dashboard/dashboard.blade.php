@@ -218,9 +218,9 @@
                 <div class="col-md-12">
                     <div class="card mb-3">
                         <div class="card-body">
-                            <div class="d-flex justify-content align-items-center mb-3">
+                            <div style="display: flex; justify-content: center;">
                                 <h5 class="card-title text-center">Total Active Users</h5>
-                                <a class="btn btn-sm btn-primary ms-3" id="downloadActiveUserButton"><i
+                                <a class="btn btn-sm btn-primary m-3" id="downloadActiveUserButton"><i
                                         class="bi bi-download"></i></a>
                             </div>
                             <div class="row">
@@ -266,11 +266,11 @@
                 <div class="col-md-12">
                     <div class="card mb-3">
                         <div class="card-body">
-                            <div class="row card-title text-center">
-                                <div style="display: flex; justify-content:">
-                                    <h5>Age Groups - </h5>
-                                    <h5 class="totalAgeGroupCount ms-2"></h5>
-                                    <a class="btn btn-sm btn-primary ms-3" id="downloadAgeGroupButton"><i
+                            <div class="row">
+                                <div style="display: flex;">
+                                    <h5 class="card-title">Age Groups - </h5>
+                                    <h5 class="card-title totalAgeGroupCount ms-2"></h5>
+                                    <a class="btn btn-sm btn-primary m-3" id="downloadAgeGroupButton"><i
                                             class="bi bi-download"></i></a>
                                 </div>
                             </div>

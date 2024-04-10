@@ -1,0 +1,103 @@
+.custom-btn, .custom-btn:hover{
+    background-color: #012970;
+    color: #fff;
+}
+.form_button{
+    color: #fff;
+    background-color: #012970;
+}
+.form_button:hover{
+    border-color: #012970;
+    color: #012970;
+}
+.form_box_inr{
+    border: 1px solid #012970;
+    margin-bottom: 15px;
+
+}
+.form_box .form_box_inr:last-child{
+    margin: 0 !important;
+}
+.form_box_info {
+    padding: 15px;
+}
+
+.responsive-table {
+    overflow-x: auto;
+}
+
+.form_box_info .select2.select2-container {
+    width: 100% !important;
+    display: block;
+}
+
+.prmission_box .accordion-item {
+    border: 1px solid #012970;
+    margin-bottom: 20px;
+}
+.box_title {
+    background-color: #012970;
+    border-bottom: 1px solid #012970;
+    padding: 10px 15px;
+    }
+    .box_title h2 {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0;
+        color: #fff;
+    }
+.card-body {
+    padding: 20px;
+}
+
+.loder {
+    position:fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 999;
+}
+
+
+.like_btn,.like_btn:hover{
+    background-color:#012970;
+    border-color: #012970;
+}
+
+.like{
+    background-color: #012970;
+    border-radius: 5px;
+    color: #fff;
+    border-color: #012970;
+}
+.like.active{
+    background-color: green;
+    color: #fff !important;
+    border-color: green;
+
+}
+
+.form_box .nav-justified>.nav-link{
+    border: 1px solid #012970;
+    color: #012970;
+    background: #fff;
+}
+
+.form_box .nav-justified .nav-link:nth-of-type(2){
+    margin: 0 15px;
+}
+
+.form_box .nav-justified>.nav-link.active{
+    background: #012970;
+    color: #fff;
+}
+
+.csm_que .form-group{
+    margin-bottom: 15px;
+}
+

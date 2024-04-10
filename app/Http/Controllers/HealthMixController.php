@@ -125,9 +125,9 @@ class HealthMixController extends Controller
 
             $healthMix = HealthMix::create($input);
 
-            return redirect()->route('healthMix.create')->with('message', 'A New Healthmix Created SuccessFully');
+            return redirect()->route('healthMix.index')->with('message', 'A New Healthmix Created SuccessFully');
         } catch (\Throwable $th) {
-            return redirect()->route('healthMix.create')->with('error', 'Internal Server Error!');
+            return redirect()->route('healthMix.index')->with('error', 'Internal Server Error!');
         }
 
     }

@@ -37,7 +37,7 @@
                                 <div class="col-md-4 mb-3">
                                     <div class="form-group">
                                         <select class="form-control mt-2" id="option_view_filter">
-                                            <option value="">{{ trans('label.select_option_view_type') }}</option>
+                                            <option value="">{{ trans('label.view_posts_category_wise') }}</option>
                                             <option value="1">{{ trans('label.do_you_know') }}</option>
                                             <option value="2">{{ trans('label.myth_vs_facts') }}</option>
                                             <!-- <option value="3">{{ trans('label.all_about_periods') }}</option> -->

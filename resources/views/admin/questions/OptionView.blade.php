@@ -51,8 +51,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                
+                </div>               
             </div>
             <div class="card-footer text-center">
                 <a href="{{ route('question.index') }}" class="btn form_button">{{ trans('label.Back') }}</a>
