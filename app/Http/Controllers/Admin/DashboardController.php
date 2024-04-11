@@ -322,8 +322,7 @@ class DashboardController extends Controller
             $totalTransActiveUsers = $activeUsers->where('user.gender', 3)->count();
 
             if ($ageGroupId == 'all') {
-                //AgeGrouptotalCount
-
+             
                 // Neow
                 $totalNeowCount = $users->where('role_id', 2)->count();
                 $totalFemaleNeowCount = $users->where('role_id', 2)->where('gender', 2)->count();

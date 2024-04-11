@@ -1,7 +1,9 @@
 <?php
 
+use App\Models\TrackSleep;
 use Spatie\Permission\Models\Role;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 
  function getRoleList(){
@@ -71,5 +73,50 @@ function calculateAge($birthdate)
     return $age;
 }
 
+function calculateAverageSleepTime($userId) {
+
+    $records = TrackSleep::where('user_id', $userId)
+        ->whereBetween('created_at', [now()->subWeek(), now()])
+        ->get();
+
+
+    $totalSeconds = 0;
+    $recordCount = $records->count();
+
+
+    foreach ($records as $record) {
+
+        $badTime = DateTime::createFromFormat('h:i a', $record->bad_time);
+        $wakeUptime = DateTime::createFromFormat('h:i a', $record->wake_up_time);
+        // If end time is before start time, it's on the next day
+        if ($wakeUptime < $badTime) {
+            // Add one day to end time
+            $wakeUptime->modify('+1 day');
+        }
+         $difference  = $wakeUptime->diff($badTime);
+         $totalSeconds += $difference->s + ($difference->i * 60) + ($difference->h * 3600);
+
+    }
+
+    // Calculate average sleep time
+    if ($recordCount > 0) {
+        $averageSeconds = $totalSeconds / $recordCount;
+
+        // Ensure average is positive
+        $averageSeconds = max(0, $averageSeconds);
+
+        // Convert average sleep time to hours and minutes
+        $averageHours = floor($averageSeconds / 3600);
+        $averageMinutes = floor(($averageSeconds % 3600) / 60);
+
+        // Format the average sleep time string
+        $averageSleepTimeString = sprintf('%02dHr %02dMin', $averageHours, $averageMinutes);
+
+        return $averageSleepTimeString;
+    } else {
+        return "00Hr 00Min";
+    }
+
+}
 
 ?>

@@ -11,6 +11,8 @@ use App\Models\Question;
 use App\Models\QuestionType;
 use App\Models\QuestionAnswer;
 use App\Models\Question_option;
+use App\Models\SubOption;
+use App\Models\SubQuestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -261,5 +263,25 @@ class QuestionController extends BaseController
     //         return $this->sendError('Something Went Wrong!', [], 500);
     //     }
     // }
+        public function getSubQuestions(Request $request){
+            try {
+                $option_id = $request->option_id ?? null;
+                $getSubQuestions = SubQuestion::where('sub_option_id',$option_id)->orWhere('option_id',$option_id)->with('sub_question')->get();
 
+                if(isset($getSubQuestions)){
+
+                    $subQuestions = $getSubQuestions->map(function($getSubQuestion){
+                        return [
+                                'Question' => isset($getSubQuestion->sub_question) ?
+                                    $getSubQuestion->sub_question->title
+                                : null
+
+                        ];
+                    });
+                    return $this->sendResponse($subQuestions, 'Data Receive Successfully', true);
+                }
+            } catch (\Throwable $th) {
+                return $this->sendResponse(null, 'something went wrong!', false);
+            }
+        }
 }

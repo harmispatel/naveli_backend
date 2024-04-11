@@ -29,6 +29,7 @@ class CreateDailyDairiesTable extends Migration
             $table->string('food')->nullable();
             $table->text('edit')->nullable();
             $table->text('to_do_list')->nullable();
+            $table->text('daily_dairy')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->timestamps();
         });

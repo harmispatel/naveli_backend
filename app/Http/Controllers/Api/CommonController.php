@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BaseController as BaseController;
+use App\Models\DailyDairy;
 use App\Models\Festival;
 use App\Models\Home;
 use App\Models\User;
 use App\Traits\ImageTrait;
-use App\Models\DailyDairy;
-use Illuminate\Support\Facades\File;
 use DB;
 use Illuminate\Http\Request;
 
@@ -16,264 +15,207 @@ class CommonController extends BaseController
 {
     use ImageTrait;
 
-    public function storeState(Request $request){
+    public function storeState(Request $request)
+    {
         try {
-          $state_id = $request->state_id;
+            $state_id = $request->state_id;
 
-          $state = DB::table('states')->where('id',$state_id)->first();
+            $state = DB::table('states')->where('id', $state_id)->first();
 
-            if($state){
-                    $stateName = $state->name;
-            
-                      $user = User::find(auth()->user()->id);
-            
-                      $storeState = $user->update([
-                           'state' => $stateName,
-                      ]);
-                      
-            }else{
-                 return $this->sendResponse(null,'State not found',false);
+            if ($state) {
+                $stateName = $state->name;
+
+                $user = User::find(auth()->user()->id);
+
+                $storeState = $user->update([
+                    'state' => $stateName,
+                ]);
+
+            } else {
+                return $this->sendResponse(null, 'State not found', false);
             }
-      
-          return $this->sendResponse($storeState,'State Saved SuccsseFully',true);
+
+            return $this->sendResponse($storeState, 'State Saved SuccsseFully', true);
         } catch (\Throwable $th) {
-            return $this->sendResponse(null,'Internal Server Error!',false);
+            return $this->sendResponse(null, 'Internal Server Error!', false);
         }
     }
 
-    public function stateList(){
-    
-        try {
-            $stateList = DB::table('states')->select('id','name')->get();
+    public function stateList()
+    {
 
-            return $this->sendResponse($stateList,'stateList retrived SuccessFully',true);
+        try {
+            $stateList = DB::table('states')->select('id', 'name')->get();
+
+            return $this->sendResponse($stateList, 'stateList retrived SuccessFully', true);
         } catch (\Throwable $th) {
-            return $this->sendResponse(null,'Internal Server Error!',false);
+            return $this->sendResponse(null, 'Internal Server Error!', false);
         }
     }
-    
-    public function storeCity(Request $request){
+
+    public function storeCity(Request $request)
+    {
         try {
-          $city_id = $request->city_id;
+            $city_id = $request->city_id;
 
-          $city = DB::table('cities')->where('id',$city_id)->first();
+            $city = DB::table('cities')->where('id', $city_id)->first();
 
-            if($city){
-                    $cityName = $city->name;
-            
-                    $user = User::find(auth()->user()->id);
-            
-                    $storeState = $user->update([
-                           'city' => $cityName,
-                    ]);
-                      
-            }else{
-                 return $this->sendResponse(null,'City not found',false);
+            if ($city) {
+                $cityName = $city->name;
+
+                $user = User::find(auth()->user()->id);
+
+                $storeState = $user->update([
+                    'city' => $cityName,
+                ]);
+
+            } else {
+                return $this->sendResponse(null, 'City not found', false);
             }
-      
-          return $this->sendResponse($storeState,'City Saved SuccsseFully',true);
+
+            return $this->sendResponse($storeState, 'City Saved SuccsseFully', true);
         } catch (\Throwable $th) {
-          
-            return $this->sendResponse(null,'Internal Server Error!',false);
+
+            return $this->sendResponse(null, 'Internal Server Error!', false);
         }
     }
 
-    public function cityList(Request $request){
+    public function cityList(Request $request)
+    {
         try {
-               $id = $request->state_id;
-               if(isset($id) && !empty($id)){
-                $cityList = DB::table('cities')->where('state_id',$id)->select('id','name')->get();
-               }else{
-                return $this->sendResponse(null,'id is required',false);
-               }
-         
-            return $this->sendResponse($cityList,'cityList retrived SuccessFully',true);
+            $id = $request->state_id;
+            if (isset($id) && !empty($id)) {
+                $cityList = DB::table('cities')->where('state_id', $id)->select('id', 'name')->get();
+            } else {
+                return $this->sendResponse(null, 'id is required', false);
+            }
+
+            return $this->sendResponse($cityList, 'cityList retrived SuccessFully', true);
         } catch (\Throwable $th) {
-            return $this->sendResponse(null,'Internal Server Error!',false);
+            return $this->sendResponse(null, 'Internal Server Error!', false);
         }
     }
 
-    public function festivalList(){
+    public function festivalList()
+    {
         try {
             $currentMonth = date('m');
             $currentYear = date('Y');
 
-        // Filter festivals for the current month
-        $festivals = Festival::whereMonth('date', $currentMonth)
-                             ->whereYear('date', $currentYear)
-                             ->orderBy('date','ASC')
-                             ->get();
+            // Filter festivals for the current month
+            $festivals = Festival::whereMonth('date', $currentMonth)
+                ->whereYear('date', $currentYear)
+                ->orderBy('date', 'ASC')
+                ->get();
 
             // Extract festival names
             $festivalNames = $festivals->pluck('festival_name')->toArray();
 
-        return $this->sendResponse($festivalNames,'Festival retrived SuccessFully',true);
+            return $this->sendResponse($festivalNames, 'Festival retrived SuccessFully', true);
         } catch (\Throwable $th) {
-            return $this->sendResponse(null,'Internal Server Error!',false);
+            return $this->sendResponse(null, 'Internal Server Error!', false);
         }
     }
 
-    public function storeDailydairy(Request $request){
+    public function storeDailydairy(Request $request)
+    {
         try {
-            if(isset($request->mood) && !empty($request->mood) && isset($request->music) && !empty($request->music) && isset($request->learning) && !empty($request->learning) && isset($request->cleaning) && !empty($request->cleaning) && isset($request->body_care) && !empty($request->body_care) && isset($request->gratitude) && !empty($request->gratitude) && isset($request->hang_out) && !empty($request->hang_out) && isset($request->work_out) && !empty($request->work_out) && isset($request->screen_time) && !empty($request->screen_time) && isset($request->food) && !empty($request->food) && isset($request->edit) && !empty($request->edit) && isset($request->to_do_list) && !empty($request->to_do_list) && isset($request->sleep) && !empty($request->sleep) && isset($request->created_at) && !empty($request->created_at)){
-                $dailydairys = DailyDairy::first();
-                
-                if($dailydairys && $dailydairys->id > 0){
-                   
-                    if ($request->has('mood')) {
-                        File::delete(public_path('/images/uploads/Daily_dairys/' . $dailydairys->mood));
-                        $file = $request->file('mood');
-                        $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
-                        $dailydairys->mood = $image_url;
-                    }
-                    if ($request->has('music')) {
-                        File::delete(public_path('/images/uploads/Daily_dairys/' . $dailydairys->music));
-                        $file = $request->file('music');
-                        $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
-                        $dailydairys->music = $image_url;
-                    }
-                    if ($request->has('learning')) {
-                        File::delete(public_path('/images/uploads/Daily_dairys/' . $dailydairys->learning));
-                        $file = $request->file('learning');
-                        $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
-                        $dailydairys->learning = $image_url;
-                    }
-                    if ($request->has('cleaning')) {
-                        File::delete(public_path('/images/uploads/Daily_dairys/' . $dailydairys->cleaning));
-                        $file = $request->file('cleaning');
-                        $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
-                        $dailydairys->cleaning = $image_url;
-                    }
-                    if ($request->has('body_care')) {
-                        File::delete(public_path('/images/uploads/Daily_dairys/' . $dailydairys->body_care));
-                        $file = $request->file('body_care');
-                        $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
-                        $dailydairys->body_care = $image_url;
-                    }
-                    if ($request->has('hang_out')) {
-                        File::delete(public_path('/images/uploads/Daily_dairys/' . $dailydairys->hang_out));
-                        $file = $request->file('hang_out');
-                        $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
-                        $dailydairys->hang_out = $image_url;
-                    }
-                    if ($request->has('sleep')) {
-                        File::delete(public_path('/images/uploads/Daily_dairys/' . $dailydairys->sleep));
-                        $file = $request->file('sleep');
-                        $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
-                        $dailydairys->sleep = $image_url;
-                    }
-                    if ($request->has('work_out')) {
-                        File::delete(public_path('/images/uploads/Daily_dairys/' . $dailydairys->work_out));
-                        $file = $request->file('work_out');
-                        $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
-                        $dailydairys->work_out = $image_url;
-                    }
-                    if ($request->has('screen_time')) {
-                        File::delete(public_path('/images/uploads/Daily_dairys/' . $dailydairys->screen_time));
-                        $file = $request->file('screen_time');
-                        $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
-                        $dailydairys->screen_time = $image_url;
-                    }
-                    if ($request->has('food')) {
-                        File::delete(public_path('/images/uploads/Daily_dairys/' . $dailydairys->food));
-                        $file = $request->file('food');
-                        $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
-                        $dailydairys->food = $image_url;
-                    }
+            $date = isset($request->date) ? $request->date : now()->toDateString();
+            $dailydairys = DailyDairy::where('user_id',auth()->user()->id)->whereDate('created_at',$date)->get();
 
-                    $dailydairys->gratitude = $request->gratitude;
-                    $dailydairys->edit = $request->edit;
-                    $dailydairys->to_do_list = $request->to_do_list;
-                    $dailydairys->created_at = $request->created_at;
-                    $dailydairys->updated_at = $request->created_at;
-                    $dailydairys->user_id = auth()->user()->id; 
-    
-                    $dailydairys->save();
+            if ($dailydairys) {
 
-                    return $this->sendResponse($dailydairys,'Daily_dairy updated SuccessFully',true);
-                   
-                }else{
-                    $input = $request->except('mood','music','learning','cleaning','body_care','hang_out','work_out','screen_time','food','sleep','created_at');
-                   
-                    if ($request->has('mood')) {
-                        $file = $request->file('mood');
-                        $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
-                        $input['mood'] = $image_url;
-                    }
-                    if ($request->has('music')) {
-                        $file = $request->file('music');
-                        $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
-                        $input['music'] = $image_url;
-                    }
-                    if ($request->has('learning')) {
-                        $file = $request->file('learning');
-                        $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
-                        $input['learning'] = $image_url;
-                    }
-                    if ($request->has('cleaning')) {
-                        $file = $request->file('cleaning');
-                        $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
-                        $input['cleaning'] = $image_url;
-                    }
-                    if ($request->has('body_care')) {
-                        $file = $request->file('body_care');
-                        $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
-                        $input['body_care'] = $image_url;
-                    }
-                    if ($request->has('hang_out')) {
-                        $file = $request->file('hang_out');
-                        $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
-                        $input['hang_out'] = $image_url;
-                    }
-                    if ($request->has('sleep')) {
-                        $file = $request->file('sleep');
-                        $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
-                        $input['sleep'] = $image_url;
-                    }
-                    if ($request->has('work_out')) {
-                        $file = $request->file('work_out');
-                        $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
-                        $input['work_out'] = $image_url;
-                    }
-                    if ($request->has('screen_time')) {
-                        $file = $request->file('screen_time');
-                        $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
-                        $input['screen_time'] = $image_url;
-                    }
-                    if ($request->has('food')) {
-                        $file = $request->file('food');
-                        $image_url = $this->addSingleImage('Daily_dairys', $file, $old_image = '');
-                        $input['food'] = $image_url;
-                    }
-
-                    $input['user_id'] = auth()->user()->id; 
-                    $input['created_at'] = $request->created_at;
-                    $input['updated_at'] = $request->created_at;
-    
-                    $dailydairys = DailyDairy::create($input);
-
-                    return $this->sendResponse($dailydairys,'Daily_dairy stored SuccessFully',true);
-                }
+                $dailyDairy->update([
+                   'mood' => $request->mood,
+                   'music' => $request->music,
+                   'learning' => $request->learning,
+                   'cleaning' => $request->cleaning,
+                   'body_care' => $request->body_care,
+                   'gratitude' => $request->gratitude,
+                   'hang_out' => $request->hang_out,
+                   'work_out' => $request->work_out,
+                   'screen_time' => $request->screen_time,
+                   'food' => $request->food,
+                   'sleep' => $request->sleep,
+                   'edit' => $request->edit,
+                   'to_do_list' => json_encode($request->to_do_list),
+                   'daily_dairy' => json_encode($request->daily_dairy),
+                   'user_id' => auth()->user()->id,
+                ]);
                
-            }else{
-                return $this->sendResponse(null,'All Field is required',false);
+                return $this->sendResponse(null, 'Daily dairy updated SuccessFully', true);
+
+            } else {
+                $input = $request->except('createdAt','to_do_list','daily_dairy');
+
+                $input['user_id'] = auth()->user()->id;
+                $input['to_do_list'] = json_encode($request->to_do_list);
+                $input['daily_dairy'] = json_encode($request->daily_dairy);
+                $dailydairys = DailyDairy::create($input);
+
+                return $this->sendResponse(null, 'Daily dairy stored SuccessFully', true);
             }
-           
+
         } catch (\Throwable $th) {
 
-            return $this->sendResponse(null,'Internal Server Error!',false);
+            return $this->sendResponse(null, 'Internal Server Error!', false);
         }
     }
 
-    public function getHomePage(){
+    public function getDailyDiary(Request $request)
+    {   
+        try {
+            $date = isset($request->date) ? $request->date : now()->toDateString();
+            $getDairys = DailyDairy::where('user_id',auth()->user()->id)->whereDate('created_at',$date)->get();
+           
+            if ($getDairys->isEmpty()) {
+                return $this->sendResponse(null, 'Data not found', false);
+            }
+
+            $getDairyData = [];
+        foreach ($getDairys as $dailyDairy) {
+            $getDairyData[] = $this->getDailyDairyData($dailyDairy);
+        }
+                
+        return $this->sendResponse($getDairyData, 'Daily dairy retrieved successfully', true);
+         
+        } catch (\Throwable $th) {
+            return $this->sendResponse(null, 'Internal server error', false);
+        }
+    }
+
+    public function getHomePage()
+    {
         try {
             $getHome = Home::all();
 
-            return $this->sendResponse($getHome,'Home page Retrived SuccessFully',true);
+            return $this->sendResponse($getHome, 'Home page Retrived SuccessFully', true);
         } catch (\Throwable $th) {
-            return $this->sendResponse(null,'Internal Server Error',false);
+            return $this->sendResponse(null, 'Internal Server Error', false);
         }
     }
 
-   
+    public function getDailyDairyData($data){
+       
+        $datas['id'] = $data->id;
+        $datas['user_id'] = $data->id;
+        $datas['mood'] = $data->mood;
+        $datas['music'] = $data->music;
+        $datas['learning'] = $data->learning;
+        $datas['cleaning'] = $data->cleaning;
+        $datas['body_care'] = $data->body_care;
+        $datas['gratitude'] = $data->gratitude;
+        $datas['hang_out'] = $data->hang_out;
+        $datas['sleep'] = $data->sleep;
+        $datas['work_out'] = $data->work_out;
+        $datas['screen_time'] = $data->screen_time;
+        $datas['food'] = $data->food;
+        $datas['edit'] = $data->edit;
+        $datas['to_do_list'] = json_decode($data->to_do_list);
+        $datas['daily_dairy'] = json_decode($data->daily_dairy);
+        $datas['created_at'] = $data->created_at->format('Y-m-d');
+    
+        return $datas;            
+    }
+
 }

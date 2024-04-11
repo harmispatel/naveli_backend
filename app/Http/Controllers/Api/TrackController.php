@@ -253,9 +253,15 @@ class TrackController extends BaseController
     public function getStoredUserSleepDetail(){
         try {
             $authUserId = auth()->user()->id;
+            $today = Carbon::today();
+
             $getStoredUserSleepDetail = TrackSleep::select('bad_time','wake_up_time','total_sleep_time')
-                                        ->where('user_id',$authUserId)->first();
+                                        ->where('user_id',$authUserId)
+                                        ->whereDate('created_at',$today)
+                                        ->first();
+
             if(isset($getStoredUserSleepDetail)){
+                $getStoredUserSleepDetail['average_total_sleep_time'] = calculateAverageSleepTime($authUserId);
                 return $this->sendResponse($getStoredUserSleepDetail, 'User Sleep Detail Received Successfully', true);
             }
             return $this->sendResponse($getStoredUserSleepDetail, 'No Sleep Data For This User', true);
