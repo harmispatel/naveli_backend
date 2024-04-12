@@ -40,15 +40,11 @@
                                 <input type="text" name="daterange" id="daterange" class="form-control" />
                             </div>
                         </div>
-
                     </div>
                 </div>
-
-
                 <div class="col-md-12">
                     <div class="card mb-3">
                         <div class="card-body">
-
                             <div class="row">
                                 <div style="display: flex; justify-content: center;">
                                     <h5 class="card-title">Total Users - </h5>
@@ -58,8 +54,8 @@
                                 </div>
                             </div>
 
-                            <!-- <a href="{{ route('users') }}" style="text-decoration: none; color: inherit;">
-                                                                                                                    </a> -->
+                            <!-- <a href="{{ route('users') }}" style="text-decoration: none; color: inherit;"> </a> -->
+                            
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="card mb-3">

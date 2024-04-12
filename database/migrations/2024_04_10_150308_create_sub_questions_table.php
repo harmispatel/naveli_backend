@@ -19,6 +19,10 @@ class CreateSubQuestionsTable extends Migration
             $table->foreign('question_id')->references('id')->on('questions')->cascadeOnDelete()->cascadeOnUpdate();
             $table->unsignedBigInteger('option_id')->nullable();
             $table->foreign('option_id')->references('id')->on('question_options')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->unsignedBigInteger('sub_option_id')->nullable();
+            $table->foreign('sub_option_id')->references('id')->on('sub_options')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->unsignedBigInteger('sub_question_id')->nullable();
+            $table->foreign('sub_question_id')->references('id')->on('question_or_notifications')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('question_or_notification',255)->nullable();
             $table->timestamps();
         });

@@ -19,6 +19,8 @@ class CreateQuestionOrNotificationsTable extends Migration
             $table->foreign('question_id')->references('id')->on('questions')->cascadeOnDelete()->cascadeOnUpdate();
             $table->unsignedBigInteger('option_id')->nullable();
             $table->foreign('option_id')->references('id')->on('question_options')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->unsignedBigInteger('sub_option_id')->nullable();
+            $table->foreign('sub_option_id')->references('id')->on('sub_options')->cascadeOnDelete()->cascadeOnUpdate();
             $table->text('title')->nullable();
             $table->timestamps();
         });

@@ -12,6 +12,7 @@ use App\Models\TrackSleep;
 use App\Models\TrackWaterReminder;
 use App\Models\TrackWeight;
 use Auth;
+use DateTime;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -261,10 +262,31 @@ class TrackController extends BaseController
                                         ->first();
 
             if(isset($getStoredUserSleepDetail)){
-                $getStoredUserSleepDetail['average_total_sleep_time'] = calculateAverageSleepTime($authUserId);
-                return $this->sendResponse($getStoredUserSleepDetail, 'User Sleep Detail Received Successfully', true);
+
+                $badTime = DateTime::createFromFormat('h:i a', $getStoredUserSleepDetail->bad_time);
+                $wakeUptime = DateTime::createFromFormat('h:i a', $getStoredUserSleepDetail->wake_up_time);
+
+                // Extract bad time hour and minute
+                $badTimeHour = (int) $badTime->format('H'); // 24-hour format
+                $badTimeMinute = (int) $badTime->format('i');
+
+                // Extract wake up time hour and minute
+                $wakeUpTimeHour = (int) $wakeUptime->format('H'); // 24-hour format
+                $wakeUpTimeMinute = (int) $wakeUptime->format('i');
+
+                $data = [
+                            "bad_time_hours" => $badTimeHour ?? null,
+                            "bad_time_minutes" => $badTimeMinute ?? null,
+                            "wakeup_time_hours" => $wakeUpTimeHour ?? null,
+                            "wakeup_time_minutes" => $wakeUpTimeMinute ?? null,
+                            "total_sleep_time" => $getStoredUserSleepDetail->total_sleep_time ?? null,
+                            "average_total_sleep_time" => calculateAverageSleepTime($authUserId)
+                        ];
+
+                return $this->sendResponse($data, 'User Sleep Detail Received Successfully', true);
             }
-            return $this->sendResponse($getStoredUserSleepDetail, 'No Sleep Data For This User', true);
+            $getStoredUserSleepDetail['average_total_sleep_time'] = calculateAverageSleepTime($authUserId);
+            return $this->sendResponse($getStoredUserSleepDetail, 'No Today Sleep Data For This User', true);
         } catch (\Throwable $th) {
             return $this->sendResponse(null, 'Something Went Wrong !', false);
         }

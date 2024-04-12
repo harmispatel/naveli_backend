@@ -100,7 +100,9 @@ class UserController extends BaseController
             $mobile_no = $request->mobile;
             $role_id = $request->role_id;
             $deviceToken = $request->device_token;
-
+            if(!$mobile_no || !$role_id || !$deviceToken){
+                return  $this->sendResponse(null, 'All Fields Are Required!', false);
+            }
             $getUserRegisterDetail = User::where('mobile',$mobile_no)->first();
 
             if(isset($getUserRegisterDetail)){

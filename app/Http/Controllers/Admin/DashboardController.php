@@ -266,7 +266,6 @@ class DashboardController extends Controller
             // Fetch users based on date range if provided, otherwise fetch all users
             if (isset($startDate) && isset($endDate) && $startDate != $endDate) {
                 $users = User::whereBetween('created_at', [$startDate, $endDate])->get();
-
                 $activeUsers = UserActivityStatus::with('user')
                 ->whereBetween('created_at',[$startDate,$endDate])
                 ->where('activity_counts', '>=', 15)
@@ -412,8 +411,7 @@ class DashboardController extends Controller
                                 } elseif ($user->gender === 3) { // Assuming 3 is for trans
                                     $totalTransNeowCount++;
                                 }
-                            }
-                          
+                            }                          
                         }
 
                         // { Buddy }
@@ -433,7 +431,6 @@ class DashboardController extends Controller
                                     $totalTransBuddyCount++;
                                 }
                             }
-                           
                         }
 
                         // { cycle Explorer }
@@ -452,12 +449,9 @@ class DashboardController extends Controller
                                 } elseif ($user->gender === 3) { // Assuming 3 is for trans
                                     $totalTransExplorerCount++;
                                 }
-                            }
-                           
+                            }                           
                         }
-
-                    }
-                    
+                    }                    
                 }
             }
 
@@ -513,7 +507,6 @@ class DashboardController extends Controller
                 'totalAgeGroupCount' => $totalAgeGroupCount,
             ]);
         }
-
     }
 
     // public function ageGroupWiseCount($ageGroupId, Request $request)
