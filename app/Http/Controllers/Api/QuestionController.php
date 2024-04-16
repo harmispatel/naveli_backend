@@ -263,47 +263,54 @@ class QuestionController extends BaseController
     //         return $this->sendError('Something Went Wrong!', [], 500);
     //     }
     // }
+
         public function getSubQuestions(Request $request){
             try {
-
                 $option_id = $request->option_id;
 
-                if($option_id){
-                    $getSubQuestions = SubQuestion::where('sub_option_id',$option_id)->orWhere('option_id',$option_id)->with('sub_question')->get();
-                }else{
+                if(!$option_id){
                     return $this->sendResponse(null, 'Option Id Not Found!', false);
                 }
 
-                if(isset($getSubQuestions)){
+                $sub_options = SubQuestion::where('sub_option_id',$option_id)->orWhere('option_id',$option_id)->with('sub_question')->get();
 
-                    $subQuestions = $getSubQuestions->map(function($getSubQuestion){
-
-                        if($getSubQuestion->question_or_notification != "question"){
-                            return  [
-                                        'Notification' => isset($getSubQuestion->sub_question) ?
-                                            $getSubQuestion->sub_question->title
-                                        : null,
-                                        "Question" => null,
-                                        "Options" => null
-                                    ];
+                $data = [];
+                if(count($sub_options) > 1){
+                    foreach($sub_options as $key => $sub_option){
+                        if($sub_option->question_or_notification != "question"){
+                            $data['Notification'] = isset($sub_option->sub_question) ? $sub_option->sub_question->title : null;
                         }else{
-                            $options_of_question = SubOption::select('id','option_name')->where('question_or_notification_id',$getSubQuestion->sub_question_id)->get();
-                            return  [
-                                        "Notification" => null,
-                                        'Question' => isset($getSubQuestion->sub_question) ?
-                                            $getSubQuestion->sub_question->title
-                                        : null,
-                                        "Options" => isset($options_of_question) ?
-                                            $options_of_question : null
-                                    ];
+                            $options_of_question = SubOption::select('id','option_name')->where('question_or_notification_id',$sub_option->sub_question_id)->get();
+                            $data['Question'] = isset($sub_option->sub_question) ? $sub_option->sub_question->title : null;
+                            $data['Options'] =  isset($options_of_question) ? $options_of_question : null;
                         }
-
-                    });
-                    return $this->sendResponse($subQuestions, 'Data Receive Successfully', true);
+                    }
+                    $sub_questions = $data;
+                }else{
+                    if(count($sub_options) > 0){
+                        foreach($sub_options as $key => $sub_option){
+                            if($sub_option->question_or_notification != "question"){
+                                $data['Notification'] = isset($sub_option->sub_question) ? $sub_option->sub_question->title : null;
+                                $data['Question'] = null;
+                                $data['Options'] = null;
+                            }else{
+                                $options_of_question = SubOption::select('id','option_name')->where('question_or_notification_id',$sub_option->sub_question_id)->get();
+                                $data['Notification'] = null;
+                                $data['Question'] = isset($sub_option->sub_question) ? $sub_option->sub_question->title : null;
+                                $data['Options'] = isset($options_of_question) ? $options_of_question : null;
+                            }
+                        }
+                        $sub_questions = $data;
+                    }else{
+                        $sub_questions = null;
+                    }
                 }
 
+                return $this->sendResponse($sub_questions, 'Data Receive Successfully', true);
             } catch (\Throwable $th) {
                 return $this->sendResponse(null, 'something went wrong!', false);
             }
         }
+
+
 }

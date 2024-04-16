@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\PeriodsInfoController;
 use App\Http\Controllers\Api\TrackController;
 use App\Http\Controllers\Api\ForumController;
 use App\Http\Controllers\Api\AskYourQuestionController;
+use App\Http\Controllers\Api\UserHirsutismController;
 use App\Models\generalSetting;
 
 /*
@@ -91,6 +92,9 @@ Route::post('get-all-posts',[UserController::class,'getAllPosts'])->middleware('
 Route::post('/storeUserSymptomsLogs',[UserController::class,'storeUserSymptomsLogs'])->middleware('auth:sanctum');
 Route::get('/listuserSymptomsLogs',[UserController::class,'listuserSymptomsLogs'])->middleware('auth:sanctum');
 
+// User Hirsutism
+Route::post('/user-hirsutism/store', [UserHirsutismController::class, 'storeUserHirsutism'])->middleware('auth:sanctum');
+Route::get('/user-hirsutism', [UserHirsutismController::class, 'getUserHirsutism'])->middleware('auth:sanctum');
 
 //TrackController
 Route::post('/track/storeUserMedicationsDetail',[TrackController::class,'storeUserMedicationsDetail'])->middleware('auth:sanctum');
