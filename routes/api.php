@@ -45,7 +45,8 @@ Route::post('questionlist',[QuestionController::class,'questionlist'])->middlewa
 Route::post('questiondestroy',[QuestionController::class,'destroy'])->middleware('auth:sanctum');
 Route::post('question-answer',[QuestionController::class,'questionAnswer'])->middleware('auth:sanctum');
 Route::get('question-answers',[QuestionController::class,'getQuestionAnswers'])->middleware('auth:sanctum');
-Route::post('sub-questions-list',[QuestionController::class,'getSubQuestions']);
+Route::post('sub-questions-list',[QuestionController::class,'getSubQuestions'])->middleware('auth:sanctum');
+Route::post('subQuestionAnswer',[QuestionController::class,'subQuestionAnswer'])->middleware('auth:sanctum');
 
 
 //questionType
@@ -130,9 +131,12 @@ Route::post('storeCity',[CommonController::class,'storeCity'])->middleware('auth
 Route::get('getHomePage',[CommonController::class,'getHomePage']);
 Route::post('getDailyDiary',[CommonController::class,'getDailyDiary'])->middleware('auth:sanctum');
 Route::post('monthlymission',[CommonController::class,'monthlymission'])->middleware('auth:sanctum');
+Route::get('getMonthlyMisssion',[CommonController::class,'getMonthlyMisssion'])->middleware('auth:sanctum');
+Route::get('getCurrentmonthDailyDairys',[CommonController::class,'getCurrentmonthDailyDairys'])->middleware('auth:sanctum');
+Route::get('getReflectionData',[CommonController::class,'getReflectionData'])->middleware('auth:sanctum');
+
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
-
 // });
 
 //AllAboutPeriodController

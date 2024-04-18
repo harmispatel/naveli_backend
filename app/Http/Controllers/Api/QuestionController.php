@@ -13,6 +13,7 @@ use App\Models\QuestionAnswer;
 use App\Models\Question_option;
 use App\Models\SubOption;
 use App\Models\SubQuestion;
+use App\Models\SubQuestionAnswer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -278,11 +279,13 @@ class QuestionController extends BaseController
                 if(count($sub_options) > 1){
                     foreach($sub_options as $key => $sub_option){
                         if($sub_option->question_or_notification != "question"){
-                            $data['Notification'] = isset($sub_option->sub_question) ? $sub_option->sub_question->title : null;
+                            $data['notification_id'] = isset($sub_option->id)? $sub_option->id : null;
+                            $data['notification'] = isset($sub_option->sub_question) ? $sub_option->sub_question->title : null;
                         }else{
                             $options_of_question = SubOption::select('id','option_name')->where('question_or_notification_id',$sub_option->sub_question_id)->get();
-                            $data['Question'] = isset($sub_option->sub_question) ? $sub_option->sub_question->title : null;
-                            $data['Options'] =  isset($options_of_question) ? $options_of_question : null;
+                            $data['question_id'] = isset($sub_option->id)? $sub_option->id : null;
+                            $data['question'] = isset($sub_option->sub_question) ? $sub_option->sub_question->title : null;
+                            $data['options'] =  isset($options_of_question) ? $options_of_question : null;
                         }
                     }
                     $sub_questions = $data;
@@ -290,14 +293,16 @@ class QuestionController extends BaseController
                     if(count($sub_options) > 0){
                         foreach($sub_options as $key => $sub_option){
                             if($sub_option->question_or_notification != "question"){
-                                $data['Notification'] = isset($sub_option->sub_question) ? $sub_option->sub_question->title : null;
-                                $data['Question'] = null;
-                                $data['Options'] = null;
+                                $data['notification_id'] = isset($sub_option->id)? $sub_option->id : null;
+                                $data['notification'] = isset($sub_option->sub_question) ? $sub_option->sub_question->title : null;
+                                $data['question'] = null;
+                                $data['options'] = null;
                             }else{
                                 $options_of_question = SubOption::select('id','option_name')->where('question_or_notification_id',$sub_option->sub_question_id)->get();
-                                $data['Notification'] = null;
-                                $data['Question'] = isset($sub_option->sub_question) ? $sub_option->sub_question->title : null;
-                                $data['Options'] = isset($options_of_question) ? $options_of_question : null;
+                                $data['notification'] = null;
+                                $data['question_id'] = isset($sub_option->id)? $sub_option->id : null;
+                                $data['question'] = isset($sub_option->sub_question) ? $sub_option->sub_question->title : null;
+                                $data['options'] = isset($options_of_question) ? $options_of_question : null;
                             }
                         }
                         $sub_questions = $data;
@@ -313,4 +318,46 @@ class QuestionController extends BaseController
         }
 
 
+        public function subQuestionAnswer(Request $request){
+            try {
+
+                $user_id = Auth::id();
+
+                if (!empty($user_id) && isset($request->sub_question_ids) && isset($request->sub_option_ids)) {
+                    $sub_question_ids = $request->sub_question_ids;
+                    $sub_option_ids = $request->sub_option_ids;
+
+                    // Validate if both arrays have the same length
+                    if (count($sub_question_ids) !== count($sub_option_ids)) {
+                        return $this->sendResponse(null, 'Question ids and option ids array length mismatch.', false);
+                    }
+
+                    foreach ($sub_question_ids as $index => $sub_question_id) {
+
+                        $input = [
+                            'user_id' => $user_id,
+                            'sub_question_id' => $sub_question_id,
+                            'sub_option_id' => $sub_option_ids[$index]
+                        ];
+
+                        $question_answer = SubQuestionAnswer::where('user_id', $user_id)
+                            ->where('sub_question_id', $sub_question_id)
+                            ->first();
+
+                        if ($question_answer) {
+                            $question_answer->update($input);
+                        } else {
+                            SubQuestionAnswer::create($input);
+                        }
+                    }
+
+                    return $this->sendResponse([], 'Question answers have been submitted successfully.', true);
+                } else {
+                    return $this->sendResponse(null, 'User not found or question/option ids are missing.!', false);
+                }
+            } catch (\Throwable $th) {
+
+                return $this->sendResponse(null, 'Something Went Wrong !', false);
+            }
+        }
 }

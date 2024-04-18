@@ -25,7 +25,6 @@
 </head>
 
 <body class="login">
-
     <div class="auth">
         <div class="container">
             <div class="row justify-content-center">
@@ -42,7 +41,7 @@
                                     <img alt="logo" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDOLfmIA4IGukHskftrTRSelu-K73Xu9drKw&usqp=CAU" class="theme-logo">
                                     <h4 class="mt-2">{{trans('label.Naveli')}}</h4>
                                 </div> --}}
-
+                                
                                 <div class="col-md-12">
                                     {{-- Email --}}
                                     <div class="form-group">

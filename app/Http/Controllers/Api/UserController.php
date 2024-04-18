@@ -542,12 +542,10 @@ class UserController extends BaseController
                }
             }
 
-
         } catch (\Exception $e) {
             return $this->sendResponse(null, 'Something went wrong!', false);
         }
     }
-
 
     public function userResponse($userdata)
     {

@@ -68,8 +68,7 @@ class AuthController extends Controller
            
                 return redirect()->back()->withInput()->with('error', 'Invalid email or password');
             
-        } catch (\Throwable $th) {
-            dd($th);
+        } catch (\Throwable $th) {          
             return redirect()->back()->with('error', 'Something went wrong');
         }
     }

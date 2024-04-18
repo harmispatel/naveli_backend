@@ -174,7 +174,7 @@ class CommonController extends BaseController
             if ($getDairys->isEmpty()) {
                 return $this->sendResponse(null, 'Data not found', true);
             }
-
+         
             foreach ($getDairys as $dailyDairy) {
                 $getDairyData = $this->getDailyDairyData($dailyDairy);
             }
@@ -186,22 +186,11 @@ class CommonController extends BaseController
         }
     }
 
-    public function getHomePage()
-    {
-        try {
-            $getHome = Home::all();
-
-            return $this->sendResponse($getHome, 'Home page Retrived SuccessFully', true);
-        } catch (\Throwable $th) {
-            return $this->sendResponse(null, 'Internal Server Error', false);
-        }
-    }
-
     public function getDailyDairyData($data)
     {
 
         $datas['id'] = $data->id;
-        $datas['user_id'] = auth()->user()->id;
+        $datas['user_id'] = $data->user_id;
         $datas['mood'] = $data->mood;
         $datas['music'] = $data->music;
         $datas['learning'] = $data->learning;
@@ -221,6 +210,19 @@ class CommonController extends BaseController
         return $datas;
     }
 
+    public function getHomePage()
+    {
+        try {
+            $getHome = Home::all();
+
+            return $this->sendResponse($getHome, 'Home page Retrived SuccessFully', true);
+        } catch (\Throwable $th) {
+            return $this->sendResponse(null, 'Internal Server Error', false);
+        }
+    }
+
+   
+
     public function monthlymission(Request $request)
     {
         try {
@@ -231,18 +233,20 @@ class CommonController extends BaseController
             if ($monthlyMission) {
                 $monthlyMission->update([
                     'user_id' => auth()->user()->id,
-                    'main_focus_of_month' => json_decode($request->main_focus_of_month),
-                    'goals' => json_decode($request->goals),
-                    'hobbies' => json_decode($request->hobbies),                                  
-                    'habits_to_cut' => json_decode($request->habits_to_cut),
-                    'habits_to_adopt' => json_decode($request->habits_to_adopt),
-                    'new_things_to_try' => json_decode($request->new_things_to_try),
-                    'family_goals' => json_decode($request->family_goals),
-                    'books_to_read' => json_decode($request->books_to_read),
-                    'movies_to_watch' => json_decode($request->movies_to_watch),
-                    'places_to_visit' => json_decode($request->places_to_visit),
+                    'main_focus_of_month' => json_encode($request->main_focus_of_month),
+                    'goals' => json_encode($request->goals),
+                    'hobbies' => json_encode($request->hobbies),                                  
+                    'habits_to_cut' => json_encode($request->habits_to_cut),
+                    'habits_to_adopt' => json_encode($request->habits_to_adopt),
+                    'new_things_to_try' => json_encode($request->new_things_to_try),
+                    'family_goals' => json_encode($request->family_goals),
+                    'books_to_read' => json_encode($request->books_to_read),
+                    'movies_to_watch' => json_encode($request->movies_to_watch),
+                    'places_to_visit' => json_encode($request->places_to_visit),
                     'make_wish' => $request->make_wish,
                 ]);
+
+                return $this->sendResponse(null, 'Monthly Mission Updated Successfully', true);
             } else {
 
                 $monthlyMission = new MonthlyMission;
@@ -260,13 +264,132 @@ class CommonController extends BaseController
                 $monthlyMission->make_wish = $request->make_wish;
                 $monthlyMission->save();
 
-
+                return $this->sendResponse(null, 'Monthly Mission Stored Successfully', true);
 
             }
-        } catch (\Throwable $th) {
-            
+        } catch (\Throwable $th) {         
             return $this->sendResponse(null, 'Internal Server Error', false);
         }
     }
 
+    public function getMonthlyMisssion(){
+        try {
+            $currentMonth = date('m');
+            $currentYear = date('Y');
+
+            $monthDatas = MonthlyMission::where('user_id',auth()->user()->id)
+                                        ->whereMonth('created_at', $currentMonth)
+                                        ->whereYear('created_at', $currentYear)
+                                        ->get();
+
+            if ($monthDatas->isEmpty()) {
+                return $this->sendResponse(null, 'Data not found', true);
+            }
+
+            
+            foreach($monthDatas as $monthData){
+                $monthAllData = $this->monthMissionGetting($monthData);
+            }
+
+            return $this->sendResponse($monthAllData, 'MonthlyMission Data Retrived SuccessFully', true);
+        } catch (\Throwable $th) {   
+            
+        return $this->sendResponse(null, 'Internal Server Error', false);
+        }
+    }
+
+    function monthMissionGetting($data){
+         $datas['id'] = $data->id;
+         $datas['user_id'] = $data->user_id;
+         $datas['main_focus_of_month'] = json_decode($data->main_focus_of_month);
+         $datas['goals'] = json_decode($data->goals);
+         $datas['hobbies'] = json_decode($data->hobbies);
+         $datas['habits_to_cut'] = json_decode($data->habits_to_cut);
+         $datas['habits_to_adopt'] = json_decode($data->habits_to_adopt);
+         $datas['new_things_to_try'] = json_decode($data->new_things_to_try);
+         $datas['family_goals'] = json_decode($data->family_goals);
+         $datas['books_to_read'] = json_decode($data->books_to_read);
+         $datas['movies_to_watch'] = json_decode($data->movies_to_watch);
+         $datas['places_to_visit'] = json_decode($data->places_to_visit);
+         $datas['make_wish'] = $data->make_wish;
+         
+         return $datas;
+
+    }
+
+    public function getCurrentmonthDailyDairys(){
+        try {
+            $currentMonth = date('m');
+            $currentYear = date('Y');
+
+            $dailydairys = DailyDairy::where('user_id',auth()->user()->id)
+                                      ->whereMonth('created_at', $currentMonth)
+                                     ->whereYear('created_at', $currentYear)
+                                     ->orderBy('created_at', 'ASC')
+                                     ->get();
+
+            if ($dailydairys->isEmpty()) {
+                return $this->sendResponse(null, 'Data not found', true);
+            }
+
+           
+            foreach($dailydairys as $dailydairy){
+                $monthAllData = $this->getDailyDairyCurrentMonthData($dailydairy);
+            }
+
+            return $this->sendResponse($monthAllData, 'Daily Dairy currentMonth Data Retrived SuccessFully', true);
+           
+        } catch (\Throwable $th) {
+            return $this->sendResponse(null, 'Internal Server Error', false);
+        }
+    }
+
+    public function getReflectionData(){
+        try {
+            $currentMonth = date('m');
+            $currentYear = date('Y');
+
+            $dailydairys = DailyDairy::where('user_id',auth()->user()->id)
+                                      ->whereMonth('created_at', $currentMonth)
+                                     ->whereYear('created_at', $currentYear)
+                                     ->orderBy('created_at', 'ASC')
+                                     ->get();
+
+            if ($dailydairys->isEmpty()) {
+                return $this->sendResponse(null, 'Data not found', true);
+            }
+
+           $monthAllData = [];
+            foreach($dailydairys as $dailydairy){
+                $monthAllData[] = $this->getDailyDairyCurrentMonthData($dailydairy);
+            }
+
+            return $this->sendResponse($monthAllData, 'Daily Dairy currentMonth Data Retrived SuccessFully', true);
+           
+        } catch (\Throwable $th) {
+            return $this->sendResponse(null, 'Internal Server Error', false);
+        }
+    }
+
+    public function getDailyDairyCurrentMonthData($data)
+    {
+
+        $datas['id'] = $data->id;
+        $datas['user_id'] = $data->user_id;
+        $datas['mood'] = $data->mood;
+        $datas['music'] = $data->music;
+        $datas['learning'] = $data->learning;
+        $datas['cleaning'] = $data->cleaning;
+        $datas['body_care'] = $data->body_care;
+        $datas['gratitude'] = $data->gratitude;
+        $datas['hang_out'] = $data->hang_out;
+        $datas['sleep'] = $data->sleep;
+        $datas['work_out'] = $data->work_out;
+        $datas['screen_time'] = $data->screen_time;
+        $datas['food'] = $data->food;
+        $datas['edit'] = $data->edit;
+        $datas['created_at'] = date('d M', strtotime($data->created_at));
+
+        return $datas;
+    }
 }
