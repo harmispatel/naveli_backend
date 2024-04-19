@@ -192,7 +192,9 @@ class UserController extends BaseController
     }
 
     public function userUpdateDetails(Request $request){
+
         try {
+
             $id = Auth::user()->id;
             $user_role = Auth::user()->role_id;
             $name = $request->name;
@@ -211,7 +213,8 @@ class UserController extends BaseController
 
                     $getUserData = User::find($id);
                     $find_user_uid = $getUserData->unique_id;
-                    $updateUserDetail = $getUserData->update([
+
+                    $updateUserDetail = [
                         'name' => $name,
                         'unique_id' => isset($find_user_uid) ? $find_user_uid : uuId($user_role,$gender),
                         'birthdate'=> $birthdate,
@@ -222,9 +225,20 @@ class UserController extends BaseController
                         'previous_periods_begin'=>$previous_periods_begin,
                         'previous_periods_month'=>$previous_periods_month,
                         'average_period_length'=>$average_period_length,
-                    ]);
-                    $userData = $this->userResponse($getUserData);
-                    $data = ['user' => $userData];
+                    ];
+
+                    if ($request->hasFile('image')) {
+
+                        $file = $request->file('image');
+                        $image_url = $this->addSingleImage('user_images', $file, $old_image = '');
+                        $updateUserDetail['image'] = $image_url;
+
+                    }
+
+                    $updateData = $getUserData->update($updateUserDetail);
+
+                    // $userData = $this->userResponse($updateData);
+                    // $data = ['user' => $userData];
                     return  $this->sendResponse(null, 'Data Updated Successfully', true);
                 }else{
                     return  $this->sendResponse(null, 'all fields are required !', false);
@@ -237,7 +251,7 @@ class UserController extends BaseController
 
                     $getUserData = User::find($id);
                     $find_user_uid = $getUserData->unique_id;
-                    $updateUserDetail = $getUserData->update([
+                    $updateUserDetail =[
                         'name' => $name,
                         'unique_id' => isset($find_user_uid) ? $find_user_uid : uuId($user_role,$gender),
                         'birthdate'=> $birthdate,
@@ -245,9 +259,18 @@ class UserController extends BaseController
                         'gender_type' => isset($request->gender_type) ? $request->gender_type : null,
                         'relationship_status'=>$relationship_status,
                         'hum_apke_he_kon' => $hum_apke_he_kon,
-                    ]);
-                    $userData = $this->userResponse($getUserData);
-                    $data = ['user' => $userData];
+                    ];
+
+                    if ($request->hasFile('image')) {
+
+                        $file = $request->file('image');
+                        $image_url = $this->addSingleImage('user_images', $file, $old_image = '');
+                        $updateUserDetail['image'] = $image_url;
+
+                    }
+                    $updateData = $getUserData->update($updateUserDetail);
+                    // $userData = $this->userResponse($updateData);
+                    // $data = ['user' => $userData];
                     return  $this->sendResponse(null, 'Data Updated Successfully', true);
                 }else{
                     return  $this->sendResponse(null, 'all fields are required !', false);
@@ -260,7 +283,7 @@ class UserController extends BaseController
 
                     $getUserData = User::find($id);
                     $find_user_uid = $getUserData->unique_id;
-                    $updateUserDetail = $getUserData->update([
+                    $updateUserDetail = [
                         'name' => $name,
                         'unique_id' => isset($find_user_uid) ? $find_user_uid : uuId($user_role,$gender),
                         'birthdate'=> $birthdate,
@@ -268,9 +291,17 @@ class UserController extends BaseController
                         'gender_type' => isset($request->gender_type) ? $request->gender_type : null,
                         'relationship_status'=>$relationship_status,
 
-                    ]);
-                    $userData = $this->userResponse($getUserData);
-                    $data = ['user' => $userData];
+                    ];
+                    if ($request->hasFile('image')) {
+
+                        $file = $request->file('image');
+                        $image_url = $this->addSingleImage('user_images', $file, $old_image = '');
+                        $updateUserDetail['image'] = $image_url;
+
+                    }
+                    $updateData = $getUserData->update($updateUserDetail);
+                    // $userData = $this->userResponse($updateData);
+                    // $data = ['user' => $userData];
                     return  $this->sendResponse(null, 'Data Updated Successfully', true);
                 }else{
                     return  $this->sendResponse(null, 'all fields are required !', false);
@@ -278,6 +309,7 @@ class UserController extends BaseController
             }
 
         } catch (\Throwable $th) {
+
             return  $this->sendResponse(null, 'Something went wrong', false);
         }
 
@@ -547,6 +579,22 @@ class UserController extends BaseController
         }
     }
 
+    public function getUserDetailOnUId(Request $request){
+        try {
+            $request_unique_id = $request->unique_id;
+            if($request_unique_id){
+                $get_user = User::where('unique_id',$request_unique_id)->first();
+                if(isset($get_user)){
+                    return $this->sendResponse($get_user, 'User Detail Received For This Unique-Id', true);
+                }
+                return $this->sendResponse(null, 'User Not Found For This Unique-Id', true);
+            }else{
+                return $this->sendResponse(null,'Unique-Id required!',false);
+            }
+        } catch (\Throwable $th) {
+            return $this->sendResponse(null,'Something went wrong!',false);
+        }
+    }
     public function userResponse($userdata)
     {
         $today = Carbon::today();
@@ -561,6 +609,7 @@ class UserController extends BaseController
         $data['role_id'] = $userdata->role_id;
         $data['uuId'] = $userdata->unique_id;
         $data['birthdate'] = $userdata->birthdate;
+        $data['image'] = $userdata->image;
         $data['age'] = isset($userdata->birthdate) ? calculateAge($userdata->birthdate) : null;
         $data['height'] = isset($getUserBmiCalculater->height) ? number_format($getUserBmiCalculater->height,2) : null;
         $data['weight'] = isset($getUserBmiCalculater->weight) ? number_format($getUserBmiCalculater->weight,2) : null;

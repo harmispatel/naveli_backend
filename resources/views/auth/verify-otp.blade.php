@@ -18,7 +18,8 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #D7BAC5;
+            /* background-color: #D7BAC5; */
+            background: url('http:/new_naveli/public/admin_images/bg_admin.jpg');
             display: flex;
             justify-content: center;
             align-items: center;
@@ -122,7 +123,7 @@
         document.getElementById('resendButton').style.display = 'none';
         // Function to update the countdown timer
         function updateCountdownTimer(errorMessage = '') {
-          
+
             document.getElementById('errorMessage').innerText = errorMessage;
             var startTime = "{{ session('otp_start_time') }}";
             var expiryTime = new Date("{{ session('otp.expires_at') }}").getTime();
@@ -240,7 +241,7 @@
                     return response.json();
                 })
                 .then(data => {
-                    // Hide loader after the OTP is successfully resent             
+                    // Hide loader after the OTP is successfully resent
                     document.getElementById('loader').style.display = 'none';
                     document.getElementById('errorMessage').innerText = '';
 
@@ -270,6 +271,43 @@
                     document.getElementById('loader').style.display = 'none';
                 });
         }
+
+        // Copy otp
+        const otpInputs = document.querySelectorAll('.otp-input');
+
+        otpInputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                // Move to the next input field if the current one is filled
+                if (input.value.length === 1 && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && index > 0 && input.value === '') {
+                // Move to the previous input field on backspace if the current field is empty
+                otpInputs[index - 1].focus();
+            }
+            });
+        });
+
+        
+
+        otpInputs[0].addEventListener('paste', (e) => {
+            const pastedText = e.clipboardData.getData('text');
+
+            // Distribute each character of the pasted OTP into individual input fields
+            pastedText.split('').forEach((char, index) => {
+                if (index < otpInputs.length) {
+                    otpInputs[index].value = char;
+                    if (index < otpInputs.length - 1) {
+                        otpInputs[index].dispatchEvent(new Event('input'));
+                    }
+                }
+            });
+
+            e.preventDefault(); // Prevent default paste behavior
+        });
     </script>
 
 

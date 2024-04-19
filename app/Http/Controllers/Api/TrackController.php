@@ -109,9 +109,18 @@ class TrackController extends BaseController
                 $getStoredBmiCalculatorDetail = TrackBmiCalculator::where('user_id',$login_user_id)->first();
 
                 if(isset($getStoredBmiCalculatorDetail)){
+                      $getWeightOfUser = TrackWeight::where('user_id',$login_user_id)->first();
+                        if($getStoredBmiCalculatorDetail['weight'] == null){
+                            $getStoredBmiCalculatorDetail['weight'] = $getWeightOfUser->weight ?? "";
+                        }
+
                     return $this->sendResponse($getStoredBmiCalculatorDetail, 'User Bmi Calculator Detail Received Successfully', true);
                 }else{
-                    return $this->sendResponse(null, 'Empty Bmi Calculator Detail For This User', true);
+
+                    $getWeightOfUser = TrackWeight::where('user_id',$login_user_id)->first();
+                    $getStoredBmiCalculatorDetail['weight'] = $getWeightOfUser->weight ?? "";
+
+                    return $this->sendResponse($getStoredBmiCalculatorDetail, 'Empty Bmi Calculator Detail For This User', true);
                 }
             }
         } catch (\Throwable $th) {

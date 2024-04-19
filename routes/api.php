@@ -38,6 +38,7 @@ use App\Models\generalSetting;
  Route::get('user-details',[UserController::class,'userDetail'])->middleware('auth:sanctum');
  Route::post('user-update-details',[UserController::class,'userUpdateDetails'])->middleware('auth:sanctum');
  Route::get('storeUsersActivityCount',[UserController::class,'storeUsersActivityCount'])->middleware('auth:sanctum');
+ Route::post('getUserDetailOnUId',[UserController::class,'getUserDetailOnUId'])->middleware('auth:sanctum');
 
 
 // Question

@@ -3,7 +3,8 @@
 }
 .auth{
     height: 100vh;
-    background: url('../../../../admin_images/login_bg.png'),rgb(247 231 249 / 50%);
+    background: url('../../../../admin_images/bg_admin.jpg');
+    /* background: url('../../../../admin_images/bg_admin.jpg'),rgb(247 231 249 / 50%); */
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
