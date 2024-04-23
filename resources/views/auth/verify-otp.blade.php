@@ -225,7 +225,7 @@
 
 
             // Make an AJAX request to resend the OTP
-            fetch('{{ route('resend.otp') }}', {
+                    fetch('{{ route('resend.otp') }}', {
                     method: 'POST',
                     headers: {
                         'X-CSRF-Token': '{{ csrf_token() }}',
@@ -284,14 +284,12 @@
             });
 
             input.addEventListener('keydown', (e) => {
-            if (e.key === 'Backspace' && index > 0 && input.value === '') {
-                // Move to the previous input field on backspace if the current field is empty
-                otpInputs[index - 1].focus();
-            }
+                if (e.key === 'Backspace' && index > 0 && input.value === '') {
+                    // Move to the previous input field on backspace if the current field is empty
+                    otpInputs[index - 1].focus();
+                }
             });
         });
-
-        
 
         otpInputs[0].addEventListener('paste', (e) => {
             const pastedText = e.clipboardData.getData('text');

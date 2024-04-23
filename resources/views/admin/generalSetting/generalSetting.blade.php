@@ -73,13 +73,13 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="pagetitle">
+                                {{-- <div class="pagetitle">
                                     <h2>{{ trans('label.help_and_support') }}</h2>
-                                </div>
+                                </div> --}}
                                 <div class="col-md-12 mb-3">
                                     <div class="form-group">
                                         <label for="description"
-                                            class="form-label"><strong>{{ trans('label.description') }}</strong></label>
+                                            class="form-label"><strong>{{ trans('label.help') }}</strong></label>
                                         <textarea class="ckeditor form-control" id="description"
                                             rows="5" name="description">{{ $generalSetting->description ?? '' }}</textarea>
                                     </div>

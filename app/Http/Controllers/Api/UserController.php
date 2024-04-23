@@ -198,6 +198,7 @@ class UserController extends BaseController
             $id = Auth::user()->id;
             $user_role = Auth::user()->role_id;
             $name = $request->name;
+            $email = $request->email;
             $birthdate = $request->birthdate;
             $gender = $request->gender;
             $relationship_status = $request->relationship_status;
@@ -216,6 +217,7 @@ class UserController extends BaseController
 
                     $updateUserDetail = [
                         'name' => $name,
+                        'email' => $email,
                         'unique_id' => isset($find_user_uid) ? $find_user_uid : uuId($user_role,$gender),
                         'birthdate'=> $birthdate,
                         'gender' => $gender,
@@ -226,14 +228,6 @@ class UserController extends BaseController
                         'previous_periods_month'=>$previous_periods_month,
                         'average_period_length'=>$average_period_length,
                     ];
-
-                    if ($request->hasFile('image')) {
-
-                        $file = $request->file('image');
-                        $image_url = $this->addSingleImage('user_images', $file, $old_image = '');
-                        $updateUserDetail['image'] = $image_url;
-
-                    }
 
                     $updateData = $getUserData->update($updateUserDetail);
 
@@ -253,6 +247,7 @@ class UserController extends BaseController
                     $find_user_uid = $getUserData->unique_id;
                     $updateUserDetail =[
                         'name' => $name,
+                        'email' => $email,
                         'unique_id' => isset($find_user_uid) ? $find_user_uid : uuId($user_role,$gender),
                         'birthdate'=> $birthdate,
                         'gender' => $gender,
@@ -261,13 +256,6 @@ class UserController extends BaseController
                         'hum_apke_he_kon' => $hum_apke_he_kon,
                     ];
 
-                    if ($request->hasFile('image')) {
-
-                        $file = $request->file('image');
-                        $image_url = $this->addSingleImage('user_images', $file, $old_image = '');
-                        $updateUserDetail['image'] = $image_url;
-
-                    }
                     $updateData = $getUserData->update($updateUserDetail);
                     // $userData = $this->userResponse($updateData);
                     // $data = ['user' => $userData];
@@ -285,6 +273,7 @@ class UserController extends BaseController
                     $find_user_uid = $getUserData->unique_id;
                     $updateUserDetail = [
                         'name' => $name,
+                        'email' => $email,
                         'unique_id' => isset($find_user_uid) ? $find_user_uid : uuId($user_role,$gender),
                         'birthdate'=> $birthdate,
                         'gender' => $gender,
@@ -292,13 +281,7 @@ class UserController extends BaseController
                         'relationship_status'=>$relationship_status,
 
                     ];
-                    if ($request->hasFile('image')) {
 
-                        $file = $request->file('image');
-                        $image_url = $this->addSingleImage('user_images', $file, $old_image = '');
-                        $updateUserDetail['image'] = $image_url;
-
-                    }
                     $updateData = $getUserData->update($updateUserDetail);
                     // $userData = $this->userResponse($updateData);
                     // $data = ['user' => $userData];
@@ -314,6 +297,39 @@ class UserController extends BaseController
         }
 
     }
+
+    public function updateUserDashboard(Request $request){
+
+        try {
+            $auth_user_id = Auth::user()->id;
+            $getUserData = User::find($auth_user_id);
+            if(isset($auth_user_id) && isset($getUserData)){
+                $input = $request->except('image');
+
+                if ($request->hasFile('image')) {
+                    $file = $request->file('image');
+                    $image_url = $this->addSingleImage('user_images', $file, $old_image = '');
+                    $input['image'] = $image_url;
+                }
+
+                $update = $getUserData->update($input);
+                if ($update) {
+                    // If the update was successful
+                    return $this->sendResponse(null, 'User Dashboard Detail Updated Successfully', true);
+                } else {
+                    // If the update failed
+                    return $this->sendResponse(null, 'Failed to Update User Dashboard Detail', false);
+                }
+
+            }else{
+                return $this->sendResponse(null, 'User Not Found!', false);
+            }
+        } catch (\Throwable $th) {
+
+            return $this->sendResponse(null, 'Something went wrong!', false);
+        }
+    }
+
 
     public function update(Request $request)
     {
@@ -474,7 +490,6 @@ class UserController extends BaseController
 
             $date = isset($request->date) ? $request->date : now()->toDateString();
 
-
             $userSymptomsitem = UserSymptomsLogs::whereDate('created_at',$date)->where('user_id',auth()->user()->id)->first();
 
             if(isset($userSymptomsitem)){
@@ -492,13 +507,11 @@ class UserController extends BaseController
     }
 
     public function listuserSymptomsLogs(){
-
         try {
-
             $userSymptoms = UserSymptomsLogs::where('user_id',auth()->user()->id)->whereDate('created_at',date('Y-m-d'))->first();
 
             if(isset($userSymptoms)){
-                return $this->sendResponse($userSymptoms,"Data RetrivedSuccessFully",true);
+                return $this->sendResponse($userSymptoms,"Data Retrived SuccessFully",true);
             }else{
                 return $this->sendResponse(null,"Data Not Found",false);
             }
@@ -595,6 +608,7 @@ class UserController extends BaseController
             return $this->sendResponse(null,'Something went wrong!',false);
         }
     }
+
     public function userResponse($userdata)
     {
         $today = Carbon::today();

@@ -48,7 +48,7 @@ class AuthController extends Controller
                         $request->session()->put('otp', $otp);
                         
                         Mail::send([], [], function ($message) use ($request, $otp) {
-                            $message->from('developers@harmistechnology.com');
+                            $message->from(env('MAIL_USERNAME'));
                             $message->to($request->email);
                             $message->subject('OTP Verification');
                             $message->setBody('Your OTP for verification is: ' . $otp['code']);
@@ -68,7 +68,8 @@ class AuthController extends Controller
            
                 return redirect()->back()->withInput()->with('error', 'Invalid email or password');
             
-        } catch (\Throwable $th) {          
+        } catch (\Throwable $th) { 
+            dd($th);
             return redirect()->back()->with('error', 'Something went wrong');
         }
     }
@@ -84,7 +85,6 @@ class AuthController extends Controller
         $request->validate([
             'otp' => 'required'
         ]);
-
 
         // Retrieve OTP and its expiry time from session
         $storedOTP = $request->session()->get('otp');
@@ -126,16 +126,24 @@ class AuthController extends Controller
             ];
 
             $request->session()->put('otp', $otp);
+          
             // Send the OTP via email
             Mail::send([], [], function ($message) use ($request,$userEmail, $otp) {
-                $message->from('developers@harmistechnology.com');
+                $message->from(env('MAIL_USERNAME'));
                 $message->to($userEmail);
                 $message->subject('OTP Verification');
                 $message->setBody('Your OTP for verification is: ' . $otp['code']);
             });
 
+            if (count(Mail::failures()) > 0) {
+                // Email sending failed
+                return response()->json(['success' => false, 'message' => 'Failed to send OTP email']);
+            } else {
+                // Email sending succeeded
+                return response()->json(['success' => true, 'message' => 'OTP email sent successfully']);
+            }
             
-            return response()->json(['success' => true]);
+           // return response()->json(['success' => true]);
         } catch (\Throwable $th) {
             return response()->json(['success' => false]);
         }

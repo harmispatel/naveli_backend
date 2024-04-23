@@ -15,7 +15,8 @@ class CreateUserSymptomsLogsTable extends Migration
     {
         Schema::create('user_symptoms_logs', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->tinyInteger('staining')->nullable();
             $table->tinyInteger('clot_size')->nullable();
             $table->tinyInteger('working_ability')->nullable();

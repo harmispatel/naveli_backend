@@ -24,7 +24,7 @@
         'notification',
         'generalSetting',
         'ContentUpload',
-    ]);
+    ]); 
     $isCollAllAboutPeriods = !in_array($currentRouteName, [
         'aap.category.index',
         'aap.category.create',

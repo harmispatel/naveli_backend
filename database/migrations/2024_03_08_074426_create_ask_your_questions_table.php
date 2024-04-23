@@ -21,7 +21,7 @@ class CreateAskYourQuestionsTable extends Migration
             $table->string('image')->nullable();
             $table->text('question_answer')->nullable();
             $table->string('file_type')->nullable();
-            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }

@@ -140,6 +140,7 @@ class CommonController extends BaseController
                     'edit' => $request->edit,
                     'to_do_list' => json_encode($request->to_do_list),
                     'daily_dairy' => json_encode($request->daily_dairy),
+                    "is_edit" => $request->is_edit,
                     'created_at' => $date,
                     'updated_at' => $date,
                     'user_id' => auth()->user()->id,
@@ -205,6 +206,7 @@ class CommonController extends BaseController
         $datas['edit'] = $data->edit;
         $datas['to_do_list'] = json_decode($data->to_do_list);
         $datas['daily_dairy'] = json_decode($data->daily_dairy);
+        $datas['is_edit'] = $data->is_edit;
         $datas['created_at'] = $data->created_at->format('Y-m-d');
 
         return $datas;
@@ -220,8 +222,6 @@ class CommonController extends BaseController
             return $this->sendResponse(null, 'Internal Server Error', false);
         }
     }
-
-   
 
     public function monthlymission(Request $request)
     {

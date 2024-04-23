@@ -112,7 +112,7 @@ return [
     "flash_screen" => "Flash Screen",
     "term_and_condition" => "Term and Condition",
     "Contact_us_Page" => "Contact us Page",
-    "help_and_support" => "Help And Support",
+    "help" => "Help",
     "description" => "Description",
     "posts" => "Posts",
     "posts_category" => "Posts Category",

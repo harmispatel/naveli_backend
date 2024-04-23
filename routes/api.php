@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\PeriodsInfoController;
 use App\Http\Controllers\Api\TrackController;
 use App\Http\Controllers\Api\ForumController;
 use App\Http\Controllers\Api\AskYourQuestionController;
+use App\Http\Controllers\Api\MonthlyReminderController;
 use App\Http\Controllers\Api\UserHirsutismController;
 use App\Models\generalSetting;
 
@@ -38,7 +39,8 @@ use App\Models\generalSetting;
  Route::get('user-details',[UserController::class,'userDetail'])->middleware('auth:sanctum');
  Route::post('user-update-details',[UserController::class,'userUpdateDetails'])->middleware('auth:sanctum');
  Route::get('storeUsersActivityCount',[UserController::class,'storeUsersActivityCount'])->middleware('auth:sanctum');
- Route::post('getUserDetailOnUId',[UserController::class,'getUserDetailOnUId'])->middleware('auth:sanctum');
+ Route::post('getUserDetailOnUId', [UserController::class,'getUserDetailOnUId'])->middleware('auth:sanctum');
+ Route::post('updateUserDashboard',[UserController::class,'updateUserDashboard'])->middleware('auth:sanctum');
 
 
 // Question
@@ -145,3 +147,7 @@ Route::get('getReflectionData',[CommonController::class,'getReflectionData'])->m
 Route::get('/getAllAboutPeriodsList',[AllAboutPeriodController::class,'getAllAboutPeriodsList'])->middleware('auth:sanctum');
 Route::post('/getDetailOfAllAboutPeriod',[AllAboutPeriodController::class,'getDetailOfAllAboutPeriod'])->middleware('auth:sanctum');
 
+//MonthlyReminderController
+
+Route::post('/storeUserMonthlyReminder',[MonthlyReminderController::class,'storeUserMonthlyReminder'])->middleware('auth:sanctum');
+Route::get('/getStoredUserMonthlyReminder',[MonthlyReminderController::class,'getStoredUserMonthlyReminder'])->middleware('auth:sanctum');

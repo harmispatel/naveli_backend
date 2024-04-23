@@ -99,6 +99,7 @@ class Rolecontroller extends Controller
 
     public function update(Request $request)
     {
+    
         $id = decrypt($request->id);
 
         $request->validate([
@@ -108,14 +109,15 @@ class Rolecontroller extends Controller
         try {
 
             $role = Role::find($id);
-
+          
             $role->name = $request->input('name');
             $role->save();
 
+           
             if(isset($request->permission)){
-
                 $permissions = Permission::whereIn('id', $request->permission)->get();
                 $role->syncPermissions($permissions);
+               
             }
 
             return redirect()->route('roles')

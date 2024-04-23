@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserHirsutismsTable extends Migration
+class CreateMonthlyRemindersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,14 @@ class CreateUserHirsutismsTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_hirsutisms', function (Blueprint $table) {
+        Schema::create('monthly_reminders', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->integer('upper_lips')->nullable();
-            $table->integer('chin')->nullable();
-            $table->integer('chest')->nullable();
-            $table->integer('upper_back')->nullable();
-            $table->integer('lower_back')->nullable();
-            $table->integer('upper_abdomen')->nullable();
-            $table->integer('lower_abdomen')->nullable();
+            $table->date('reminder_date')->nullable();
+            $table->string('reminder_month')->nullable();
+            $table->string('reminder_type')->nullable();
+            $table->string('reminder_for')->nullable();
             $table->timestamps();
         });
     }
@@ -35,6 +32,6 @@ class CreateUserHirsutismsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_hirsutisms');
+        Schema::dropIfExists('monthly_reminders');
     }
 }
