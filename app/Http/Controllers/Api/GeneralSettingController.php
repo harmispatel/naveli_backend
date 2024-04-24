@@ -21,7 +21,6 @@ class GeneralSettingController extends BaseController
      }catch(\Throwable $th){
         return $this->sendResponse($data,'Something Went Wrong!',false);
      }
-
    }
 
    public function getAboutAndDescription(){
@@ -36,4 +35,5 @@ class GeneralSettingController extends BaseController
          return $this->sendResponse(null,'Internal server error',false);
       }
    }
+
 }

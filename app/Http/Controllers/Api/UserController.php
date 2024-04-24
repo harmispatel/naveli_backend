@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\BaseController as BaseController;
-use App\Models\{Ailment, Medicine, User,News,Post, TrackBmiCalculator, TrackSleep, TrackWaterReminder, TrackWeight, UserSymptomsLogs,UserActivityStatus};
+use App\Models\{Ailment, BuddyRequest, Medicine, User,News,Post, TrackBmiCalculator, TrackSleep, TrackWaterReminder, TrackWeight, UserSymptomsLogs,UserActivityStatus};
 // use App\Models\News;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -592,20 +592,70 @@ class UserController extends BaseController
         }
     }
 
-    public function getUserDetailOnUId(Request $request){
+    public function verifyUniqueId(Request $request){
         try {
+            $auth_user = Auth::user() ?? null;
+            if(!$auth_user){
+                return $this->sendResponse(null,'Auth User Not Found!',false);
+            }
             $request_unique_id = $request->unique_id;
             if($request_unique_id){
+
                 $get_user = User::where('unique_id',$request_unique_id)->first();
                 if(isset($get_user)){
-                    return $this->sendResponse($get_user, 'User Detail Received For This Unique-Id', true);
+
+                    $fetchSendedRequest = BuddyRequest::where('sender_id', $auth_user->id)
+                    ->where('receiver_id',$get_user->id)
+                    ->where('status', 'pending')
+                    ->first();
+
+                    if(isset($fetchSendedRequest)){
+                        return $this->sendResponse(null, 'Your request alredy in pending', true);
+                    }
+                    $storeUserRequests = new BuddyRequest();
+                    $storeUserRequests->sender_id = $auth_user->id;
+                    $storeUserRequests->receiver_id = $get_user->id;
+                    $storeUserRequests->status = "pending";
+                    $storeUserRequests->save();
+                    return $this->sendResponse(null, 'Your request has been sent successfully', true);
                 }
-                return $this->sendResponse(null, 'User Not Found For This Unique-Id', true);
+                return $this->sendResponse(null, 'User Not Found For This Unique-Id', false);
+
             }else{
                 return $this->sendResponse(null,'Unique-Id required!',false);
             }
         } catch (\Throwable $th) {
             return $this->sendResponse(null,'Something went wrong!',false);
+        }
+    }
+
+    public function getBuddiesRequest(){
+        try {
+            $auth_user = Auth::user() ?? null;
+            if (!$auth_user) {
+                return $this->sendResponse(null, 'Auth User Not Found!', false);
+            }
+
+            $buddyRequests = BuddyRequest::where('receiver_id', $auth_user->id)
+                ->where('status', 'pending')
+                ->with('sender:id,name,mobile')
+                ->get();
+
+            if ($buddyRequests->isEmpty()) {
+                return $this->sendResponse([], 'No Any Requests For This User', true);
+            }
+
+            $senders = $buddyRequests->map(function ($request) {
+                return [
+                    'id' => $request->sender['id'],
+                    'name' => $request->sender['name'],
+                    'mobile' => $request->sender['mobile']
+                ];
+            });
+
+            return $this->sendResponse($senders, 'Request Received Successfully', true);
+        } catch (\Throwable $th) {
+            return $this->sendResponse(null, 'Something went wrong!', false);
         }
     }
 

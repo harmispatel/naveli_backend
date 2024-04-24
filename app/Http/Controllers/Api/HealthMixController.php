@@ -12,7 +12,6 @@ class HealthMixController extends BaseController
 {
     public function index(Request $request)
     {
-
         try {
             $title_id = $request->title_id;
             if ($title_id == 7) {

@@ -9,6 +9,7 @@ use App\Models\Home;
 use App\Models\MonthlyMission;
 use App\Models\User;
 use App\Traits\ImageTrait;
+use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 
@@ -122,6 +123,7 @@ class CommonController extends BaseController
         try {
             $date = isset($request->createdAt) ? $request->createdAt : now()->toDateString();
             $dailydairys = DailyDairy::where('user_id', auth()->user()->id)->whereDate('created_at', $date)->first();
+            $carbonDate = Carbon::parse($date);
 
             if ($dailydairys) {
 
@@ -137,7 +139,7 @@ class CommonController extends BaseController
                     'screen_time' => $request->screen_time,
                     'food' => $request->food,
                     'sleep' => $request->sleep,
-                    'edit' => $request->edit,
+                    // 'edit' => $request->edit,
                     'to_do_list' => json_encode($request->to_do_list),
                     'daily_dairy' => json_encode($request->daily_dairy),
                     "is_edit" => $request->is_edit,
@@ -149,18 +151,39 @@ class CommonController extends BaseController
                 return $this->sendResponse(null, 'Daily dairy updated SuccessFully', true);
 
             } else {
-                $input = $request->except('createdAt', 'to_do_list', 'daily_dairy');
+                $dailydairys = DailyDairy::where('user_id', auth()->user()->id)
+                    ->whereMonth('created_at', now()->month)
+                    ->whereYear('created_at', now()->year)
+                    ->first();
 
+                $input = $request->except('createdAt', 'to_do_list', 'daily_dairy', 'edit');
+
+                // Check if there are existing entries for the current month and year
+                if ($dailydairys && $carbonDate->month == now()->month && $carbonDate->year == now()->year) {
+                    // If there are existing entries for the current month and year, get the edit value from the first entry
+                    if ($dailydairys->edit != null) {
+                        $edit = $dailydairys->edit;
+                    } else {
+                        $edit = $request->edit;
+
+                        DailyDairy::where('user_id', auth()->user()->id)
+                            ->whereMonth('created_at', now()->month)
+                            ->whereYear('created_at', now()->year)
+                            ->update(['edit' => $edit]);
+                    }
+                } else {
+                    $edit = $request->edit;
+                }
                 $input['user_id'] = auth()->user()->id;
                 $input['to_do_list'] = json_encode($request->to_do_list);
                 $input['daily_dairy'] = json_encode($request->daily_dairy);
+                $input['edit'] = $edit;
                 $input['created_at'] = $date;
                 $input['updated_at'] = $date;
                 $dailydairys = DailyDairy::create($input);
 
                 return $this->sendResponse(null, 'Daily dairy stored SuccessFully', true);
             }
-
         } catch (\Throwable $th) {
             return $this->sendResponse(null, 'Internal Server Error!', false);
         }
@@ -175,7 +198,7 @@ class CommonController extends BaseController
             if ($getDairys->isEmpty()) {
                 return $this->sendResponse(null, 'Data not found', true);
             }
-         
+
             foreach ($getDairys as $dailyDairy) {
                 $getDairyData = $this->getDailyDairyData($dailyDairy);
             }
@@ -189,7 +212,6 @@ class CommonController extends BaseController
 
     public function getDailyDairyData($data)
     {
-
         $datas['id'] = $data->id;
         $datas['user_id'] = $data->user_id;
         $datas['mood'] = $data->mood;
@@ -206,7 +228,7 @@ class CommonController extends BaseController
         $datas['edit'] = $data->edit;
         $datas['to_do_list'] = json_decode($data->to_do_list);
         $datas['daily_dairy'] = json_decode($data->daily_dairy);
-        $datas['is_edit'] = $data->is_edit;
+        $datas['is_edit'] = strval($data->is_edit);
         $datas['created_at'] = $data->created_at->format('Y-m-d');
 
         return $datas;
@@ -235,7 +257,7 @@ class CommonController extends BaseController
                     'user_id' => auth()->user()->id,
                     'main_focus_of_month' => json_encode($request->main_focus_of_month),
                     'goals' => json_encode($request->goals),
-                    'hobbies' => json_encode($request->hobbies),                                  
+                    'hobbies' => json_encode($request->hobbies),
                     'habits_to_cut' => json_encode($request->habits_to_cut),
                     'habits_to_adopt' => json_encode($request->habits_to_adopt),
                     'new_things_to_try' => json_encode($request->new_things_to_try),
@@ -267,105 +289,108 @@ class CommonController extends BaseController
                 return $this->sendResponse(null, 'Monthly Mission Stored Successfully', true);
 
             }
-        } catch (\Throwable $th) {         
-            return $this->sendResponse(null, 'Internal Server Error', false);
-        }
-    }
-
-    public function getMonthlyMisssion(){
-        try {
-            $currentMonth = date('m');
-            $currentYear = date('Y');
-
-            $monthDatas = MonthlyMission::where('user_id',auth()->user()->id)
-                                        ->whereMonth('created_at', $currentMonth)
-                                        ->whereYear('created_at', $currentYear)
-                                        ->get();
-
-            if ($monthDatas->isEmpty()) {
-                return $this->sendResponse(null, 'Data not found', true);
-            }
-
-            
-            foreach($monthDatas as $monthData){
-                $monthAllData = $this->monthMissionGetting($monthData);
-            }
-
-            return $this->sendResponse($monthAllData, 'MonthlyMission Data Retrived SuccessFully', true);
-        } catch (\Throwable $th) {   
-            
-        return $this->sendResponse(null, 'Internal Server Error', false);
-        }
-    }
-
-    function monthMissionGetting($data){
-         $datas['id'] = $data->id;
-         $datas['user_id'] = $data->user_id;
-         $datas['main_focus_of_month'] = json_decode($data->main_focus_of_month);
-         $datas['goals'] = json_decode($data->goals);
-         $datas['hobbies'] = json_decode($data->hobbies);
-         $datas['habits_to_cut'] = json_decode($data->habits_to_cut);
-         $datas['habits_to_adopt'] = json_decode($data->habits_to_adopt);
-         $datas['new_things_to_try'] = json_decode($data->new_things_to_try);
-         $datas['family_goals'] = json_decode($data->family_goals);
-         $datas['books_to_read'] = json_decode($data->books_to_read);
-         $datas['movies_to_watch'] = json_decode($data->movies_to_watch);
-         $datas['places_to_visit'] = json_decode($data->places_to_visit);
-         $datas['make_wish'] = $data->make_wish;
-         
-         return $datas;
-
-    }
-
-    public function getCurrentmonthDailyDairys(){
-        try {
-            $currentMonth = date('m');
-            $currentYear = date('Y');
-
-            $dailydairys = DailyDairy::where('user_id',auth()->user()->id)
-                                      ->whereMonth('created_at', $currentMonth)
-                                     ->whereYear('created_at', $currentYear)
-                                     ->orderBy('created_at', 'ASC')
-                                     ->get();
-
-            if ($dailydairys->isEmpty()) {
-                return $this->sendResponse(null, 'Data not found', true);
-            }
-
-           
-            foreach($dailydairys as $dailydairy){
-                $monthAllData = $this->getDailyDairyCurrentMonthData($dailydairy);
-            }
-
-            return $this->sendResponse($monthAllData, 'Daily Dairy currentMonth Data Retrived SuccessFully', true);
-           
         } catch (\Throwable $th) {
             return $this->sendResponse(null, 'Internal Server Error', false);
         }
     }
 
-    public function getReflectionData(){
+    public function getMonthlyMisssion()
+    {
+
         try {
             $currentMonth = date('m');
             $currentYear = date('Y');
 
-            $dailydairys = DailyDairy::where('user_id',auth()->user()->id)
-                                      ->whereMonth('created_at', $currentMonth)
-                                     ->whereYear('created_at', $currentYear)
-                                     ->orderBy('created_at', 'ASC')
-                                     ->get();
+            $monthDatas = MonthlyMission::where('user_id', auth()->user()->id)
+                ->whereMonth('created_at', $currentMonth)
+                ->whereYear('created_at', $currentYear)
+                ->get();
+
+            if ($monthDatas->isEmpty()) {
+                return $this->sendResponse(null, 'Data not found', true);
+            }
+
+            foreach ($monthDatas as $monthData) {
+                $monthAllData = $this->monthMissionGetting($monthData);
+            }
+
+            return $this->sendResponse($monthAllData, 'MonthlyMission Data Retrived SuccessFully', true);
+        } catch (\Throwable $th) {
+
+            return $this->sendResponse(null, 'Internal Server Error', false);
+        }
+    }
+
+    public function monthMissionGetting($data)
+    {
+        $datas['id'] = $data->id;
+        $datas['user_id'] = $data->user_id;
+        $datas['main_focus_of_month'] = json_decode($data->main_focus_of_month);
+        $datas['goals'] = json_decode($data->goals);
+        $datas['hobbies'] = json_decode($data->hobbies);
+        $datas['habits_to_cut'] = json_decode($data->habits_to_cut);
+        $datas['habits_to_adopt'] = json_decode($data->habits_to_adopt);
+        $datas['new_things_to_try'] = json_decode($data->new_things_to_try);
+        $datas['family_goals'] = json_decode($data->family_goals);
+        $datas['books_to_read'] = json_decode($data->books_to_read);
+        $datas['movies_to_watch'] = json_decode($data->movies_to_watch);
+        $datas['places_to_visit'] = json_decode($data->places_to_visit);
+        $datas['make_wish'] = $data->make_wish;
+
+        return $datas;
+
+    }
+
+    public function getCurrentmonthDailyDairys()
+    {
+        try {
+            $currentMonth = date('m');
+            $currentYear = date('Y');
+
+            $dailydairys = DailyDairy::where('user_id', auth()->user()->id)
+                ->whereMonth('created_at', $currentMonth)
+                ->whereYear('created_at', $currentYear)
+                ->orderBy('created_at', 'ASC')
+                ->get();
 
             if ($dailydairys->isEmpty()) {
                 return $this->sendResponse(null, 'Data not found', true);
             }
 
-           $monthAllData = [];
-            foreach($dailydairys as $dailydairy){
+            foreach ($dailydairys as $dailydairy) {
+                $monthAllData = $this->getDailyDairyCurrentMonthData($dailydairy);
+            }
+
+            return $this->sendResponse($monthAllData, 'Daily Dairy currentMonth Data Retrived SuccessFully', true);
+
+        } catch (\Throwable $th) {
+            return $this->sendResponse(null, 'Internal Server Error', false);
+        }
+    }
+
+    public function getReflectionData()
+    {
+        try {
+            $currentMonth = date('m');
+            $currentYear = date('Y');
+
+            $dailydairys = DailyDairy::where('user_id', auth()->user()->id)
+                ->whereMonth('created_at', $currentMonth)
+                ->whereYear('created_at', $currentYear)
+                ->orderBy('created_at', 'ASC')
+                ->get();
+
+            if ($dailydairys->isEmpty()) {
+                return $this->sendResponse(null, 'Data not found', true);
+            }
+
+            $monthAllData = [];
+            foreach ($dailydairys as $dailydairy) {
                 $monthAllData[] = $this->getDailyDairyCurrentMonthData($dailydairy);
             }
 
             return $this->sendResponse($monthAllData, 'Daily Dairy currentMonth Data Retrived SuccessFully', true);
-           
+
         } catch (\Throwable $th) {
             return $this->sendResponse(null, 'Internal Server Error', false);
         }
@@ -373,7 +398,6 @@ class CommonController extends BaseController
 
     public function getDailyDairyCurrentMonthData($data)
     {
-
         $datas['id'] = $data->id;
         $datas['user_id'] = $data->user_id;
         $datas['mood'] = $data->mood;
@@ -388,8 +412,62 @@ class CommonController extends BaseController
         $datas['screen_time'] = $data->screen_time;
         $datas['food'] = $data->food;
         $datas['edit'] = $data->edit;
+        $datas['is_edit'] = strval($data->is_edit);
         $datas['created_at'] = date('d M', strtotime($data->created_at));
 
+        $higherGratitudeCount = $this->getGratitudeCounts($data->user_id);
+        $higherIsEditCount = $this->getIsEditCounts($data->user_id);
+
+        $datas['isGratitudeComplete'] = $higherGratitudeCount;
+        $datas['isEditComplete'] = $higherIsEditCount;
         return $datas;
+    }
+
+    public function getGratitudeCounts($userId)
+    {
+        // Count gratitude values for the given user and date
+        $gratitudeCounts = DailyDairy::where('user_id', $userId)
+            ->whereMonth('created_at', date('m'))
+            ->whereYear('created_at', date('Y'))
+            ->select(DB::raw('SUM(gratitude = 0) as count_0'), DB::raw('SUM(gratitude = 1) as count_1'))
+            ->first();
+
+        $maxCount = max($gratitudeCounts->count_0, $gratitudeCounts->count_1);
+
+        $count0 = $gratitudeCounts->count_0;
+        $count1 = $gratitudeCounts->count_1;
+
+       // If both counts are equal, return 1
+        if ($count0 === $count1) {
+            return 1;
+        }
+
+        $mostFrequentGratitude = $count0 >= $count1 ? 0 : 1;
+
+        return $mostFrequentGratitude;
+    }
+
+    public function getIsEditCounts($userId)
+    {
+        // Count gratitude values for the given user and date
+        $isEditCounts = DailyDairy::where('user_id', $userId)
+            ->whereMonth('created_at', date('m'))
+            ->whereYear('created_at', date('Y'))
+            ->select(DB::raw('SUM(is_edit = 0) as count_0'), DB::raw('SUM(is_edit = 1) as count_1'))
+            ->first();
+
+        $maxCount = max($isEditCounts->count_0, $isEditCounts->count_1);
+
+        $count0 = $isEditCounts->count_0;
+        $count1 = $isEditCounts->count_1;
+
+        // If both counts are equal, return 1
+        if ($count0 === $count1) {
+            return 1;
+        }
+
+        $mostFrequentIsEdit = $count0 >= $count1 ? 0 : 1;
+
+        return $mostFrequentIsEdit;
     }
 }

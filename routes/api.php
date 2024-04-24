@@ -39,7 +39,8 @@ use App\Models\generalSetting;
  Route::get('user-details',[UserController::class,'userDetail'])->middleware('auth:sanctum');
  Route::post('user-update-details',[UserController::class,'userUpdateDetails'])->middleware('auth:sanctum');
  Route::get('storeUsersActivityCount',[UserController::class,'storeUsersActivityCount'])->middleware('auth:sanctum');
- Route::post('getUserDetailOnUId', [UserController::class,'getUserDetailOnUId'])->middleware('auth:sanctum');
+ Route::post('verifyUniqueId',[UserController::class,'verifyUniqueId'])->middleware('auth:sanctum');
+ Route::get('getBuddiesRequest',[UserController::class,'getBuddiesRequest'])->middleware('auth:sanctum');
  Route::post('updateUserDashboard',[UserController::class,'updateUserDashboard'])->middleware('auth:sanctum');
 
 
@@ -68,12 +69,13 @@ Route::get('adminAnswer',[AskYourQuestionController::class,'adminAnswerList']);
 //generalsetting
 Route::post('getGeneralSettingFlashScreen',[GeneralSettingController::class,'getGeneralSettingFlashScreen']);
 Route::get('getAboutAndDescription',[GeneralSettingController::class,'getAboutAndDescription']);
+Route::get('getHelp',[GeneralSettingController::class,'getHelp']);
 
-//periods-info
-Route::post('periods-info',[PeriodsInfoController::class,'periodsInfo']);
+// //periods-info
+// Route::post('periods-info',[PeriodsInfoController::class,'periodsInfo']);
 
-//Super Woman
-Route::post('Super-Woman',[SuperWomancontroller::class,'SuperWoman']);
+// //Super Woman
+// Route::post('Super-Woman',[SuperWomancontroller::class,'SuperWoman']);
 
 
 //logout
