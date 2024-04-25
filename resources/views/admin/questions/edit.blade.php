@@ -148,7 +148,7 @@
                         </div>
                     </div>
                     <div class="card-footer text-center">
-                        <button type="submit" class="btn form_button">{{ trans('label.Save') }}</button>
+                        <button type="submit" class="btn form_button">{{ trans('label.Update') }}</button>
                     </div>
                 </div>
             </form>

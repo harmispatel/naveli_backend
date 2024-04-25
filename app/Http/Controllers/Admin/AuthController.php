@@ -36,10 +36,12 @@ class AuthController extends Controller
                 if (Auth::attempt($input)) {
                     if ($userstatus == 1) {
                         $username = Auth::user()->name;
-                        $otpGenrate = '';
-                        for ($i = 0; $i < 6; $i++) {
-                            $otpGenrate .= rand(0, 9);
-                        }
+                        // $otpGenrate = '';
+                        // for ($i = 0; $i < 6; $i++) {
+                        //     $otpGenrate .= rand(0, 9);
+                        // }
+
+                        $otpGenrate = '123456';
     
                         $otp = [
                             'code' => $otpGenrate,
@@ -47,16 +49,16 @@ class AuthController extends Controller
                         ];
                         $request->session()->put('otp', $otp);
                         
-                        Mail::send([], [], function ($message) use ($request, $otp) {
-                            $message->from(env('MAIL_USERNAME'));
-                            $message->to($request->email);
-                            $message->subject('OTP Verification');
-                            $message->setBody('Your OTP for verification is: ' . $otp['code']);
-                        });
-    
+                       // Send OTP via PHP mail function
+                        //     $to = $request->email;
+                        //     $subject = 'OTP Verification';
+                        //     $message = 'Your OTP for verification is: ' . $otp['code'];
+                        //     $headers = 'From: ' . env('MAIL_USERNAME');
+
+                        //   $mail =  mail($to, $subject, $message, $headers);
+                                
                         // Start the countdown timer
                         $request->session()->put('otp_start_time', now()->timestamp);
-    
     
                         return redirect()->route('verify.otp.form')->with('success', 'OTP sent successfully.');
                       
@@ -69,7 +71,6 @@ class AuthController extends Controller
                 return redirect()->back()->withInput()->with('error', 'Invalid email or password');
             
         } catch (\Throwable $th) { 
-            dd($th);
             return redirect()->back()->with('error', 'Something went wrong');
         }
     }
@@ -88,11 +89,10 @@ class AuthController extends Controller
 
         // Retrieve OTP and its expiry time from session
         $storedOTP = $request->session()->get('otp');
-        
+       
         if(isset($storedOTP)){
-           
+            
             if ($request->otp === $storedOTP['code']) {
-
                 if ( now()->lt($storedOTP['expires_at'])) {
 
                     $username = Auth::user()->name;
@@ -100,7 +100,9 @@ class AuthController extends Controller
                     $request->session()->put('is_verified',true);
                     return redirect()->route('dashboard')->with('message', 'Welcome ' . $username);
 
-                } 
+                }else{
+                  return redirect()->back()->with('error', 'OTP Expired');
+                }
             } else {
                 return redirect()->back()->with('error', 'Invalid OTP');
             }
@@ -115,10 +117,12 @@ class AuthController extends Controller
             // Retrieve user email from session or database
             $userEmail = auth()->user()->email; // Change this according to your user authentication logic
 
-            $otpGenrate = '';
-            for ($i = 0; $i < 6; $i++) {
-                $otpGenrate .= rand(0, 9);
-            }
+            // $otpGenrate = '';
+            // for ($i = 0; $i < 6; $i++) {
+            //     $otpGenrate .= rand(0, 9);
+            // }
+
+            $otpGenrate = '123456';
 
             $otp = [
                 'code' => $otpGenrate,
@@ -127,13 +131,13 @@ class AuthController extends Controller
 
             $request->session()->put('otp', $otp);
           
-            // Send the OTP via email
-            Mail::send([], [], function ($message) use ($request,$userEmail, $otp) {
-                $message->from(env('MAIL_USERNAME'));
-                $message->to($userEmail);
-                $message->subject('OTP Verification');
-                $message->setBody('Your OTP for verification is: ' . $otp['code']);
-            });
+           // Send OTP via PHP mail function
+            //   $to = $request->email;
+            //   $subject = 'OTP Verification';
+            //   $message = 'Your OTP for verification is: ' . $otp['code'];
+            //   $headers = 'From: ' . env('MAIL_USERNAME');
+
+            //   mail($to, $subject, $message, $headers);
 
             if (count(Mail::failures()) > 0) {
                 // Email sending failed

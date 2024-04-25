@@ -6,11 +6,15 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 
- function getRoleList(){
-
+function getRoleList(){
        $roles = Role::where('id','!=','1')->get();
        return $roles;
  }
+
+function getUserData($uniqueId){
+    $userData = User::where('unique_id', $uniqueId)->first();
+    return $userData;
+}
 
 function uuId($role_id,$gender_id) {
     // Get the role detail based on the role ID

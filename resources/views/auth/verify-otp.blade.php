@@ -21,6 +21,7 @@
             /* background-color: #D7BAC5; */
             background: url('http:/new_naveli/public/admin_images/bg_admin.jpg');
             display: flex;
+            background-size: contain;
             justify-content: center;
             align-items: center;
             height: 100vh;

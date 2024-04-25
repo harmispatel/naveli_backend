@@ -68,7 +68,7 @@
                         </div>
                     </div>
                     <div class="card-footer text-center">
-                        <button class="btn form_button">{{ trans('label.Save') }}</button>
+                        <button class="btn form_button">{{ trans('label.Update') }}</button>
                     </div>
                 </div>
             </form>

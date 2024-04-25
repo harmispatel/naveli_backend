@@ -41,8 +41,9 @@ use App\Models\generalSetting;
  Route::get('storeUsersActivityCount',[UserController::class,'storeUsersActivityCount'])->middleware('auth:sanctum');
  Route::post('verifyUniqueId',[UserController::class,'verifyUniqueId'])->middleware('auth:sanctum');
  Route::get('getBuddiesRequest',[UserController::class,'getBuddiesRequest'])->middleware('auth:sanctum');
+ Route::get('getSendingAccessRequests',[UserController::class,'getSendingAccessRequests'])->middleware('auth:sanctum');
+ Route::post('naveliResponseToBuddy',[UserController::class,'naveliResponseToBuddy'])->middleware('auth:sanctum');
  Route::post('updateUserDashboard',[UserController::class,'updateUserDashboard'])->middleware('auth:sanctum');
-
 
 // Question
 Route::post('questionlist',[QuestionController::class,'questionlist'])->middleware('auth:sanctum');
@@ -52,7 +53,6 @@ Route::get('question-answers',[QuestionController::class,'getQuestionAnswers'])-
 Route::post('sub-questions-list',[QuestionController::class,'getSubQuestions'])->middleware('auth:sanctum');
 Route::post('subQuestionAnswer',[QuestionController::class,'subQuestionAnswer'])->middleware('auth:sanctum');
 
-
 //questionType
 Route::get('questionType',[QuestionController::class,'questionTypeList']);
 
@@ -60,7 +60,6 @@ Route::get('questionType',[QuestionController::class,'questionTypeList']);
 Route::post('sendOtp',[ForgotPasswordController::class,'sendOtp']);
 Route::post('checkOtp',[ForgotPasswordController::class,'checkOtp']);
 Route::post('confirmPassword',[ForgotPasswordController::class,'confirmPassword'])->middleware('auth:sanctum');
-
 
 // Ask Your Question
 Route::post('userQuestionStore',[AskYourQuestionController::class,'userQuestionStore'])->middleware('auth:sanctum');

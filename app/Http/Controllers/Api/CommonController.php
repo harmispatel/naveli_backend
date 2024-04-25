@@ -427,10 +427,10 @@ class CommonController extends BaseController
     {
         // Count gratitude values for the given user and date
         $gratitudeCounts = DailyDairy::where('user_id', $userId)
-            ->whereMonth('created_at', date('m'))
-            ->whereYear('created_at', date('Y'))
-            ->select(DB::raw('SUM(gratitude = 0) as count_0'), DB::raw('SUM(gratitude = 1) as count_1'))
-            ->first();
+                                     ->whereMonth('created_at', date('m'))
+                                     ->whereYear('created_at', date('Y'))
+                                     ->select(DB::raw('SUM(gratitude = 0) as count_0'), DB::raw('SUM(gratitude = 1) as count_1'))
+                                     ->first();
 
         $maxCount = max($gratitudeCounts->count_0, $gratitudeCounts->count_1);
 
@@ -451,10 +451,10 @@ class CommonController extends BaseController
     {
         // Count gratitude values for the given user and date
         $isEditCounts = DailyDairy::where('user_id', $userId)
-            ->whereMonth('created_at', date('m'))
-            ->whereYear('created_at', date('Y'))
-            ->select(DB::raw('SUM(is_edit = 0) as count_0'), DB::raw('SUM(is_edit = 1) as count_1'))
-            ->first();
+                                  ->whereMonth('created_at', date('m'))
+                                  ->whereYear('created_at', date('Y'))
+                                  ->select(DB::raw('SUM(is_edit = 0) as count_0'), DB::raw('SUM(is_edit = 1) as count_1'))
+                                  ->first();
 
         $maxCount = max($isEditCounts->count_0, $isEditCounts->count_1);
 
