@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\OTPMail;
+use App\Mail\UserMail;
 
 class AuthController extends Controller
 {
@@ -26,20 +26,23 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required'
         ]);
-
+        
         try {
             $user = User::where('email', $request->email)->first();
             $userstatus = $user ? $user->status : null;
-
+            
             $input = $request->except('_token');
-
-                if (Auth::attempt($input)) {
-                    if ($userstatus == 1) {
+            
+                if (Auth::attempt($input)) 
+                {
+                  if ($userstatus == 1) 
+                    {
                         $username = Auth::user()->name;
-                        // $otpGenrate = '';
-                        // for ($i = 0; $i < 6; $i++) {
-                        //     $otpGenrate .= rand(0, 9);
-                        // }
+
+                            // $otpGenrate = '';
+                            // for ($i = 0; $i < 6; $i++) {
+                            //     $otpGenrate .= rand(0, 9);
+                            // }
 
                         $otpGenrate = '123456';
     
@@ -49,14 +52,9 @@ class AuthController extends Controller
                         ];
                         $request->session()->put('otp', $otp);
                         
-                       // Send OTP via PHP mail function
-                        //     $to = $request->email;
-                        //     $subject = 'OTP Verification';
-                        //     $message = 'Your OTP for verification is: ' . $otp['code'];
-                        //     $headers = 'From: ' . env('MAIL_USERNAME');
-
-                        //   $mail =  mail($to, $subject, $message, $headers);
-                                
+                        // Send OTP via Laravel Mail
+                        // Mail::to($request->email)->send(new UserMail($otp['code']));
+                         
                         // Start the countdown timer
                         $request->session()->put('otp_start_time', now()->timestamp);
     
@@ -64,8 +62,7 @@ class AuthController extends Controller
                       
                     } else {
                         return redirect()->route('admin.login')->with('error', 'Your account is deactivated!');
-                    }
-                   
+                    }                  
                 }
            
                 return redirect()->back()->withInput()->with('error', 'Invalid email or password');
@@ -82,7 +79,6 @@ class AuthController extends Controller
 
     public function verifyOTP(Request $request)
     {
-
         $request->validate([
             'otp' => 'required'
         ]);
@@ -90,8 +86,7 @@ class AuthController extends Controller
         // Retrieve OTP and its expiry time from session
         $storedOTP = $request->session()->get('otp');
        
-        if(isset($storedOTP)){
-            
+        if(isset($storedOTP)){      
             if ($request->otp === $storedOTP['code']) {
                 if ( now()->lt($storedOTP['expires_at'])) {
 
@@ -131,21 +126,10 @@ class AuthController extends Controller
 
             $request->session()->put('otp', $otp);
           
-           // Send OTP via PHP mail function
-            //   $to = $request->email;
-            //   $subject = 'OTP Verification';
-            //   $message = 'Your OTP for verification is: ' . $otp['code'];
-            //   $headers = 'From: ' . env('MAIL_USERNAME');
+           // Send OTP via Laravel Mail
+            // Mail::to($userEmail)->send(new UserMail($otp['code']));
 
-            //   mail($to, $subject, $message, $headers);
-
-            if (count(Mail::failures()) > 0) {
-                // Email sending failed
-                return response()->json(['success' => false, 'message' => 'Failed to send OTP email']);
-            } else {
-                // Email sending succeeded
-                return response()->json(['success' => true, 'message' => 'OTP email sent successfully']);
-            }
+             return response()->json(['success' => true, 'message' => 'OTP email sent successfully']);
             
            // return response()->json(['success' => true]);
         } catch (\Throwable $th) {
