@@ -42,6 +42,7 @@ use App\Models\generalSetting;
  Route::get('storeUsersActivityCount',[UserController::class,'storeUsersActivityCount'])->middleware('auth:sanctum');
  Route::post('fatchUserDataOnUid',[UserController::class,'fatchUserDataOnUid'])->middleware('auth:sanctum');
  Route::post('updateUserDashboard',[UserController::class,'updateUserDashboard'])->middleware('auth:sanctum');
+ Route::post('downloadUserDataPdf',[UserController::class,'downloadUserDataPdf']);
 
 
 // Question

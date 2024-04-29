@@ -4,12 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BaseController as BaseController;
 use App\Http\Resources\QuestionAnswersResource;
-use App\Http\Resources\QuestionResource;
 use App\Http\Resources\QuestionOptionResource;
 use App\Http\Resources\QuestionTypeResource;
 use App\Models\Question;
-use App\Models\QuestionType;
 use App\Models\QuestionAnswer;
+use App\Models\QuestionType;
 use App\Models\Question_option;
 use App\Models\SubOption;
 use App\Models\SubQuestion;
@@ -54,7 +53,7 @@ class QuestionController extends BaseController
             $ageGroup = $request->age_group ?? null;
 
             $questionsQuery = Question::where('questionType_id', $questionType)
-            ->with('options', 'age_group');
+                ->with('options', 'age_group');
 
             if ($questionType == 3 && !$ageGroup) {
                 return $this->sendResponse(null, 'Age group is required for question type Others.', false);
@@ -66,7 +65,7 @@ class QuestionController extends BaseController
                 });
             }
 
-        $questions = $questionsQuery->get();
+            $questions = $questionsQuery->get();
             $questionData = $questions->map(function ($question) {
                 return [
                     'id' => $question->id,
@@ -75,7 +74,7 @@ class QuestionController extends BaseController
                     'options' => QuestionOptionResource::collection($question->options),
                     'age_group' => isset($question->age_group) ? [
                         'id' => $question->age_group->id,
-                        'name' => $question->age_group->name
+                        'name' => $question->age_group->name,
                     ] : null,
                 ];
             });
@@ -168,7 +167,6 @@ class QuestionController extends BaseController
     public function questionAnswer(Request $request)
     {
         try {
-
             $user_id = Auth::id(); // Simplified way to get user id using Auth::id()
 
             if (!empty($user_id) && isset($request->question_ids) && isset($request->question_option_ids)) {
@@ -185,18 +183,18 @@ class QuestionController extends BaseController
                     $input = [
                         'user_id' => $user_id,
                         'question_id' => $question_id,
-                        'question_option_id' => $question_option_ids[$index]
+                        'question_option_id' => $question_option_ids[$index],
+                        'pms' => $request->pms,
+                        'pco' => $request->pco,
+                        'anemia' => $request->anemia,
                     ];
 
                     $question_answer = QuestionAnswer::where('user_id', $user_id)
                         ->where('question_id', $question_id)
                         ->first();
 
-                    if ($question_answer) {
-                        $question_answer->update($input);
-                    } else {
-                        QuestionAnswer::create($input);
-                    }
+                    QuestionAnswer::create($input);
+
                 }
 
                 return $this->sendResponse([], 'Question answers have been submitted successfully.', true);
@@ -208,15 +206,58 @@ class QuestionController extends BaseController
         }
     }
 
-
-    public function getQuestionAnswers(){
+    public function getQuestionAnswers()
+    {
         try {
+            $currentMonth = date('m');
+            $currentYear = date('Y');
+
             $user_id = Auth::user() ? Auth::user()->id : "";
-            if(!empty($user_id)){
-                $question_answers = QuestionAnswer::where('user_id', $user_id)->get();
+            if (!empty($user_id)) {
+                $question_answers = QuestionAnswer::where('user_id', $user_id)
+                    ->whereMonth('created_at', $currentMonth)
+                    ->whereYear('created_at', $currentYear)
+                    ->get();
+
+                $question_answer_pms = QuestionAnswer::where('user_id', $user_id)
+                    ->whereMonth('created_at', $currentMonth)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereNotNull('pms')
+                    ->first();
+
+                $question_answer_pco = QuestionAnswer::where('user_id', $user_id)
+                    ->whereMonth('created_at', $currentMonth)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereNotNull('pco')
+                    ->first();
+
+                $question_answer_anemia = QuestionAnswer::where('user_id', $user_id)
+                    ->whereMonth('created_at', $currentMonth)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereNotNull('anemia')
+                    ->first();
+
+                $pms = $question_answer_pms ? $question_answer_pms->pms : null;
+                $pco = $question_answer_pco ? $question_answer_pco->pco : null;
+                $anemia = $question_answer_anemia ? $question_answer_anemia->anemia : null;
+
+                // Transform the collection of question answers into a resource
                 $data = new QuestionAnswersResource($question_answers);
-                return $this->sendResponse($data, 'Question Answers has been Fetched.', true);
-            }else{
+
+                // Construct the response array
+                $response = [
+                    'data' => $data,
+                    'pms' => $pms,
+                    'pco' => $pco,
+                    'anemia' => $anemia,
+                    'message' => 'Question Answers have been Fetched.',
+                    'success' => true,
+                ];
+
+                return response()->json($response);
+
+                // return $this->sendResponse($data, 'Question Answers has been Fetched.', true);
+            } else {
                 return $this->sendError('User not Found!.', [], 404);
             }
         } catch (\Throwable $th) {
@@ -265,99 +306,100 @@ class QuestionController extends BaseController
     //     }
     // }
 
-        public function getSubQuestions(Request $request){
-            try {
-                $option_id = $request->option_id;
+    public function getSubQuestions(Request $request)
+    {
+        try {
+            $option_id = $request->option_id;
 
-                if(!$option_id){
-                    return $this->sendResponse(null, 'Option Id Not Found!', false);
+            if (!$option_id) {
+                return $this->sendResponse(null, 'Option Id Not Found!', false);
+            }
+
+            $sub_options = SubQuestion::where('sub_option_id', $option_id)->orWhere('option_id', $option_id)->with('sub_question')->get();
+
+            $data = [];
+            if (count($sub_options) > 1) {
+                foreach ($sub_options as $key => $sub_option) {
+                    if ($sub_option->question_or_notification != "question") {
+                        $data['notification_id'] = isset($sub_option->id) ? $sub_option->id : null;
+                        $data['notification'] = isset($sub_option->sub_question) ? $sub_option->sub_question->title : null;
+                    } else {
+                        $options_of_question = SubOption::select('id', 'option_name')->where('question_or_notification_id', $sub_option->sub_question_id)->get();
+                        $data['question_id'] = isset($sub_option->id) ? $sub_option->id : null;
+                        $data['question'] = isset($sub_option->sub_question) ? $sub_option->sub_question->title : null;
+                        $data['options'] = isset($options_of_question) ? $options_of_question : null;
+                    }
                 }
-
-                $sub_options = SubQuestion::where('sub_option_id',$option_id)->orWhere('option_id',$option_id)->with('sub_question')->get();
-
-                $data = [];
-                if(count($sub_options) > 1){
-                    foreach($sub_options as $key => $sub_option){
-                        if($sub_option->question_or_notification != "question"){
-                            $data['notification_id'] = isset($sub_option->id)? $sub_option->id : null;
+                $sub_questions = $data;
+            } else {
+                if (count($sub_options) > 0) {
+                    foreach ($sub_options as $key => $sub_option) {
+                        if ($sub_option->question_or_notification != "question") {
+                            $data['notification_id'] = isset($sub_option->id) ? $sub_option->id : null;
                             $data['notification'] = isset($sub_option->sub_question) ? $sub_option->sub_question->title : null;
-                        }else{
-                            $options_of_question = SubOption::select('id','option_name')->where('question_or_notification_id',$sub_option->sub_question_id)->get();
-                            $data['question_id'] = isset($sub_option->id)? $sub_option->id : null;
+                            $data['question'] = null;
+                            $data['options'] = null;
+                        } else {
+                            $options_of_question = SubOption::select('id', 'option_name')->where('question_or_notification_id', $sub_option->sub_question_id)->get();
+                            $data['notification'] = null;
+                            $data['question_id'] = isset($sub_option->id) ? $sub_option->id : null;
                             $data['question'] = isset($sub_option->sub_question) ? $sub_option->sub_question->title : null;
-                            $data['options'] =  isset($options_of_question) ? $options_of_question : null;
+                            $data['options'] = isset($options_of_question) ? $options_of_question : null;
                         }
                     }
                     $sub_questions = $data;
-                }else{
-                    if(count($sub_options) > 0){
-                        foreach($sub_options as $key => $sub_option){
-                            if($sub_option->question_or_notification != "question"){
-                                $data['notification_id'] = isset($sub_option->id)? $sub_option->id : null;
-                                $data['notification'] = isset($sub_option->sub_question) ? $sub_option->sub_question->title : null;
-                                $data['question'] = null;
-                                $data['options'] = null;
-                            }else{
-                                $options_of_question = SubOption::select('id','option_name')->where('question_or_notification_id',$sub_option->sub_question_id)->get();
-                                $data['notification'] = null;
-                                $data['question_id'] = isset($sub_option->id)? $sub_option->id : null;
-                                $data['question'] = isset($sub_option->sub_question) ? $sub_option->sub_question->title : null;
-                                $data['options'] = isset($options_of_question) ? $options_of_question : null;
-                            }
-                        }
-                        $sub_questions = $data;
-                    }else{
-                        $sub_questions = null;
-                    }
-                }
-
-                return $this->sendResponse($sub_questions, 'Data Receive Successfully', true);
-            } catch (\Throwable $th) {
-                return $this->sendResponse(null, 'something went wrong!', false);
-            }
-        }
-
-
-        public function subQuestionAnswer(Request $request){
-            try {
-
-                $user_id = Auth::id();
-
-                if (!empty($user_id) && isset($request->sub_question_ids) && isset($request->sub_option_ids)) {
-                    $sub_question_ids = $request->sub_question_ids;
-                    $sub_option_ids = $request->sub_option_ids;
-
-                    // Validate if both arrays have the same length
-                    if (count($sub_question_ids) !== count($sub_option_ids)) {
-                        return $this->sendResponse(null, 'Question ids and option ids array length mismatch.', false);
-                    }
-
-                    foreach ($sub_question_ids as $index => $sub_question_id) {
-
-                        $input = [
-                            'user_id' => $user_id,
-                            'sub_question_id' => $sub_question_id,
-                            'sub_option_id' => $sub_option_ids[$index]
-                        ];
-
-                        $question_answer = SubQuestionAnswer::where('user_id', $user_id)
-                            ->where('sub_question_id', $sub_question_id)
-                            ->first();
-
-                        if ($question_answer) {
-                            $question_answer->update($input);
-                        } else {
-                            SubQuestionAnswer::create($input);
-                        }
-                    }
-
-                    return $this->sendResponse([], 'Question answers have been submitted successfully.', true);
                 } else {
-                    return $this->sendResponse(null, 'User not found or question/option ids are missing.!', false);
+                    $sub_questions = null;
                 }
-            } catch (\Throwable $th) {
-
-                return $this->sendResponse(null, 'Something Went Wrong !', false);
             }
+
+            return $this->sendResponse($sub_questions, 'Data Receive Successfully', true);
+        } catch (\Throwable $th) {
+            return $this->sendResponse(null, 'something went wrong!', false);
         }
+    }
+
+    public function subQuestionAnswer(Request $request)
+    {
+        try {
+
+            $user_id = Auth::id();
+
+            if (!empty($user_id) && isset($request->sub_question_ids) && isset($request->sub_option_ids)) {
+                $sub_question_ids = $request->sub_question_ids;
+                $sub_option_ids = $request->sub_option_ids;
+
+                // Validate if both arrays have the same length
+                if (count($sub_question_ids) !== count($sub_option_ids)) {
+                    return $this->sendResponse(null, 'Question ids and option ids array length mismatch.', false);
+                }
+
+                foreach ($sub_question_ids as $index => $sub_question_id) {
+
+                    $input = [
+                        'user_id' => $user_id,
+                        'sub_question_id' => $sub_question_id,
+                        'sub_option_id' => $sub_option_ids[$index],
+                    ];
+
+                    $question_answer = SubQuestionAnswer::where('user_id', $user_id)
+                        ->where('sub_question_id', $sub_question_id)
+                        ->first();
+
+                    if ($question_answer) {
+                        $question_answer->update($input);
+                    } else {
+                        SubQuestionAnswer::create($input);
+                    }
+                }
+
+                return $this->sendResponse([], 'Question answers have been submitted successfully.', true);
+            } else {
+                return $this->sendResponse(null, 'User not found or question/option ids are missing.!', false);
+            }
+        } catch (\Throwable $th) {
+
+            return $this->sendResponse(null, 'Something Went Wrong !', false);
+        }
+    }
 }

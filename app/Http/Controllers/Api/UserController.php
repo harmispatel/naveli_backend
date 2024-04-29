@@ -17,6 +17,8 @@ use App\Http\Resources\UserResource;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 
 class UserController extends BaseController
@@ -606,6 +608,41 @@ class UserController extends BaseController
         }
     }
 
+    public function downloadUserDataPdf(Request $request){
+        // Generate custom PDF
+        $pdfContent = $this->generateCustomPdf($request->all());
+        $pdfPath = $this->storePdf($pdfContent);
+
+        return $this->sendResponse(['pdf_path' => $pdfPath], 'PDF generated and stored successfully', true);
+
+    }
+    private function storePdf($pdfData)
+    {
+        // Generate filename with timestamp
+        $pdfFilename = 'userdata_' . time() . '.pdf';
+
+        $pdfPath = public_path('images/uploads/userDataPdf/') . $pdfFilename;
+        file_put_contents($pdfPath, $pdfData);
+        // Construct the full file path
+        $pdfPath = asset('public/images/uploads/userDataPdf/' . $pdfFilename);
+
+        return $pdfPath;
+    }
+    private function generateCustomPdf($requestData)
+    {
+        // Generate custom PDF using Dompdf
+        $currentMonthYear = Carbon::now()->format('F Y');
+        $dompdf = new Dompdf();
+        // Load HTML content (you need to design your PDF here)
+        $html = view('admin.users.download-userdata', ['data' => $requestData, 'currentMonthYear' => $currentMonthYear])->render();
+
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        return $dompdf->output();
+    }
+
     public function userResponse($userdata)
     {
         $today = Carbon::today();
@@ -644,6 +681,4 @@ class UserController extends BaseController
         $data['status'] = $userdata->status;
         return $data;
     }
-
-
 }

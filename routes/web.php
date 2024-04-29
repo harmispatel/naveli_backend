@@ -134,7 +134,9 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('profile/edit/{id}', [UserController::class, 'profileEdit'])->name('profile.edit');
         Route::post('profile/update', [UserController::class, 'profileUpdate'])->name('profile.update');
         Route::get('users/count/genderwise/{age_group_id}',[DashboardController::class,'ageGroupWiseCount'])->name('users.count');
-
+        Route::get('/pdfview',function(){
+            return view('admin.users.download-userdata');
+        });
         //age
         Route::controller(AgeController::class)->group(function () {
             Route::get('age', 'index')->name('age.index');

@@ -32,7 +32,6 @@ class Rolecontroller extends Controller
                         $action_html = '<div class="btn-group">';
                         $action_html .= '<a href="' . route('roles.edit', encrypt($row->id)) . '" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
 
-
                         if($role_id != 1 && $role_id != 2 && $role_id != 3 && $role_id != 4){
                             $action_html .= '<a onclick="deleteRole(\'' . $row->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
                         }
@@ -79,7 +78,7 @@ class Rolecontroller extends Controller
         }
     }
 
-    public function edit(Request $request, $id)
+    public function edit($id)
     {
         try {
 
@@ -92,6 +91,7 @@ class Rolecontroller extends Controller
             return view('admin.roles.edit', compact('role', 'permission', 'rolePermissions'));
 
         } catch (\Throwable $th) {
+            dd($th);
             return redirect()->back()->with('error', 'Something went wrong');
         }
 
@@ -99,7 +99,7 @@ class Rolecontroller extends Controller
 
     public function update(Request $request)
     {
-    
+   
         $id = decrypt($request->id);
 
         $request->validate([
@@ -109,20 +109,25 @@ class Rolecontroller extends Controller
         try {
 
             $role = Role::find($id);
-          
+        
             $role->name = $request->input('name');
             $role->save();
-
            
+   
             if(isset($request->permission)){
                 $permissions = Permission::whereIn('id', $request->permission)->get();
                 $role->syncPermissions($permissions);
                
+            }else{
+                return redirect()->route('roles.edit', ['id' => encrypt($id)])
+                ->with('error', 'Please select at least one permission')
+                ->withInput();
             }
 
             return redirect()->route('roles')
                 ->with('message', 'Role updated successfully');
         } catch (\Throwable $th) {
+            dd($th);
             return redirect()->back()->with('error', 'Something went wrong');
         }
 

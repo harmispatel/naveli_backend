@@ -18,6 +18,9 @@ class CreateQuestionAnswersTable extends Migration
             $table->foreignId('question_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('question_option_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('pms')->nullable();
+            $table->string('pco')->nullable();
+            $table->string('anemia')->nullable();
             $table->timestamps();
         });
     }
