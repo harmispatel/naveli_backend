@@ -42,7 +42,7 @@ use App\Models\generalSetting;
  Route::get('storeUsersActivityCount',[UserController::class,'storeUsersActivityCount'])->middleware('auth:sanctum');
  Route::post('fatchUserDataOnUid',[UserController::class,'fatchUserDataOnUid'])->middleware('auth:sanctum');
  Route::post('updateUserDashboard',[UserController::class,'updateUserDashboard'])->middleware('auth:sanctum');
- Route::post('downloadUserDataPdf',[UserController::class,'downloadUserDataPdf']);
+ Route::post('downloadUserDataPdf',[UserController::class,'downloadUserDataPdf'])->middleware('auth:sanctum');
 
 
 // Question
@@ -139,6 +139,8 @@ Route::get('getMonthlyMisssion',[CommonController::class,'getMonthlyMisssion'])-
 Route::get('getCurrentmonthDailyDairys',[CommonController::class,'getCurrentmonthDailyDairys'])->middleware('auth:sanctum');
 Route::get('getReflectionData',[CommonController::class,'getReflectionData'])->middleware('auth:sanctum');
 
+// FeaturePeriodDates
+Route::post('storeUserPeriodDates',[CommonController::class,'storeUserPeriodDates'])->middleware('auth:sanctum');
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });

@@ -212,23 +212,23 @@ class UserController extends BaseController
 
             if($user_role == 2){
 
-                if(isset($name) && isset($birthdate) && isset($gender) && isset($relationship_status)  && isset($previous_periods_begin)){
+                // if(isset($name) && isset($birthdate) && isset($gender) && isset($relationship_status)  && isset($previous_periods_begin)){
 
                     $getUserData = User::find($id);
                     $find_user_uid = $getUserData->unique_id;
 
                     $updateUserDetail = [
-                        'name' => $name,
-                        'email' => $email,
+                        'name' => $name ?? $getUserData->name,
+                        'email' => $email ?? $getUserData->email,
                         'unique_id' => isset($find_user_uid) ? $find_user_uid : uuId($user_role,$gender),
-                        'birthdate'=> $birthdate,
-                        'gender' => $gender,
+                        'birthdate'=> $birthdate ?? $getUserData->birthdate,
+                        'gender' => $gender ?? $getUserData->gender,
                         'gender_type' => isset($request->gender_type) ? $request->gender_type : null,
-                        'relationship_status'=>$relationship_status,
-                        'average_cycle_length'=> $average_cycle_length,
-                        'previous_periods_begin'=>$previous_periods_begin,
-                        'previous_periods_month'=>$previous_periods_month,
-                        'average_period_length'=>$average_period_length,
+                        'relationship_status'=>$relationship_status ?? $getUserData->relationship_status,
+                        'average_cycle_length'=> $average_cycle_length ?? $getUserData->average_cycle_length,
+                        'previous_periods_begin'=>$previous_periods_begin ?? $getUserData->previous_periods_begin,
+                        'previous_periods_month'=>$previous_periods_month ?? $getUserData->previous_periods_month,
+                        'average_period_length'=>$average_period_length ?? $getUserData->average_period_length
                     ];
 
                     $updateData = $getUserData->update($updateUserDetail);
@@ -236,51 +236,51 @@ class UserController extends BaseController
                     // $userData = $this->userResponse($updateData);
                     // $data = ['user' => $userData];
                     return  $this->sendResponse(null, 'Data Updated Successfully', true);
-                }else{
-                    return  $this->sendResponse(null, 'all fields are required !', false);
-                }
+                // }else{
+                //     return  $this->sendResponse(null, 'all fields are required !', false);
+                // }
             }
 
             if($user_role == 3){
 
-                if(isset($name) && isset($birthdate) && isset($gender) && isset($relationship_status)  && isset($hum_apke_he_kon) ){
+                // if(isset($name) && isset($birthdate) && isset($gender) && isset($relationship_status)  && isset($hum_apke_he_kon) ){
 
                     $getUserData = User::find($id);
                     $find_user_uid = $getUserData->unique_id;
                     $updateUserDetail =[
-                        'name' => $name,
-                        'email' => $email,
+                        'name' => $name ?? $getUserData->name,
+                        'email' => $email ?? $getUserData->email,
                         'unique_id' => isset($find_user_uid) ? $find_user_uid : uuId($user_role,$gender),
-                        'birthdate'=> $birthdate,
-                        'gender' => $gender,
+                        'birthdate'=>$birthdate ?? $getUserData->birthdate,
+                        'gender' => $gender ?? $getUserData->gender,
                         'gender_type' => isset($request->gender_type) ? $request->gender_type : null,
-                        'relationship_status'=>$relationship_status,
-                        'hum_apke_he_kon' => $hum_apke_he_kon,
+                        'relationship_status'=> $relationship_status ?? $getUserData->relationship_status,
+                        'hum_apke_he_kon' => $hum_apke_he_kon ?? $getUserData->hum_apke_he_kon,
                     ];
 
                     $updateData = $getUserData->update($updateUserDetail);
                     // $userData = $this->userResponse($updateData);
                     // $data = ['user' => $userData];
                     return  $this->sendResponse(null, 'Data Updated Successfully', true);
-                }else{
-                    return  $this->sendResponse(null, 'all fields are required !', false);
-                }
+                // }else{
+                //     return  $this->sendResponse(null, 'all fields are required !', false);
+                // }
             }
 
             if($user_role == 4){
 
-                if(isset($name) && isset($birthdate) && isset($gender) && isset($relationship_status) ){
+                // if(isset($name) && isset($birthdate) && isset($gender) && isset($relationship_status) ){
 
                     $getUserData = User::find($id);
                     $find_user_uid = $getUserData->unique_id;
                     $updateUserDetail = [
-                        'name' => $name,
-                        'email' => $email,
+                        'name' =>  $name ?? $getUserData->name,
+                        'email' => $email ?? $getUserData->email,
                         'unique_id' => isset($find_user_uid) ? $find_user_uid : uuId($user_role,$gender),
-                        'birthdate'=> $birthdate,
-                        'gender' => $gender,
+                        'birthdate'=> $birthdate ?? $getUserData->birthdate,
+                        'gender' => $gender ?? $getUserData->gender,
                         'gender_type' => isset($request->gender_type) ? $request->gender_type : null,
-                        'relationship_status'=>$relationship_status,
+                        'relationship_status'=> $relationship_status ?? $getUserData->relationship_status,
 
                     ];
 
@@ -288,9 +288,9 @@ class UserController extends BaseController
                     // $userData = $this->userResponse($updateData);
                     // $data = ['user' => $userData];
                     return  $this->sendResponse(null, 'Data Updated Successfully', true);
-                }else{
-                    return  $this->sendResponse(null, 'all fields are required !', false);
-                }
+                // }else{
+                //     return  $this->sendResponse(null, 'all fields are required !', false);
+                // }
             }
 
         } catch (\Throwable $th) {
@@ -610,16 +610,18 @@ class UserController extends BaseController
 
     public function downloadUserDataPdf(Request $request){
         // Generate custom PDF
+        $user_name = $request->name ?? "Unknow";
         $pdfContent = $this->generateCustomPdf($request->all());
-        $pdfPath = $this->storePdf($pdfContent);
+        $pdfPath = $this->storePdf($pdfContent,$user_name);
 
         return $this->sendResponse(['pdf_path' => $pdfPath], 'PDF generated and stored successfully', true);
 
     }
-    private function storePdf($pdfData)
+    private function storePdf($pdfData,$user)
     {
+        $currentMonth = Carbon::now()->format('F');
         // Generate filename with timestamp
-        $pdfFilename = 'userdata_' . time() . '.pdf';
+        $pdfFilename = $user . '_' . $currentMonth . '_Report_' . time() . '.pdf';
 
         $pdfPath = public_path('images/uploads/userDataPdf/') . $pdfFilename;
         file_put_contents($pdfPath, $pdfData);

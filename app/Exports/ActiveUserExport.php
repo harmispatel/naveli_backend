@@ -54,7 +54,7 @@ class ActiveUserExport implements FromView, WithHeadings, WithEvents
                 $totalActiveUsers = $activeUsers->count();
                 $totalMaleActiveUsers = $activeUsers->where('user.gender', 1)->count();
                 $totalFemaleActiveUsers = $activeUsers->where('user.gender', 2)->count();
-                $totalTransActiveUsers = $activeUsers->where('user.gender', 3)->count();
+                $totalTransActiveUsers = $activeUsers->whereIn('user.gender', [3, 4])->count();
 
         } else {
              $activeUsers = UserActivityStatus::with('user')
@@ -66,7 +66,7 @@ class ActiveUserExport implements FromView, WithHeadings, WithEvents
            $totalActiveUsers = $activeUsers->count();
            $totalMaleActiveUsers = $activeUsers->where('user.gender', 1)->count();
            $totalFemaleActiveUsers = $activeUsers->where('user.gender', 2)->count();
-           $totalTransActiveUsers = $activeUsers->where('user.gender', 3)->count();  
+           $totalTransActiveUsers = $activeUsers->whereIn('user.gender', [3, 4])->count();  
         }
 
         return view('admin.exports.activeUsers', [

@@ -205,7 +205,7 @@ class DashboardController extends Controller
                 return Excel::download(new UserNBCExport($startDate, $endDate, $userCount), 'usersNBC.xlsx', null, [\Maatwebsite\Excel\Excel::XLSX]);
             }
         } catch (\Exception $e) {
-           dd($e);
+           
             // Log the error
 
             \Log::error('Error exporting users: ' . $e->getMessage());
@@ -233,7 +233,6 @@ class DashboardController extends Controller
 
     public function ageGroupWiseCount($ageGroupId, Request $request)
     {
-
         if ($request->ajax()) {
 
             $startDate = $request->start_date;
@@ -285,7 +284,7 @@ class DashboardController extends Controller
             $total_cycleExplorer = $users->where('role_id', 4)->count();
             $total_male = $users->where('gender', 1)->where('role_id', '!=', 1)->count();
             $total_female = $users->where('gender', 2)->where('role_id', '!=', 1)->count();
-            $total_trans = $users->where('gender', 3)->where('role_id', '!=', 1)->count();
+            $total_trans = $users->whereIn('gender', [3, 4])->where('role_id', '!=', 1)->count();
 
             //relationship status
             $total_solo = $users->where('relationship_status', 1)->where('role_id', '!=', 1)->count();
@@ -294,49 +293,49 @@ class DashboardController extends Controller
 
             //newo
             $total_neow_female = $users->where('role_id', 2)->where('gender', 2)->count();
-            $total_neow_trans = $users->where('role_id', 2)->where('gender', 3)->count();
+            $total_neow_trans = $users->where('role_id', 2)->whereIn('gender', [3, 4])->count();
 
             //newo active
             $total_neow_active_female = $users->where('role_id', 2)->where('gender', 2)->where('status', 1)->count();
-            $total_neow_active_trans = $users->where('role_id', 2)->where('gender', 3)->where('status', 1)->count();
+            $total_neow_active_trans = $users->where('role_id', 2)->whereIn('gender', [3, 4])->where('status', 1)->count();
 
             //buddy
             $total_buddy_male = $users->where('role_id', 3)->where('gender', 1)->count();
             $total_buddy_female = $users->where('role_id', 3)->where('gender', 2)->count();
-            $total_buddy_trans = $users->where('role_id', 3)->where('gender', 3)->count();
+            $total_buddy_trans = $users->where('role_id', 3)->whereIn('gender', [3, 4])->count();
 
             //buddy active
             $total_buddy_male = $users->where('role_id', 3)->where('gender', 1)->where('status', 1)->count();
             $total_buddy_female = $users->where('role_id', 3)->where('gender', 2)->where('status', 1)->count();
-            $total_buddy_trans = $users->where('role_id', 3)->where('gender', 3)->where('status', 1)->count();
+            $total_buddy_trans = $users->where('role_id', 3)->whereIn('gender', [3, 4])->where('status', 1)->count();
 
             //cycleExplore
             $total_cycleExplorer_male = $users->where('role_id', 4)->where('gender', 1)->count();
             $total_cycleExplorer_female = $users->where('role_id', 4)->where('gender', 2)->count();
-            $total_cycleExplorer_trans = $users->where('role_id', 4)->where('gender', 3)->count();
+            $total_cycleExplorer_trans = $users->where('role_id', 4)->whereIn('gender', [3, 4])->count();
 
             // activeUsers
             $totalMaleActiveUsers = $activeUsers->where('user.gender', 1)->count();
             $totalFemaleActiveUsers = $activeUsers->where('user.gender', 2)->count();
-            $totalTransActiveUsers = $activeUsers->where('user.gender', 3)->count();
+            $totalTransActiveUsers = $activeUsers->whereIn('user.gender', [3, 4])->count();
 
-            if ($ageGroupId == 'all') {
-             
+            if ($ageGroupId == 'all') {           
                 // Neow
                 $totalNeowCount = $users->where('role_id', 2)->count();
                 $totalFemaleNeowCount = $users->where('role_id', 2)->where('gender', 2)->count();
-                $totalTransNeowCount = $users->where('role_id', 2)->where('gender', 3)->count();
+                $totalTransNeowCount = $users->where('role_id', 2)->whereIn('gender', [3, 4])->count();
 
                 // Buddy
                 $totalBuddyCount = $users->where('role_id', 3)->count();
                 $totalMaleBuddyCount = $users->where('role_id', 3)->where('gender', 1)->count();
                 $totalFemaleBuddyCount = $users->where('role_id', 3)->where('gender', 2)->count();
-                $totalTransBuddyCount = $users->where('role_id', 3)->where('gender', 3)->count();
+                $totalTransBuddyCount = $users->where('role_id', 3)->whereIn('gender', [3, 4])->count();
 
                 //  cycle Explorer
+                $totalExplorerCount = $users->where('role_id',4)->count();
                 $totalMaleExplorerCount = $users->where('role_id', 4)->where('gender', 1)->count();
                 $totalFemaleExplorerCount = $users->where('role_id', 4)->where('gender', 2)->count();
-                $totalTransExplorerCount = $users->where('role_id', 4)->where('gender', 3)->count();
+                $totalTransExplorerCount = $users->where('role_id', 4)->whereIn('gender', [3, 4])->count();
             } elseif (!$ageGroup) {
                 return response()->json([
                     'totalNeowCount' => 0,
@@ -373,7 +372,7 @@ class DashboardController extends Controller
                                 $totalNeowCount++;
                                 if ($user->gender === 2) { // Female
                                     $totalFemaleNeowCount++;
-                                } elseif ($user->gender === 3) { // Trans
+                                } elseif ($user->gender === 3 || $user->gender === 4) { // Trans
                                     $totalTransNeowCount++;
                                 }
                             } elseif ($user->role_id === 3) {
@@ -382,7 +381,7 @@ class DashboardController extends Controller
                                     $totalMaleBuddyCount++;
                                 } elseif ($user->gender === 2) { // Female
                                     $totalFemaleBuddyCount++;
-                                } elseif ($user->gender === 3) { // Trans
+                                } elseif ($user->gender === 3 || $user->gender === 4) { // Trans
                                     $totalTransBuddyCount++;
                                 }
                             } elseif ($user->role_id === 4) {
@@ -391,7 +390,7 @@ class DashboardController extends Controller
                                     $totalMaleExplorerCount++;
                                 } elseif ($user->gender === 2) { // Female
                                     $totalFemaleExplorerCount++;
-                                } elseif ($user->gender === 3) { // Trans
+                                } elseif ($user->gender === 3 || $user->gender === 4) { // Trans
                                     $totalTransExplorerCount++;
                                 }
                             }
@@ -408,7 +407,7 @@ class DashboardController extends Controller
                                 // Increment gender-specific count based on user's gender and role
                                 if ($user->gender === 2) { // Assuming 2 is for female
                                     $totalFemaleNeowCount++;
-                                } elseif ($user->gender === 3) { // Assuming 3 is for trans
+                                } elseif ($user->gender === 3 || $user->gender === 4) { // Assuming 3 is for trans
                                     $totalTransNeowCount++;
                                 }
                             }                          
@@ -427,7 +426,7 @@ class DashboardController extends Controller
                                     $totalMaleBuddyCount++;
                                 } elseif ($user->gender === 2) { // Assuming 2 is for female
                                     $totalFemaleBuddyCount++;
-                                } elseif ($user->gender === 3) { // Assuming 3 is for trans
+                                } elseif ($user->gender === 3 || $user->gender === 4) { // Assuming 3 is for trans
                                     $totalTransBuddyCount++;
                                 }
                             }
@@ -446,7 +445,7 @@ class DashboardController extends Controller
                                     $totalMaleExplorerCount++;
                                 } elseif ($user->gender === 2) { // Assuming 2 is for female
                                     $totalFemaleExplorerCount++;
-                                } elseif ($user->gender === 3) { // Assuming 3 is for trans
+                                } elseif ($user->gender === 3 || $user->gender === 4) { // Assuming 3 is for trans
                                     $totalTransExplorerCount++;
                                 }
                             }                           

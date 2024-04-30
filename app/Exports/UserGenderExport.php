@@ -48,7 +48,7 @@ class UserGenderExport implements FromView, WithHeadings, WithEvents
             //totaluser gender wise
             $totalMale = $users->where('gender', 1)->count();
             $totalFemale = $users->where('gender', 2)->count();
-            $totalTrans = $users->where('gender', 3)->count();
+            $totalTrans = $users->whereIn('gender', [3, 4])->count();
 
             $total = $totalMale + $totalFemale + $totalTrans;
         } else {
@@ -60,7 +60,7 @@ class UserGenderExport implements FromView, WithHeadings, WithEvents
          //totaluser gender wise
          $totalMale = $users->where('gender', 1)->count();
          $totalFemale = $users->where('gender', 2)->count();
-         $totalTrans = $users->where('gender', 3)->count();
+         $totalTrans = $users->whereIn('gender', [3, 4])->count();
 
          $total = $totalMale + $totalFemale + $totalTrans;
         }

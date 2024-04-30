@@ -101,24 +101,24 @@ class UsersExport implements FromView, WithHeadings, WithEvents
             //neow
             $totalNeow = $users->where('role_id', 2)->count();
             $neowFemale = $users->where('role_id', 2)->where('gender', 2)->count();
-            $neowTrans = $users->where('role_id', 2)->where('gender', 3)->count();
+            $neowTrans = $users->where('role_id', 2)->whereIn('gender', [3, 4])->count();
 
             //buddy
             $totalBuddy = $users->where('role_id', 3)->count();
             $buddyMale = $users->where('role_id', 3)->where('gender', 1)->count();
             $buddyFemale = $users->where('role_id', 3)->where('gender', 2)->count();
-            $buddyTrans = $users->where('role_id', 3)->where('gender', 3)->count();
+            $buddyTrans = $users->where('role_id', 3)->whereIn('gender', [3, 4])->count();
 
             //CycleExplore
             $totalCycleExplore = $users->where('role_id', 4)->count();
             $cycleExploreMale = $users->where('role_id', 4)->where('gender', 1)->count();
             $cycleExploreFemale = $users->where('role_id', 4)->where('gender', 2)->count();
-            $cycleExploreTrans = $users->where('role_id', 4)->where('gender', 3)->count();
+            $cycleExploreTrans = $users->where('role_id', 4)->whereIn('gender', [3, 4])->count();
 
             //totaluser gender wise
             $totalMale = $users->where('gender', 1)->count();
             $totalFemale = $users->where('gender', 2)->count();
-            $totalTrans = $users->where('gender', 3)->count();
+            $totalTrans = $users->whereIn('gender', [3, 4])->count();
 
             //relationWise
             $total_solo = $users->where('relationship_status', 1)->count();
@@ -129,7 +129,7 @@ class UsersExport implements FromView, WithHeadings, WithEvents
             $totalActiveUsers = $activeUsers->count();
             $totalMaleActiveUsers = $activeUsers->where('user.gender', 1)->count();
             $totalFemaleActiveUsers = $activeUsers->where('user.gender', 2)->count();
-            $totalTransActiveUsers = $activeUsers->where('user.gender', 3)->count();
+            $totalTransActiveUsers = $activeUsers->whereIn('user.gender', [3, 4])->count();
 
         } else {
             $users = $query->where('id', '!=', 1)->whereBetween('created_at', [$this->startDate, $this->endDate])->get();
@@ -144,24 +144,24 @@ class UsersExport implements FromView, WithHeadings, WithEvents
             //neow
             $totalNeow = $users->where('role_id', 2)->count();
             $neowFemale = $users->where('role_id', 2)->where('gender', 2)->count();
-            $neowTrans = $users->where('role_id', 2)->where('gender', 3)->count();
+            $neowTrans = $users->where('role_id', 2)->whereIn('gender', [3, 4])->count();
 
             //buddy
             $totalBuddy = $users->where('role_id', 3)->count();
             $buddyMale = $users->where('role_id', 3)->where('gender', 1)->count();
             $buddyFemale = $users->where('role_id', 3)->where('gender', 2)->count();
-            $buddyTrans = $users->where('role_id', 3)->where('gender', 3)->count();
+            $buddyTrans = $users->where('role_id', 3)->whereIn('gender', [3, 4])->count();
 
             //CycleExplore
             $totalCycleExplore = $users->where('role_id', 4)->count();
             $cycleExploreMale = $users->where('role_id', 4)->where('gender', 1)->count();
             $cycleExploreFemale = $users->where('role_id', 4)->where('gender', 2)->count();
-            $cycleExploreTrans = $users->where('role_id', 4)->where('gender', 3)->count();
+            $cycleExploreTrans = $users->where('role_id', 4)->whereIn('gender', [3, 4])->count();
 
             //totaluser gender wise
             $totalMale = $users->where('gender', 1)->count();
             $totalFemale = $users->where('gender', 2)->count();
-            $totalTrans = $users->where('gender', 2)->count();
+            $totalTrans = $users->whereIn('gender', [3, 4])->count();
 
             //relationWise
             $total_solo = $users->where('relationship_status', 1)->count();
@@ -172,7 +172,7 @@ class UsersExport implements FromView, WithHeadings, WithEvents
             $totalActiveUsers = $activeUsers->count();
             $totalMaleActiveUsers = $activeUsers->where('user.gender', 1)->count();
             $totalFemaleActiveUsers = $activeUsers->where('user.gender', 2)->count();
-            $totalTransActiveUsers = $activeUsers->where('user.gender', 3)->count();  
+            $totalTransActiveUsers = $activeUsers->whereIn('user.gender', [3, 4])->count();  
         }
 
         return view('admin.exports.users', [
