@@ -19,7 +19,7 @@
         body {
             font-family: Arial, sans-serif;
             /* background-color: #D7BAC5; */
-            background: url('http:/new_naveli/public/admin_images/bg_admin.jpg');
+            background: url('{{ asset("public/admin_images/bg_admin.jpg") }}');
             display: flex;
             background-size: contain;
             justify-content: center;
@@ -226,7 +226,7 @@
 
 
             // Make an AJAX request to resend the OTP
-                    fetch('{{ route('resend.otp') }}', {
+                    fetch("{{ route('resend.otp') }}", {
                     method: 'POST',
                     headers: {
                         'X-CSRF-Token': '{{ csrf_token() }}',
@@ -247,7 +247,7 @@
                     document.getElementById('errorMessage').innerText = '';
 
                     if (data && data.success) {
-                        document.getElementById('successMessage').innerText = 'Otp Sent Successfully ✔';
+                        document.getElementById('successMessage').innerText = 'Otp Sent Successfully ';
                         document.getElementById('errorMessage').innerText = '';
 
                         // Hide success message after 2 seconds

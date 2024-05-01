@@ -14,7 +14,8 @@
 
 body {
   font-family: "Open Sans", sans-serif;
-  background: #f6f9ff;
+  /* background: #f6f9ff; */
+  background-image: url(http://192.168.1.116/new_naveli/public/admin_images/bg_admin.jpg);
   color: #444444;
 }
 

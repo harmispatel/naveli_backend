@@ -75,7 +75,7 @@ class PermissionTableSeeder extends Seeder
             'aap.posts.create',
             'aap.posts.edit',
             'aap.posts.destroy',
-
+            'healthProfile'
          ];
 
          foreach ($permissions as $permission) {

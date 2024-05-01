@@ -10,6 +10,12 @@ use Illuminate\Http\Request;
 
 class HealthProfileController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:healthProfile', ['only' => ['index', 'show']]);
+    }
+
+    
     public function index()
     {
         return view('admin.healthProfile.healthProfile');

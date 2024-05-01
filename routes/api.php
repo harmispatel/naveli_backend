@@ -139,8 +139,6 @@ Route::get('getMonthlyMisssion',[CommonController::class,'getMonthlyMisssion'])-
 Route::get('getCurrentmonthDailyDairys',[CommonController::class,'getCurrentmonthDailyDairys'])->middleware('auth:sanctum');
 Route::get('getReflectionData',[CommonController::class,'getReflectionData'])->middleware('auth:sanctum');
 
-// FeaturePeriodDates
-Route::post('storeUserPeriodDates',[CommonController::class,'storeUserPeriodDates'])->middleware('auth:sanctum');
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });

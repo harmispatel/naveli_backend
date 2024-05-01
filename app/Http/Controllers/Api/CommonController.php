@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BaseController as BaseController;
 use App\Models\DailyDairy;
-use App\Models\FeaturePeriodDate;
 use App\Models\Festival;
 use App\Models\Home;
 use App\Models\MonthlyMission;
@@ -471,40 +470,6 @@ class CommonController extends BaseController
         $mostFrequentIsEdit = $count0 >= $count1 ? 0 : 1;
 
         return $mostFrequentIsEdit;
-    }
-
-    public function storeUserPeriodDates(Request $request){
-        try {
-
-            $user = Auth::user();
-            if(!$user){
-                return $this->sendResponse(null, 'User Not Found!', false);
-            }
-
-            $dates = $request->input('period_dates');
-
-            // Parse the dates into a recognizable format
-            $parsedDates = [];
-            foreach ($dates as $date) {
-                $parsedDates[] = date('Y-m-d H:i:s.v', strtotime($date));
-            }
-
-            $getStoredUserPeriodDates = FeaturePeriodDate::where('user_id',$user->id)->first();
-            if($getStoredUserPeriodDates){
-                $getStoredUserPeriodDates->period_dates = json_encode($parsedDates);
-                $getStoredUserPeriodDates->save();
-                return $this->sendResponse(null, 'Feature Periods Dates Of This User Updated', true);
-            }else{
-                $storeNewRecord = new FeaturePeriodDate();
-                $storeNewRecord->user_id = $user->id;
-                $storeNewRecord->period_dates = json_encode($parsedDates);
-                $storeNewRecord->save();
-                return $this->sendResponse(null, 'Feature Periods Dates Of This User Stored', true);
-            }
-        } catch (\Throwable $th) {
-
-            return $this->sendResponse(null, 'Something went Wrong!', false);
-        }
     }
 
 

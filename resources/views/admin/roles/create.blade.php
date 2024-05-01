@@ -645,6 +645,37 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="col-md-3">
+                                                    <div class="accordion" id="accordionsixteen">
+                                                        <div class="accordion-item">
+                                                            <h2 class="accordion-header" id="headingsixteen">
+                                                                <button class="accordion-button collapsed" type="button"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#collapsesixteen"
+                                                                    aria-expanded="false"
+                                                                    aria-controls="collapsesixteen">
+                                                                    {{ trans('label.healthProfile') }}
+                                                                </button>
+                                                            </h2>
+                                                            <div id="collapsesixteen" class="accordion-collapse collapse"
+                                                                aria-labelledby="headingsixteen"
+                                                                data-bs-parent="#accordionsixteen">
+                                                                @foreach ($permission->slice(59, 1) as $value)
+                                                                    <div class="accordion-body">
+                                                                        <label>
+                                                                            <input type="checkbox" name="permission[]"
+                                                                                value="{{ $value->id }}"
+                                                                                class="mr-3">
+                                                                            @if ($value->name == 'healthProfile')
+                                                                                {{ trans('label.view') }}
+                                                                            @endif
+                                                                        </label>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
