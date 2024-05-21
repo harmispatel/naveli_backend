@@ -40,6 +40,7 @@ class NaveliAccessController extends BaseController
                     if (isset($fetchSendedRequest)) {
                         return $this->sendResponse(null, 'Your Request Alredy Pending OR Accepted', true);
                     }
+
                     $storeUserRequests = new BuddyRequest();
                     $storeUserRequests->sender_id = $auth_user->id;
                     $storeUserRequests->receiver_id = $get_user->id;
@@ -48,12 +49,14 @@ class NaveliAccessController extends BaseController
 
                     //notification send
 
-                    // $firebaseToken = $get_user->device_token;
-                    $firebaseToken = 'd8gwY4dPR4qAv29swjlp6w:APA91bHn-mxrteTykH-_GhC3gVLeaA-El-vvQSZ0q0Imeirt0Qjog15tMOUk5yI6wTpKS21wWhLNjFUVMVOKaFtpISZMmnibfY45begeKAEKAiYxJoKWw51EcI-0UWpwrqQckPbqtlG';
+                    $firebaseToken = $get_user->device_token;
+
                     $userName = $get_user->name;
+
                     if (isset($firebaseToken) && !empty($firebaseToken)) {
 
                         $notification = $this->notificationSend($firebaseToken, $userName);
+
                     }
 
                     return $this->sendResponse(null, 'Your request has been sent successfully', true);
@@ -65,21 +68,26 @@ class NaveliAccessController extends BaseController
                 return $this->sendResponse(null, 'Unique-Id required!', false);
             }
         } catch (\Throwable $th) {
+
             return $this->sendResponse(null, 'Something went wrong!', false);
         }
     }
 
     public function notificationSend($token, $userName)
     {
-        $SERVER_API_KEY = env("AIzaSyAf4ywAGulHRQDGVyiCm61sA1KDCG3__00");
 
-        $data = [
-            "registration_ids" => $token,
+        $SERVER_API_KEY = env("SERVER_API_KEY");
+        $logoImageUrl = env("LOGO_IMAGE_URL");
+
+        $data = array(
+            "registration_ids" => [$token],
             "notification" => [
                 "title" => 'Account access',
-                "body" => $userName . "want's to access your data",
+                "body" => $userName . " want's to access your data",
+                "image" => $logoImageUrl,
             ],
-        ];
+        );
+
         $dataString = json_encode($data);
 
         $headers = [
@@ -97,19 +105,20 @@ class NaveliAccessController extends BaseController
         curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
         $response = curl_exec($ch);
 
-        if ($response === false) {
-            $error = curl_error($ch);
-            error_log("FCM request failed: $error");
-            return false;
-        }
-        
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        if ($httpCode != 200) {
-            error_log("FCM request returned HTTP code $httpCode");
-            return false;
-        }
+        // if ($response === false) {
+        //     $error = curl_error($ch);
+        //     error_log("FCM request failed: $error");
+        //     return false;
+        // }
+
+        // $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        // if ($httpCode != 200) {
+        //     error_log("FCM request returned HTTP code $httpCode");
+        //     return false;
+        // }
 
         return $response;
+
     }
 
     public function getBuddiesRequest()

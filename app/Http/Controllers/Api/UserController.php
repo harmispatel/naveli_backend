@@ -106,8 +106,11 @@ class UserController extends BaseController
                 return  $this->sendResponse(null, 'All Fields Are Required!', false);
             }
             $getUserRegisterDetail = User::where('mobile',$mobile_no)->first();
-
             if(isset($getUserRegisterDetail)){
+
+                if($getUserRegisterDetail->device_token != null){
+                    return  $this->sendResponse(null, 'This User Account Already logged In Other Device!', false);
+                }
 
                 if($getUserRegisterDetail->status == 1){
 
@@ -417,10 +420,19 @@ class UserController extends BaseController
     {
         try {
 
-            // $request->user()->tokens()->delete();
-            Session::flush();
-            // Auth::logout();
-            return $this->sendResponse(null, "User Logout Successfully", true);
+            $auth_user_id = Auth::user()->id;
+
+            $getUserData = User::where('id',$auth_user_id)->first();
+            if(isset($getUserData)){
+                 // $request->user()->tokens()->delete();
+                  // Auth::logout();
+                $getUserData->update(['device_token' => null]);
+                Session::flush();
+                return $this->sendResponse(null, "User Logout Successfully", true);
+            }else{
+                return $this->sendResponse(null, "User Not Found!", false);
+            }
+
         } catch (\Throwable $th) {
 
             return $this->sendResponse(null, "Somthing went wrong", false);
@@ -508,11 +520,25 @@ class UserController extends BaseController
 
     }
 
-    public function listuserSymptomsLogs(){
+    public function listuserSymptomsLogs(Request $request){
         try {
             $userSymptoms = UserSymptomsLogs::where('user_id',auth()->user()->id)->whereDate('created_at',date('Y-m-d'))->first();
+            // $userAllSymptomsDesc = UserSymptomsLogs::where('user_id',auth()->user()->id)
+            //                     ->orderByDesc('created_at')
+            //                     ->get();
+
+           $periodStartDate = $request->input('period_start_date');
+            $currentDate = now()->toDateString();
+
+            $currentPeriodSymptoms = UserSymptomsLogs::where('user_id', auth()->user()->id)
+                ->whereDate('updated_at', '>=', $periodStartDate)
+                ->whereDate('updated_at', '<=', $currentDate)
+                ->get();
 
             if(isset($userSymptoms)){
+                if(isset($currentPeriodSymptoms)){
+                    $userSymptoms['total_score'] = $this->calculateSymtomsScore($currentPeriodSymptoms);
+                }
                 return $this->sendResponse($userSymptoms,"Data Retrived SuccessFully",true);
             }else{
                 return $this->sendResponse(null,"Data Not Found",false);
@@ -522,32 +548,32 @@ class UserController extends BaseController
         }
     }
 
-    // public function postLikeOperation(Request $request)
-    // {
-    //     try {
-    //         $post_id = isset($request->post_id) ? $request->post_id : null;
-    //         $like = isset($request->like) ? $request->like : '';
+    private function calculateSymtomsScore($currentPeriodSymptoms){
+       // Initialize variables to store total scores for each column
+        $totalStainingScore = 0;
+        $totalClotSizeScore = 0;
+        $totalWorkingAbilityScore = 0;
+        $totalLocationScore = 0;
+        $totalPeriodCrampsScore = 0;
+        $totalDaysScore = 0;
 
-    //         $post = Post::find($post_id);
+        // Iterate through each symptom log
+        foreach ($currentPeriodSymptoms as $symptom) {
+            // Sum up scores for each column
+            $totalStainingScore += $symptom->staining_score;
+            $totalClotSizeScore += $symptom->clot_size_score;
+            $totalWorkingAbilityScore += $symptom->working_ability_score;
+            $totalLocationScore += $symptom->location_score;
+            $totalPeriodCrampsScore += $symptom->period_cramps_score;
+            $totalDaysScore += $symptom->days_score;
+        }
 
-    //         if (!$post) {
-    //             return $this->sendResponse(null,'Post Not Found !',false);
-    //         }
+        // Calculate the total score across all columns
+        $totalScore = $totalStainingScore + $totalClotSizeScore + $totalWorkingAbilityScore
+            + $totalLocationScore + $totalPeriodCrampsScore + $totalDaysScore;
 
-    //         if ($like) {
-    //             $post->likes += 1;
-    //         } else {
-    //             $post->likes = max(0, $post->likes - 1);
-    //         }
-
-    //         // Save the updated post
-    //         $post->save();
-
-    //         return $this->sendResponse(null ,'Post like operation successful',true);
-    //     } catch (\Exception $e) {
-    //         return $this->sendResponse(null,'Something went wrong!',false);
-    //     }
-    // }
+        return $totalScore;
+    }
 
     public function fatchUserDataOnUid(Request $request){
         $uniqueId = $request->unique_id ?? null;
@@ -617,6 +643,7 @@ class UserController extends BaseController
         return $this->sendResponse(['pdf_path' => $pdfPath], 'PDF generated and stored successfully', true);
 
     }
+
     private function storePdf($pdfData,$user)
     {
         $currentMonth = Carbon::now()->format('F');

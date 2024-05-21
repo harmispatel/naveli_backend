@@ -95,7 +95,7 @@ Route::post('get-all-posts',[UserController::class,'getAllPosts'])->middleware('
 
 //userSymptomsLogs
 Route::post('/storeUserSymptomsLogs',[UserController::class,'storeUserSymptomsLogs'])->middleware('auth:sanctum');
-Route::get('/listuserSymptomsLogs',[UserController::class,'listuserSymptomsLogs'])->middleware('auth:sanctum');
+Route::post('/listuserSymptomsLogs',[UserController::class,'listuserSymptomsLogs'])->middleware('auth:sanctum');
 
 // User Hirsutism
 Route::post('/user-hirsutism/store', [UserHirsutismController::class, 'storeUserHirsutism'])->middleware('auth:sanctum');

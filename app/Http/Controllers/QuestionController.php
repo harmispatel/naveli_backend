@@ -72,6 +72,7 @@ class QuestionController extends Controller
 
             return view('admin.questions.index',compact('ageGroups','questionTypes'));
         } catch (\Throwable $th) {
+            
             return redirect()->back()->with('error', 'Internal Server Error');
         }
     }
@@ -87,6 +88,7 @@ class QuestionController extends Controller
 
             return view('admin.questions.OptionView', compact('options','question'));
         } catch (\Throwable $th) {
+           
             return redirect()->back()->with('error', 'Internal Server Error');
         }
     }
