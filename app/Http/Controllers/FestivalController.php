@@ -27,7 +27,7 @@ class FestivalController extends Controller
                 ->addIndexColumn()
                 ->addColumn('actions', function($event){
                     return '<div class="btn-group">
-                   <a href=' . route("festival.edit", ["id" => encrypt($event->id)]) . ' class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil" aria-hidden="true"></i></a>
+                   <a href=' . route("festival.edit", ["id" => encrypt($event->id), 'locale' => 'en']) . ' class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil" aria-hidden="true"></i></a>
                    <a onclick="deleteUsers(\'' . $event->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
                    </div>';
                 })
@@ -60,13 +60,13 @@ class FestivalController extends Controller
         }
     }
 
-    public function edit($id){
+    public function edit($id, $def_locale){
         try {
            $id = decrypt($id);
         
            $festival = Festival::where('id',$id)->first();
 
-           return view('admin.festival.edit',compact('festival'));
+           return view('admin.festival.edit',compact(['festival', 'def_locale']));
         } catch (\Throwable $th) {
             return redirect()->route('festival.index')->with('error','Internal Server Error');
         }
@@ -75,19 +75,19 @@ class FestivalController extends Controller
 
     public function update(Request $request){
 
-        try {
-           
-            $id = decrypt($request->id);
-            $festival = Festival::find($id);
-            $festival->date = $request->date;
-            $festival->festival_name = $request->festival_name;
-            $festival->save();
-
-            return redirect()->route('festival.index')->with('Message','Festival Updated Successfully');
-
+        try {            
+            if(isset($request->language_code) && !empty($request->language_code) && isset($request->id)){
+                $input = [
+                    'festival_name_'.$request->language_code => $request->festival_name,
+                    'date' => $request->date,
+                ];
+                Festival::find(decrypt($request->id))->update($input);
+                return redirect()->back()->with('Message','Festival has been Updated.');
+            }else{
+                return redirect()->back()->with('error', 'Oops, Something went wrong!');
+            }
         } catch (\Throwable $th) {
-            return redirect()->route('festival.index')->with('error','Internal Server Error');
-
+            return redirect()->back()->with('error', 'Oops, Something went wrong!');
         }
     }
 

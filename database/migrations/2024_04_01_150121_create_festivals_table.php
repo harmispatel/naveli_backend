@@ -16,7 +16,8 @@ class CreateFestivalsTable extends Migration
         Schema::create('festivals', function (Blueprint $table) {
             $table->id();
             $table->date('date');
-            $table->string('festival_name');
+            $table->string('festival_name_en')->nullable();
+            $table->string('festival_name_hi')->nullable();
             $table->timestamps();
         });
     }

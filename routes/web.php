@@ -189,7 +189,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('festival','index')->name('festival.index');
             Route::get('festival/create','create')->name('festival.create');
             Route::post('festival/store','store')->name('festival.store');
-            Route::get('festival/edit/{id}','edit')->name('festival.edit');
+            Route::get('festival/edit/{id}/{locale}','edit')->name('festival.edit');
             Route::post('festival/update','update')->name('festival.update');
             Route::post('festival/destroy','destroy')->name('festival.destroy');
         });

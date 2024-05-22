@@ -128,7 +128,7 @@ Route::post('/getUsersCommentList',[ForumController::class,'getUsersCommentList'
 //stateList
 Route::get('stateList',[CommonController::class,'stateList']);
 Route::post('cityList',[CommonController::class,'cityList']);
-Route::get('FestivalList',[CommonController::class,'festivalList']);
+Route::post('FestivalList',[CommonController::class,'festivalList']);
 Route::post('StoreDailydairy',[CommonController::class,'storeDailydairy'])->middleware('auth:sanctum');
 Route::post('storeState',[CommonController::class,'storeState'])->middleware('auth:sanctum');
 Route::post('storeCity',[CommonController::class,'storeCity'])->middleware('auth:sanctum');

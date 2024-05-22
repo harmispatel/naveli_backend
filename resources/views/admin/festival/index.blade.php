@@ -81,8 +81,8 @@
                     orderable: false
                 },
                 {
-                    data: 'festival_name',
-                    name: 'festival_name',
+                    data: 'festival_name_en',
+                    name: 'festival_name_en',
                     orderable: false
                 },
                 {

@@ -98,22 +98,27 @@ class CommonController extends BaseController
         }
     }
 
-    public function festivalList()
+    public function festivalList(Request $request)
     {
         try {
-            $currentMonth = date('m');
-            $currentYear = date('Y');
 
-            // Filter festivals for the current month
-            $festivals = Festival::whereMonth('date', $currentMonth)
-                ->whereYear('date', $currentYear)
-                ->orderBy('date', 'ASC')
-                ->get();
+            if(isset($request->language_code) && !empty($request->language_code)){
 
-            // Extract festival names
-            $festivalNames = $festivals->pluck('festival_name')->toArray();
-
-            return $this->sendResponse($festivalNames, 'Festival retrived SuccessFully', true);
+                $currentMonth = date('m');
+                $currentYear = date('Y');
+    
+                // Filter festivals for the current month
+                $festivals = Festival::whereMonth('date', $currentMonth)
+                    ->whereYear('date', $currentYear)
+                    ->orderBy('date', 'ASC')
+                    ->get();
+    
+                // Extract festival names
+                $festivalNames = $festivals->pluck('festival_name_'.$request->language_code)->toArray();
+                return $this->sendResponse($festivalNames, 'Festival retrived SuccessFully', true);
+            }else{
+                return $this->sendResponse(null, 'Language Code not Found!', false);
+            }
         } catch (\Throwable $th) {
             return $this->sendResponse(null, 'Internal Server Error!', false);
         }

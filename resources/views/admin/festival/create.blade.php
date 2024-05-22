@@ -51,7 +51,7 @@
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <div class="form-group">
-                                            <label for="festival_name" class="form-label"><strong>{{ trans('label.festival_name') }}</strong>
+                                            <label for="festival_name" class="form-label"><strong>{{ trans('label.festival_name') }} (EN)</strong>
                                                 <span class="text-danger">*</span></label>
                                             <input type="text" name="festival_name" id="festival_name"
                                                 value="{{ old('festival_name') }}"

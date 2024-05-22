@@ -1250,3 +1250,24 @@ h6 {
   font-size: 13px;
   color: #012970;
 }
+
+
+/* Form Pills */
+#form-pills ul li a {
+  border-radius: 30px;
+  border: 1px solid #4f61f2;
+  color: #4f61f2;
+  padding: 3px 9px;
+  cursor: pointer;
+}
+
+#form-pills ul li a.active {
+  background-color: #4f61f2;
+  color: #fff;
+  box-shadow: 3px 3px 3px #00000062;
+}
+
+#form-pills ul li {
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
