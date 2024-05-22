@@ -252,7 +252,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/forums/create', [ForumController::class, 'create'])->name('forums.create');
         Route::post('/forums/store', [ForumController::class, 'store'])->name('forums.store');
         Route::get('/getsubcategory/{categoryId}', [ForumController::class, 'getSubCategory'])->name('forums.getsubcategory');
-        Route::get('forums/edit/{id}', [ForumController::class, 'edit'])->name('forums.edit');
+        Route::get('forums/edit/{id}/{locale}', [ForumController::class, 'edit'])->name('forums.edit');
         Route::post('forums/update', [ForumController::class, 'update'])->name('forums.update');
         Route::post('forums/destroy', [ForumController::class, 'destroy'])->name('forums.destroy');
 

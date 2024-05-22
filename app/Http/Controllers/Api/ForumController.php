@@ -11,46 +11,53 @@ use Illuminate\Http\Request;
 
 class ForumController extends BaseController
 {
-    public function forumsList()
+    public function forumsList(Request $request)
     {
-
         try {
-            $getForumsData = Forum::with('forumCategory', 'forumSubCategory')->get();
+            if(isset($request->language_code) && !empty($request->language_code)){
 
-            $data = $getForumsData->map(function ($forum) {
-                $diff = $forum->created_at->diffForHumans();
-                if (strpos($diff, 'second') !== false) {
-                    $diff = str_replace('seconds', 'sec.', $diff);
-                } elseif (strpos($diff, 'minute') !== false) {
-                    $diff = str_replace('minutes', 'min.', $diff);
-                } elseif (strpos($diff, 'hour') !== false) {
-                    $diff = str_replace('hours', 'hr.', $diff);
-                } elseif (strpos($diff, 'day') !== false) {
-                    $diff = str_replace('days', 'day', $diff);
-                } elseif (strpos($diff, 'month') !== false) {
-                    $diff = str_replace('months', 'mon.', $diff);
-                } elseif (strpos($diff, 'year') !== false) {
-                    $diff = str_replace('years', 'year', $diff);
-                } else {
-                    $diff = "";
-                }
+                $lang = $request->language_code;
+                $getForumsData = Forum::with('forumCategory', 'forumSubCategory')->get();
 
-                return [
-                    'id' => $forum->id,
-                    'forum_category' => isset($forum->forum_category_id) ? [
-                        'id' => $forum->forumCategory->id,
-                        'name' => $forum->forumCategory->name,
-                    ] : null,
-                    'forum_sub_category' => isset($forum->forum_subcategory_id) ? [
-                        'id' => $forum->forumSubCategory->id,
-                        'name' => $forum->forumSubCategory->name,
-                    ] : null,
-                    'title' => $forum->title,
-                    'description' => $forum->description,
-                    'time' => $diff,
-                ];
-            });
-            return $this->sendResponse($data, 'Forums listing retrived SuccessFully', true);
+                $data = $getForumsData->map(function ($forum) use ($lang) {
+
+                    $diff = $forum->created_at->diffForHumans();
+
+                    if (strpos($diff, 'second') !== false) {
+                        $diff = str_replace('seconds', 'sec.', $diff);
+                    } elseif (strpos($diff, 'minute') !== false) {
+                        $diff = str_replace('minutes', 'min.', $diff);
+                    } elseif (strpos($diff, 'hour') !== false) {
+                        $diff = str_replace('hours', 'hr.', $diff);
+                    } elseif (strpos($diff, 'day') !== false) {
+                        $diff = str_replace('days', 'day', $diff);
+                    } elseif (strpos($diff, 'month') !== false) {
+                        $diff = str_replace('months', 'mon.', $diff);
+                    } elseif (strpos($diff, 'year') !== false) {
+                        $diff = str_replace('years', 'year', $diff);
+                    } else {
+                        $diff = "";
+                    }
+
+                    return [
+                        'id' => $forum->id,
+                        'forum_category' => isset($forum->forum_category_id) ? [
+                            'id' => $forum->forumCategory->id,
+                            'name' => $forum->forumCategory->name,
+                        ] : null,
+                        'forum_sub_category' => isset($forum->forum_subcategory_id) ? [
+                            'id' => $forum->forumSubCategory->id,
+                            'name' => $forum->forumSubCategory->name,
+                        ] : null,
+                        'title' => ($lang == 'hi') ? $forum->title_hi : $forum->title_en,
+                        'description' => ($lang == 'hi') ? $forum->description_hi : $forum->description_en,
+                        'time' => $diff,
+                    ];
+                });
+                return $this->sendResponse($data, 'Forums listing retrived SuccessFully', true);
+            }else{
+                return $this->sendResponse(null, 'Language Code not Found!', false);
+            }
         } catch (\Throwable $th) {
             return $this->sendResponse(null, 'Something Went Wrong !', false);
         }

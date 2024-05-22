@@ -39,7 +39,7 @@
                                             <option value="">{{ trans('label.view_forums_category_wise') }}</option>
                                             @foreach ( $forum_categories as $forum_category)
                                             <option value="{{$forum_category->id}}">{{ $forum_category->name }}</option>
-                                            @endforeach 
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -104,14 +104,14 @@
                         name: 'forums_subcategory',
                     },
                     {
-                        data: 'title',
-                        name: 'title',
+                        data: 'title_en',
+                        name: 'title_en',
                         searchable: false,
                         orderable:false,
                     },
                     {
-                        data: 'description',
-                        name: 'description',
+                        data: 'description_en',
+                        name: 'description_en',
                         searchable: false,
                         orderable:false,
                     },

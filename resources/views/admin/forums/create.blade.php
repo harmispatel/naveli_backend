@@ -58,7 +58,7 @@
                                             <label for="title"
                                                 class="form-label"><strong>{{ trans('label.forums_subcategory') }}</strong>
                                                 <span class="text-danger"></span></label>
-                                            
+
                                                 <select name="forums_subcategory" id="forums_subcategory" class="form-control {{ $errors->has('forums_subcategory') ? 'is-invalid' : '' }}">
                                                 </select>
                                                 @if ($errors->has('forums_subcategory'))
@@ -71,7 +71,7 @@
                                     <div class="col-md-12 mb-3">
                                         <div class="form-group">
                                             <label for="title"
-                                                class="form-label"><strong>{{ trans('label.title') }}</strong>
+                                                class="form-label"><strong>{{ trans('label.title') }} (EN)</strong>
                                                 <span class="text-danger">*</span></label>
                                            <input type="text" name="title" id="title" placeholder="Enter Forums Title" class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}">
                                             @if ($errors->has('title'))
@@ -84,7 +84,7 @@
                                     <div class="col-md-12 mb-3">
                                         <div class="form-group">
                                             <label for="description"
-                                                class="form-label"><strong>{{ trans('label.description') }}</strong>
+                                                class="form-label"><strong>{{ trans('label.description') }} (EN)</strong>
                                                 <span class="text-danger"></span></label>
                                             <textarea name="description" id="description" placeholder="Enter Forums Description (Optional)" rows="5"
                                                 class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}">{{ old('description') }}</textarea>
@@ -134,7 +134,7 @@
     //                             subcategoriesSelect.append('<option value="' + subcategory.id + '">' + subcategory.name + '</option>');
     //                         });
     //                     } else {
-                            
+
     //                     }
     //                 },
     //                 error: function(xhr, status, error) {

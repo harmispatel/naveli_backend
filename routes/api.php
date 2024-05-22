@@ -121,7 +121,7 @@ Route::post('/userHealthMixLikeDislike',[HealthMixController::class,'likeDislike
 Route::get('/getUserLikesOrDislikes',[HealthMixController::class,'getUserLikesOrDislikes'])->middleware('auth:sanctum');
 
 //ForumController
-Route::get('/forumsList',[ForumController::class,'forumsList'])->middleware('auth:sanctum');
+Route::post('/forumsList',[ForumController::class,'forumsList'])->middleware('auth:sanctum');
 Route::post('/forumCommentStore',[ForumController::class,'forumCommentStore'])->middleware('auth:sanctum');
 Route::post('/getUsersCommentList',[ForumController::class,'getUsersCommentList']);
 

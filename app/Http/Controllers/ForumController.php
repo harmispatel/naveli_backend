@@ -52,7 +52,7 @@ class ForumController extends Controller
         })
         ->addColumn('actions', function ($row) {
             return '<div class="btn-group">
-                <a href=' . route("forums.edit", ["id" => encrypt($row->id)]) . ' class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil" aria-hidden="true"></i></a>
+                <a href=' . route("forums.edit", ["id" => encrypt($row->id) ,'locale' => 'en']) . ' class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil" aria-hidden="true"></i></a>
                 <a onclick="deleteUsers(\'' . $row->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
                 </div>';
         })
@@ -79,8 +79,8 @@ class ForumController extends Controller
             $createNewForum = new Forum();
             $createNewForum->forum_category_id = isset($request->forums_category) ? $request->forums_category : null;
             $createNewForum->forum_subcategory_id = isset($request->forums_subcategory) ? $request->forums_subcategory : null;
-            $createNewForum->title = $request->title;
-            $createNewForum->description = $request->description;
+            $createNewForum->title_en = $request->title;
+            $createNewForum->description_en = $request->description;
             $createNewForum->save();
 
             return redirect()->route('forums.index')->with('message','Forum Created Successfully');
@@ -100,14 +100,14 @@ class ForumController extends Controller
         }
    }
 
-   public function edit($id){
+   public function edit($id ,$def_locale){
     try {
         $id = decrypt($id);
         $forumRecord = Forum::find($id);
         $mainCategories = ForumCategory::where('parent_id',null)->get();
         $childCategories = ForumCategory::where('parent_id',$forumRecord->forum_category_id)->get();
 
-        return view('admin.forums.edit', compact('forumRecord','mainCategories','childCategories'));
+        return view('admin.forums.edit', compact('forumRecord','mainCategories','childCategories','def_locale'));
     } catch (\Throwable $th) {
         return redirect()->route('forums.index')->with('error', 'Internal Server Error!');
     }
@@ -115,12 +115,16 @@ class ForumController extends Controller
 
 
     public function update(Request $request){
-        // return redirect()->back()->with('error','Update Work In Process...');
 
+        // return redirect()->back()->with('error','Update Work In Process...');
+        if(!$request->language_code && empty($request->language_code) && !$request->id){
+            return redirect()->back()->with('error','Something want wrong!');
+        }
         $request->validate([
             'forums_category' => "required",
             'title' => "required",
         ]);
+        
         try {
             $id = decrypt($request->id);
 
@@ -129,17 +133,16 @@ class ForumController extends Controller
                 $forumRecord = Forum::find($id);
 
                 $update = $forumRecord->update([
-                    'forum_category_id' => isset($request->forums_category) ? $request->forums_category:'',
-                    'forum_subcategory_id' => isset($request->forums_subcategory) ? $request->forums_subcategory: '',
-                    'title' => isset($request->title) ?$request->title: '',
-                    'description' => isset($request->description) ? $request->description: ''
+                    'forum_category_id' => isset($request->forums_category) ? $request->forums_category: null,
+                    'forum_subcategory_id' => isset($request->forums_subcategory) ? $request->forums_subcategory : null,
+                    'title_' . $request->language_code => isset($request->title) ? $request->title: '',
+                    'description_'.$request->language_code => isset($request->description) ? $request->description: ''
                 ]);
 
                 return redirect()->route('forums.index')->with('message', 'Forum Updated Successfully');
             }
             return redirect()->route('forums.edit')->with('error', 'Something want wrong!');
         } catch (\Throwable $th) {
-
             return redirect()->route('forums.index')->with('error', 'Internal Server Error!');
         }
     }

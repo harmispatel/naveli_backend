@@ -19,8 +19,10 @@ class CreateForumsTable extends Migration
             $table->foreign('forum_category_id')->references('id')->on('forum_categories')->cascadeOnDelete()->cascadeOnUpdate();
             $table->unsignedBigInteger('forum_subcategory_id')->nullable();
             $table->foreign('forum_subcategory_id')->references('id')->on('forum_categories')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->text('title')->nullable();
-            $table->longText('description')->nullable();
+            $table->text('title_en')->nullable();
+            $table->longText('description_en')->nullable();
+            $table->text('title_hi')->nullable();
+            $table->longText('description_hi')->nullable();
             $table->timestamps();
         });
     }

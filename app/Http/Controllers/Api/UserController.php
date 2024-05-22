@@ -537,19 +537,24 @@ class UserController extends BaseController
 
             if(isset($userSymptoms)){
                 if(isset($currentPeriodSymptoms)){
-                    $userSymptoms['total_score'] = $this->calculateSymtomsScore($currentPeriodSymptoms);
+                    $scores = $this->calculateSymtomsScore($currentPeriodSymptoms);
+
+                    $userSymptoms['total_score'] = $scores['totalScore'];
+                    $userSymptoms['total_pain_score'] = $scores['totalPainScore'];
+
                 }
                 return $this->sendResponse($userSymptoms,"Data Retrived SuccessFully",true);
             }else{
                 return $this->sendResponse(null,"Data Not Found",false);
             }
         } catch (\Throwable $th) {
-            return $this->sendResponse(null,"Data Retrived SuccessFully",false);
+
+            return $this->sendResponse(null,"Something went wrong!",false);
         }
     }
 
     private function calculateSymtomsScore($currentPeriodSymptoms){
-       // Initialize variables to store total scores for each column
+
         $totalStainingScore = 0;
         $totalClotSizeScore = 0;
         $totalWorkingAbilityScore = 0;
@@ -572,7 +577,13 @@ class UserController extends BaseController
         $totalScore = $totalStainingScore + $totalClotSizeScore + $totalWorkingAbilityScore
             + $totalLocationScore + $totalPeriodCrampsScore + $totalDaysScore;
 
-        return $totalScore;
+        $totalPainScore = $totalWorkingAbilityScore
+            + $totalLocationScore + $totalPeriodCrampsScore + $totalDaysScore;
+
+       return array(
+            'totalScore' => $totalScore,
+            'totalPainScore' => $totalPainScore
+        );
     }
 
     public function fatchUserDataOnUid(Request $request){
