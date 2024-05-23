@@ -60,7 +60,7 @@ class PostController extends Controller
                     })
                     ->addColumn('actions', function ($posts) {
                         $html_actions = '<div class="btn-group">';
-                        $html_actions .= '<a href=' . route("posts.edit", ["id" => encrypt($posts->id)]) . ' class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil" aria-hidden="true"></i></a>';
+                        $html_actions .= '<a href=' . route("posts.edit", ["id" => encrypt($posts->id) , 'locale' => 'en']) . ' class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil" aria-hidden="true"></i></a>';
                         $html_actions .= '<a onclick="deleteUsers(\'' . $posts->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>';
                         $html_actions .= "</div>";
 
@@ -119,12 +119,12 @@ class PostController extends Controller
         }
     }
 
-    public function edit($id)
+    public function edit($id,$def_locale)
     {
         try {
             $id = decrypt($id);
             $postsEdit = Post::find($id);
-            return view('admin.post.edit', compact('postsEdit'));
+            return view('admin.post.edit', compact('postsEdit','def_locale'));
         } catch (\Throwable $th) {
             return redirect()->route('posts.index')->with('error', 'Internal Server Error');
         }
@@ -141,12 +141,20 @@ class PostController extends Controller
             'posts' => 'required',
         ]);
 
+        if(!$request->language_code && empty($request->language_code) && !$request->id){
+            return redirect()->back()->with('error','language code not found!');
+        }
+
         try {
             $id = decrypt($request->id);
 
             $posts = Post::find($id);
             $posts->parent_title = $request->parent_title;
-            $posts->description = $request->description;
+            if($request->language_code == 'hi'){
+                $posts->description_hi = $request->description;
+            }else{
+                $posts->description_en = $request->description;
+            }
             $posts->file_type = $request->file_type;
 
             if ($request->file('posts')) {

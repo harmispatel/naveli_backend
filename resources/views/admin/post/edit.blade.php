@@ -27,120 +27,140 @@
             {{-- Clients Card --}}
             <div class="col-md-12">
                 <div class="card">
-                    <form class="form" action="{{ route('posts.update') }}" method="POST" enctype="multipart/form-data">
-                        <input type="hidden" name="id" id="id" value="{{ encrypt($postsEdit->id) }}">
-                        <div class="card-body">
-                            @csrf
-                            <div class="form_box">
-                                <div class="form_box_inr">
-                                    <div class="box_title">
-                                        <h2>{{ trans('label.Posts Detail') }}</h2>
-                                    </div>
-                                    <div class="form_box_info">
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <div class="form-group">
-                                                    <label for="post_category_selection" class="form-label">
-                                                        <strong>{{ trans('label.parent_title') }}</strong>
-                                                        <span class="text-danger">*</span>
-                                                    </label>
-                                                    <select
-                                                        class="form-control {{ $errors->has('parent_title') ? 'is-invalid' : '' }}"
-                                                        id="post_category_selection" name="parent_title">
-                                                        <option value="">{{ trans('label.select_post_category') }}
-                                                        </option>
-                                                        <option value="1"
-                                                            {{ $postsEdit->parent_title == 1 ? 'selected' : '' }}>
-                                                            {{ trans('label.do_you_know') }}</option>
-                                                        <option value="2"
-                                                            {{ $postsEdit->parent_title == 2 ? 'selected' : '' }}>
-                                                            {{ trans('label.myth_vs_facts') }}</option>
-                                                        <!-- <option value="3"
-                                                            {{ $postsEdit->parent_title == 3 ? 'selected' : '' }}>
-                                                            {{ trans('label.all_about_periods') }}</option> -->
-                                                        <option value="4"
-                                                            {{ $postsEdit->parent_title == 4 ? 'selected' : '' }}>
-                                                            {{ trans('label.nutrition') }}</option>
-                                                    </select>
-                                                    @if ($errors->has('parent_title'))
-                                                        <div class="invalid-feedback">
-                                                            {{ $errors->first('parent_title') }}
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <div class="form-group">
-                                                    <label for="file_type" class="form-label"><strong>{{ trans('label.mediatype') }}
-                                                    </strong><span class="text-danger">*</span></label>
-                                                    <select name="file_type" id="file_type" class="form-control">
-                                                        <option value="">-- select type --</option>
-                                                        <option value="link"{{ ($postsEdit->file_type == 'link') ? 'selected' : '' }}>
-                                                            Link</option>
-                                                        <option value="image" {{ ($postsEdit->file_type == 'image') ? 'selected' : '' }}>
-                                                            Image</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-7">
-                                                <div id="linkInput" class="form-group" style="display: none;">
-                                                    <label for="posts" class="form-label"><strong>{{ trans('label.enterlink') }}</strong><span class="text-danger">*</span></label>
-                                                    <input type="text" name="posts" id="link" value="{{ $postsEdit->file_type == 'link' ? $postsEdit->posts : '' }}"
-                                                        placeholder="Enter Media Link" class="form-control">
-                                                        <div id="linkError" class="text-danger"></div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-7 mb-3">
-                                                <div class="form-group postInput" style="display: none;">
-                                                    <label for="posts"
-                                                        class="form-label"><strong>{{ trans('label.posts') }}</strong>
-                                                        <span class="text-danger">*</span></label>
-                                                    <input type="file" name="posts" id="postsid" value="{{ $postsEdit->posts }}"
-                                                        class="form-control {{ $errors->has('posts') ? 'is-invalid' : '' }}">
-                                                    <div class="imageError"></div>
-                                                    @if ($errors->has('posts'))
-                                                        <div class="invalid-feedback">
-                                                            {{ $errors->first('posts') }}
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="col-md-5 mb-3 p-4 postInput" style="display: none;">
-                                                <div class="form-group">
-                                                    @if ($postsEdit->file_type == 'image' && file_exists(public_path('/images/uploads/newsPosts/' . $postsEdit->posts)))
-                                                        <img style="height:50px; width:50px;"
-                                                            src="{{ asset('/public/images/uploads/newsPosts/' . $postsEdit->posts) }}" />
-                                                    @else
-                                                        <img src="{{ asset('/public/images/uploads/general_image/noImage.png') }}"
-                                                            alt="no_image" class="img-thumbnail" style="max-width: 100px;">
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12 mb-3">
-                                                <div class="form-group">
-                                                    <label for="description"
-                                                        class="form-label"><strong>{{ trans('label.description') }}</strong>
-                                                        <span class="text-danger">*</span></label>
-                                                    <textarea name="description" min="0" id="description" rows="4" cols="50"
-                                                        class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}">{{ $postsEdit->description ?? '' }}</textarea>
-                                                    @if ($errors->has('description'))
-                                                        <div class="invalid-feedback">
-                                                            {{ $errors->first('description') }}
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            </div>
+                    <div class="card-body">
+                        <div class="row" id="form-pills">
+                            <div class="col-md-12 mt-3">
+                                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <a href="{{ route('posts.edit', [encrypt($postsEdit->id), 'en']) }}" class="nav-link {{ ($def_locale == 'en') ? 'active' : '' }}" id="pills-en-tab">English</a>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <a href="{{ route('posts.edit', [encrypt($postsEdit->id), 'hi']) }}" class="nav-link {{ ($def_locale == 'hi') ? 'active' : '' }}" id="pills-hi-tab">Hindi</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-12 mt-3">
+                                <div class="tab-content" id="pills-tabContent">
+                                    <div class="tab-pane fade show active">
+                                        <form class="form" action="{{ route('posts.update') }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <input type="hidden" name="id" id="id" value="{{ encrypt($postsEdit->id) }}">
+                                            <input type="hidden" name="language_code" id="language_code" value="{{ $def_locale }}">
+                                            <div class="form_box">
+                                                <div class="form_box_inr">
+                                                    <div class="box_title">
+                                                        <h2>{{ trans('label.Posts Detail') }}</h2>
+                                                    </div>
+                                                    <div class="form_box_info">
+                                                        <div class="row">
+                                                            <div class="col-md-6 mb-3">
+                                                                <div class="form-group">
+                                                                    <label for="post_category_selection" class="form-label">
+                                                                        <strong>{{ trans('label.parent_title') }}</strong>
+                                                                        <span class="text-danger">*</span>
+                                                                    </label>
+                                                                    <select
+                                                                        class="form-control {{ $errors->has('parent_title') ? 'is-invalid' : '' }}"
+                                                                        id="post_category_selection" name="parent_title">
+                                                                        <option value="">{{ trans('label.select_post_category') }}
+                                                                        </option>
+                                                                        <option value="1"
+                                                                            {{ $postsEdit->parent_title == 1 ? 'selected' : '' }}>
+                                                                            {{ trans('label.do_you_know') }}</option>
+                                                                        <option value="2"
+                                                                            {{ $postsEdit->parent_title == 2 ? 'selected' : '' }}>
+                                                                            {{ trans('label.myth_vs_facts') }}</option>
+                                                                        <!-- <option value="3"
+                                                                            {{ $postsEdit->parent_title == 3 ? 'selected' : '' }}>
+                                                                            {{ trans('label.all_about_periods') }}</option> -->
+                                                                        <option value="4"
+                                                                            {{ $postsEdit->parent_title == 4 ? 'selected' : '' }}>
+                                                                            {{ trans('label.nutrition') }}</option>
+                                                                    </select>
+                                                                    @if ($errors->has('parent_title'))
+                                                                        <div class="invalid-feedback">
+                                                                            {{ $errors->first('parent_title') }}
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <div class="form-group">
+                                                                    <label for="file_type" class="form-label"><strong>{{ trans('label.mediatype') }}
+                                                                    </strong><span class="text-danger">*</span></label>
+                                                                    <select name="file_type" id="file_type" class="form-control">
+                                                                        <option value="">-- select type --</option>
+                                                                        <option value="link"{{ ($postsEdit->file_type == 'link') ? 'selected' : '' }}>
+                                                                            Link</option>
+                                                                        <option value="image" {{ ($postsEdit->file_type == 'image') ? 'selected' : '' }}>
+                                                                            Image</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-7">
+                                                                <div id="linkInput" class="form-group" style="display: none;">
+                                                                    <label for="posts" class="form-label"><strong>{{ trans('label.enterlink') }}</strong><span class="text-danger">*</span></label>
+                                                                    <input type="text" name="posts" id="link" value="{{ $postsEdit->file_type == 'link' ? $postsEdit->posts : '' }}"
+                                                                        placeholder="Enter Media Link" class="form-control">
+                                                                        <div id="linkError" class="text-danger"></div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-7 mb-3">
+                                                                <div class="form-group postInput" style="display: none;">
+                                                                    <label for="posts"
+                                                                        class="form-label"><strong>{{ trans('label.posts') }}</strong>
+                                                                        <span class="text-danger">*</span></label>
+                                                                    <input type="file" name="posts" id="postsid" value="{{ $postsEdit->posts }}"
+                                                                        class="form-control {{ $errors->has('posts') ? 'is-invalid' : '' }}">
+                                                                    <div class="imageError"></div>
+                                                                    @if ($errors->has('posts'))
+                                                                        <div class="invalid-feedback">
+                                                                            {{ $errors->first('posts') }}
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-5 mb-3 p-4 postInput" style="display: none;">
+                                                                <div class="form-group">
+                                                                    @if ($postsEdit->file_type == 'image' && file_exists(public_path('/images/uploads/newsPosts/' . $postsEdit->posts)))
+                                                                        <img style="height:50px; width:50px;"
+                                                                            src="{{ asset('/public/images/uploads/newsPosts/' . $postsEdit->posts) }}" />
+                                                                    @else
+                                                                        <img src="{{ asset('/public/images/uploads/general_image/noImage.png') }}"
+                                                                            alt="no_image" class="img-thumbnail" style="max-width: 100px;">
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12 mb-3">
+                                                                <div class="form-group">
+                                                                    <label for="description"
+                                                                        class="form-label"><strong>{{ trans('label.description') }}</strong>
+                                                                        <span class="text-uppercase">({{$def_locale}})</span>
+                                                                        <span class="text-danger">*</span></label>
+                                                                    <textarea name="description" min="0" id="description" rows="4" cols="50"
+                                                                        class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}">{{ $postsEdit['description_'.$def_locale] }}</textarea>
+                                                                    @if ($errors->has('description'))
+                                                                        <div class="invalid-feedback">
+                                                                            {{ $errors->first('description') }}
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
 
 
-                                        </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer text-center">
+                                                <button class="btn form_button">{{ trans('label.Save') }}</button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-footer text-center">
-                            <button class="btn form_button">{{ trans('label.Save') }}</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>

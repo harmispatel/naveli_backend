@@ -110,8 +110,8 @@
                         orderable: false
                     },
                     {
-                        data: 'description',
-                        name: 'description',
+                        data: 'description_en',
+                        name: 'description_en',
                         searchable: false,
                         orderable: false
                     },

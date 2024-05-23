@@ -26,7 +26,7 @@ class PostResource extends JsonResource
         return [
             'id' => $this->id,
             'parent_title' => isset($this->parent_title) ? strval($this->parent_title)  : null,
-            'description' => isset($this->description) ? $this->description  : null,
+            'description' => (isset($this['description_'.$request->language_code])) ? $this['description_'.$request->language_code] : "",
             'posts' => isset($this->posts) ? $post : null,
             'file_type' => isset($this->file_type) ? $this->file_type  : null,
         ];

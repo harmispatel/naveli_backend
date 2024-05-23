@@ -446,7 +446,7 @@ class UserController extends BaseController
 
                 $news = News::all();
                 return $this->sendResponse(newsResources::collection($news),'list retrieved successfully.',true);
-           
+
             }else{
                 return $this->sendResponse(null, 'Language Code not Found!', false);
             }
@@ -480,22 +480,31 @@ class UserController extends BaseController
     public function getAllPosts(Request $request){
 
         try {
-            $parent_title_id = $request->parent_title_id;
-            $filter_by = (isset($request->filter_by) && !empty($request->filter_by)) ? $request->filter_by : "newest";
-            $getPosts = Post::where('parent_title',$parent_title_id);
-            if($filter_by == 'newest'){
-                $getPosts = $getPosts->latest();
-            }else{
-                $getPosts = $getPosts->oldest();
-            }
-            $getPosts = $getPosts->get();
 
-           if(empty($getPosts)){
-              return $this->sendResponse(null,'Empty, No Data',true);
-           }else{
-               $data = ['PostsData' => PostResource::collection($getPosts)];
-               return $this->sendResponse($data ,'Posts List Successfully Received',true);
-           }
+            if(isset($request->language_code) && !empty($request->language_code)){
+
+                $parent_title_id = $request->parent_title_id;
+                $filter_by = (isset($request->filter_by) && !empty($request->filter_by)) ? $request->filter_by : "newest";
+                $getPosts = Post::where('parent_title',$parent_title_id);
+
+                if($filter_by == 'newest'){
+                    $getPosts = $getPosts->latest();
+                }else{
+                    $getPosts = $getPosts->oldest();
+                }
+                $getPosts = $getPosts->get();
+
+                if(empty($getPosts)){
+                    return $this->sendResponse(null,'Empty, No Data',true);
+                }else{
+                    $data = ['PostsData' => PostResource::collection($getPosts)];
+                    return $this->sendResponse($data ,'Posts List Successfully Received',true);
+                }
+
+            }else{
+                return $this->sendResponse(null, 'Language Code not Found!', false);
+            }
+
         } catch (\Throwable $th) {
             return $this->sendResponse(null,'Something went wrong!',false);
         }

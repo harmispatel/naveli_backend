@@ -198,7 +198,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('posts','index')->name('posts.index');
             Route::get('posts/create',  'create')->name('posts.create');
             Route::post('posts/store',  'store')->name('posts.store');
-            Route::get('posts/edit/{id}',  'edit')->name('posts.edit');
+            Route::get('posts/edit/{id}/{locale}',  'edit')->name('posts.edit');
             Route::post('posts/update',  'update')->name('posts.update');
             Route::post('posts/destroy',  'destroy')->name('posts.destroy');
         });

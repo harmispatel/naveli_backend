@@ -99,7 +99,7 @@
                                     <div class="col-md-12 mb-3">
                                         <div class="form-group">
                                             <label for="description"
-                                                class="form-label"><strong>{{ trans('label.description') }}</strong>
+                                                class="form-label"><strong>{{ trans('label.description') }} (EN)</strong>
                                                 <span class="text-danger">*</span></label>
                                             <textarea name="description" id="description" rows="5" cols="100"
                                                 class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}">{{ old('description') }}</textarea>
