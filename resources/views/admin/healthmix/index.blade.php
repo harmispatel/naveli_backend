@@ -101,25 +101,25 @@
                     {
                         data: 'health_type',
                         name: 'health_type',
-                        'orderable': false, 
+                        'orderable': false,
                     },
                     {
                         data: 'media_type',
                         name: 'media_type',
-                        'orderable': false, 
+                        'orderable': false,
                         'searchable': false
                     },
                     {
-                        data: 'description',
-                        name: 'description',
-                        'orderable': false, 
+                        data: 'description_en',
+                        name: 'description_en',
+                        'orderable': false,
                         'searchable': false
                     },
                     {
 
                         data : 'actions',
                         name : 'actions',
-                        'orderable': false, 
+                        'orderable': false,
                         'searchable': false
                     }
                 ]

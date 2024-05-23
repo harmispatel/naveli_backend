@@ -53,7 +53,7 @@ class HealthMixResource extends JsonResource
             'media' => isset($this->media) ? $post : null,
             'media_type' => $this->media_type,
             'hashtags' => $this->hashtags,
-            'description' => $this->description,
+            'description' =>(isset($this['description_'.$request->language_code])) ? $this['description_'.$request->language_code] : "",
             'created_at' => $this->created_at,
             'diffrence_time' => $diffInHumanReadable,
 

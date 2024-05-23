@@ -13,14 +13,22 @@ class HealthMixController extends BaseController
     public function index(Request $request)
     {
         try {
-            $title_id = $request->title_id;
-            if ($title_id == 7) {
-                $getHealthMixesList = HealthMix::latest()->get();
-            } else {
-                $getHealthMixesList = HealthMix::where('health_type', $title_id)->get();
+
+            if(isset($request->language_code) && !empty($request->language_code)){
+
+                $title_id = $request->title_id;
+                if ($title_id == 7) {
+                    $getHealthMixesList = HealthMix::latest()->get();
+                } else {
+                    $getHealthMixesList = HealthMix::where('health_type', $title_id)->get();
+                }
+                $data = ['HealthMixPosts' => HealthMixResource::collection($getHealthMixesList)];
+                return $this->sendResponse($data, 'Health Mix Posts Received Successfully.', true);
+
+            }else{
+                return $this->sendResponse(null, 'Language Code not Found!', false);
             }
-            $data = ['HealthMixPosts' => HealthMixResource::collection($getHealthMixesList)];
-            return $this->sendResponse($data, 'Health Mix Posts Received Successfully.', true);
+
         } catch (\Throwable $th) {
             return $this->sendResponse(null, 'Something Went Wrong !', false);
         }

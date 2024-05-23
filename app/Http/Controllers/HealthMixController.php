@@ -67,7 +67,7 @@ class HealthMixController extends Controller
                     })
                     ->addColumn('actions', function ($health) {
                         return '<div class="btn-group">
-                            <a href=' . route("healthMix.edit", ["id" => encrypt($health->id)]) . ' class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil" aria-hidden="true"></i></a>
+                            <a href=' . route("healthMix.edit", ["id" => encrypt($health->id) , 'locale' => 'en']) . ' class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil" aria-hidden="true"></i></a>
                             <a onclick="deleteUsers(\'' . $health->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
                             </div>';
                     })
@@ -132,13 +132,13 @@ class HealthMixController extends Controller
 
     }
 
-    public function edit($id)
+    public function edit($id,$def_locale)
     {
         try {
             $id = decrypt($id);
             $healthMix = HealthMix::find($id);
 
-        return view('admin.healthmix.edit', compact('healthMix'));
+        return view('admin.healthmix.edit', compact('healthMix','def_locale'));
         } catch (\Throwable $th) {
             return redirect()->route('healthMix.index')->with('error', 'Internal Server Error!');
         }
@@ -155,13 +155,22 @@ class HealthMixController extends Controller
             'media' => 'required',
         ]);
 
+        if(!$request->language_code && empty($request->language_code) && !$request->id){
+            return redirect()->back()->with('error','language code not found!');
+        }
+
         try {
+
             $id = decrypt($request->id);
 
             $healthMix = HealthMix::find($id);
             $healthMix->health_type = $request->health_type;
             $healthMix->hashtags = $request->hashtags;
-            $healthMix->description = $request->description;
+            if($request->language_code == 'hi'){
+                $healthMix->description_hi = $request->description;
+            }else{
+                $healthMix->description_en = $request->description;
+            }
 
             if ($request->hasFile('media')) {
 

@@ -18,7 +18,8 @@ class CreateHealthMixesTable extends Migration
             $table->integer('health_type')->nullable();
             $table->string('media')->nullable();
             $table->string('media_type')->nullable();
-            $table->longText('description')->nullable();
+            $table->longText('description_en')->nullable();
+            $table->longText('description_hi')->nullable();
             $table->timestamps();
         });
     }

@@ -207,7 +207,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('healthMix', [HealthMixController::class, 'index'])->name('healthMix.index');
         Route::get('healthMix/create', [HealthMixController::class, 'create'])->name('healthMix.create');
         Route::post('healthMix/store', [HealthMixController::class, 'store'])->name('healthMix.store');
-        Route::get('healthMix/edit/{id}', [HealthMixController::class, 'edit'])->name('healthMix.edit');
+        Route::get('healthMix/edit/{id}/{locale}', [HealthMixController::class, 'edit'])->name('healthMix.edit');
         Route::post('healthMix/update', [HealthMixController::class, 'update'])->name('healthMix.update');
         Route::post('healthMix/destroy', [HealthMixController::class, 'destroy'])->name('healthMix.destroy');
 
