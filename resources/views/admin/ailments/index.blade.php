@@ -80,8 +80,8 @@
                         'searchable': false
                     },
                     {
-                        data: 'name',
-                        name: 'name',
+                        data: 'name_en',
+                        name: 'name_en',
                     },
                     {
                         data: 'actions',

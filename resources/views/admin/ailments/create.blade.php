@@ -37,14 +37,14 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <div class="form-group">
-                                            <label for="name"
-                                                class="form-label"><strong>{{ trans('label.Name') }}</strong>
+                                        <label for="name_en"
+                                                class="form-label"><strong>{{ trans('label.Name') }} (EN)</strong>
                                                 <span class="text-danger">*</span></label>
-                                            <input type="text" name="name" id="name" value="{{ old('name') }}"
-                                                class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}">
-                                            @if ($errors->has('name'))
+                                            <input type="text" name="name_en" id="name_en" value="{{ old('name_en') }}"
+                                                class="form-control {{ $errors->has('name_en') ? 'is-invalid' : '' }}">
+                                            @if ($errors->has('name_en'))
                                                 <div class="invalid-feedback">
-                                                    {{ $errors->first('name') }}
+                                                    {{ $errors->first('name_en') }}
                                                 </div>
                                             @endif
                                         </div>

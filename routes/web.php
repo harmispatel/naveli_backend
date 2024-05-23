@@ -240,7 +240,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('ailments', [AilmentController::class, 'index'])->name('ailments.index');
         Route::get('ailments/create', [AilmentController::class, 'create'])->name('ailments.create');
         Route::post('ailments/store', [AilmentController::class, 'store'])->name('ailments.store');
-        Route::get('ailments/edit/{id}', [AilmentController::class, 'edit'])->name('ailments.edit');
+        Route::get('ailments/edit/{id}/{locale}', [AilmentController::class, 'edit'])->name('ailments.edit');
         Route::post('ailments/update', [AilmentController::class, 'update'])->name('ailments.update');
         Route::post('ailments/destroy', [AilmentController::class, 'destroy'])->name('ailments.destroy');
 

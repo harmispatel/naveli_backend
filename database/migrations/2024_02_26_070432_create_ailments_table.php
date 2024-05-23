@@ -15,7 +15,8 @@ class CreateAilmentsTable extends Migration
     {
         Schema::create('ailments', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
+            $table->string('name_en')->nullable();
+            $table->string('name_hi')->nullable();
             $table->timestamps();
         });
     }

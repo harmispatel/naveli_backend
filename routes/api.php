@@ -87,7 +87,7 @@ Route::post('newsDetails',[UserController::class,'newsDetails']);
 Route::post('medicineList',[UserController::class,'medicineList']);
 
 //ailmentsList
-Route::get('/ailmentsList',[UserController::class,'ailmentsList']);
+Route::post('/ailmentsList',[UserController::class,'ailmentsList']);
 
 //posts
 Route::post('get-all-posts',[UserController::class,'getAllPosts'])->middleware('auth:sanctum');

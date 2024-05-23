@@ -27,7 +27,7 @@ class AilmentController extends Controller
                     ->addIndexColumn()
                     ->addColumn('actions', function ($ailment) {
                         return '<div class="btn-group">
-                   <a href=' . route("ailments.edit", ["id" => encrypt($ailment->id)]) . ' class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil" aria-hidden="true"></i></a>
+                   <a href=' . route("ailments.edit", ["id" => encrypt($ailment->id) , 'locale' => 'en']) . ' class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil" aria-hidden="true"></i></a>
                    <a onclick="deleteUsers(\'' . $ailment->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
                    </div>';
                     })
@@ -50,13 +50,12 @@ class AilmentController extends Controller
     {
 
         $request->validate([
-            'name' => 'required|unique:ailments',
+            'name_en' => 'required|unique:ailments',
         ]);
 
         try {
 
             $input = $request->except('_token');
-
             $ailments = Ailment::create($input);
 
             return redirect()->route('ailments.index')->with('message', 'Ailment saved Successfully');
@@ -66,14 +65,14 @@ class AilmentController extends Controller
 
     }
 
-    public function edit($id)
+    public function edit($id,$def_locale)
     {
         try {
             $id = decrypt($id);
 
             $ailments = Ailment::find($id);
 
-            return view('admin.ailments.edit', compact('ailments'));
+            return view('admin.ailments.edit', compact('ailments','def_locale'));
         } catch (\Throwable $th) {
             return redirect()->route('ailments.index')->with('error', 'Internal Server error!');
         }
@@ -82,16 +81,22 @@ class AilmentController extends Controller
 
     public function update(Request $request)
     {
+        if(!$request->language_code && empty($request->language_code) && !$request->id){
+            return redirect()->back()->with('error','Required Parameter Not Found!');
+        }
+        
         $id = decrypt($request->id);
+        $fieldName = 'name_' . $request->language_code;
 
         $request->validate([
-            'name' => 'required|unique:ailments,name,'.$id,
+            $fieldName => 'required|unique:ailments,' . $fieldName . ',' . $id,
         ]);
+
 
         try {
 
             $ailments = Ailment::find($id);
-            $ailments->name = $request->name;
+            $ailments->$fieldName = $request->input($fieldName);
             $ailments->save();
 
             return redirect()->route('ailments.index')->with('message', 'Ailment Updated Successfully');

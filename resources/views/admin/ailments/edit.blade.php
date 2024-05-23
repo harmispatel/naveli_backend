@@ -27,39 +27,64 @@
             {{-- Clients Card --}}
             <div class="col-md-12">
                 <div class="card">
-                    <form class="form" action="{{ route('ailments.update') }}" method="POST" enctype="multipart/form-data">
-                        <input type="hidden" name="id" id="id" value="{{ encrypt($ailments->id) }}">
-                        <div class="card-body">
-                            @csrf
-                            <div class="form_box">
-                                <div class="form_box_inr">
-                                    <div class="box_title">
-                                        <h2>{{ trans('label.ailments_group') }}</h2>
-                                    </div>
-                                    <div class="form_box_info">
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <div class="form-group">
-                                                    <label for="name" class="form-label">{{ trans('label.Name') }}
-                                                        <span class="text-danger">*</span></label>
-                                                    <input type="text" name="name" id="name"
-                                                        value="{{ $ailments->name }}"
-                                                        class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}">
-                                                    @if ($errors->has('name'))
-                                                        <div class="invalid-feedback">
-                                                            {{ $errors->first('name') }}
+                    <div class="card-body">
+                        <div class="row" id="form-pills">
+                            <div class="col-md-12 mt-3">
+                                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <a href="{{ route('ailments.edit', [encrypt($ailments->id), 'en']) }}" class="nav-link {{ ($def_locale == 'en') ? 'active' : '' }}" id="pills-en-tab">English</a>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <a href="{{ route('ailments.edit', [encrypt($ailments->id), 'hi']) }}" class="nav-link {{ ($def_locale == 'hi') ? 'active' : '' }}" id="pills-hi-tab">Hindi</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-12 mt-3">
+                                <div class="tab-content" id="pills-tabContent">
+                                    <div class="tab-pane fade show active">
+                                        <form class="form" action="{{ route('ailments.update') }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                                <input type="hidden" name="language_code" id="language_code" value="{{ $def_locale }}">
+                                                <input type="hidden" name="id" id="id" value="{{ encrypt($ailments->id) }}">
+                                                
+                                                <div class="form_box">
+                                                    <div class="form_box_inr">
+                                                        <div class="box_title">
+                                                            <h2>{{ trans('label.ailments_group') }}</h2>
                                                         </div>
-                                                    @endif
+                                                        <div class="form_box_info">
+                                                            <div class="row">
+                                                                <div class="col-md-6 mb-3">
+                                                                    <div class="form-group">
+                                                                        <label for="name" class="form-label">
+                                                                            <strong>{{ trans('label.Name') }}
+                                                                                <span class="text-uppercase">({{$def_locale}})</span>
+                                                                            </strong>
+                                                                            <span class="text-danger">*</span>
+                                                                        </label>
+                                                                        <input type="text" name="{{ 'name_' . $def_locale }}" id="{{ 'name_' . $def_locale }}"
+                                                                            value="{{ old('name_' . $def_locale , $ailments['name_' . $def_locale]) }}"
+                                                                            class="form-control @error('name_' . $def_locale) is-invalid @enderror">
+                                                                            @error('name_' . $def_locale)
+                                                                            <div class="invalid-feedback">
+                                                                                {{ $message }}
+                                                                            </div>
+                                                                            @enderror
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
+                                                <div class="card-footer text-center">
+                                                    <button class="btn form_button">{{ trans('label.Save') }}</button>
+                                                </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-footer text-center">
-                                <button class="btn form_button">{{ trans('label.Save') }}</button>
-                            </div>
-                    </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
