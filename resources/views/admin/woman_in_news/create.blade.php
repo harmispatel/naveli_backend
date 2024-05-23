@@ -32,22 +32,22 @@
                             <div class="row">
                                 <div class="col-md-12 mb-3">
                                     <div class="form-group">
-                                        <label for="title" class="form-label"><strong>{{ trans('label.title') }} <span class="text-danger">*</span></strong></label>
-                                        <input type="text" name="title" id="title" value="{{ old('title') }}" class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}">
-                                        @if ($errors->has('title'))
+                                        <label for="title_en" class="form-label"><strong>{{ trans('label.title') }} (EN)<span class="text-danger">*</span></strong></label>
+                                        <input type="text" name="title_en" id="title_en" value="{{ old('title_en') }}" class="form-control {{ $errors->has('title_en') ? 'is-invalid' : '' }}">
+                                        @if ($errors->has('title_en'))
                                             <div class="invalid-feedback">
-                                                {{ $errors->first('title') }}
+                                                {{ $errors->first('title_en') }}
                                             </div>
                                         @endif
                                     </div>
                                 </div>
                                 <div class="col-md-12 mb-3">
                                     <div class="form-group">
-                                        <label for="description" class="form-label"><strong>{{ trans('label.description') }} <span class="text-danger">*</span></strong></label>
-                                        <textarea name="description" id="description" class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" rows="8">{{ old('description') }}</textarea>
-                                        @if ($errors->has('description'))
+                                        <label for="description_en" class="form-label"><strong>{{ trans('label.description') }} (EN)<span class="text-danger">*</span></strong></label>
+                                        <textarea name="description_en" id="description_en" class="form-control {{ $errors->has('description_en') ? 'is-invalid' : '' }}" rows="8">{{ old('description_en') }}</textarea>
+                                        @if ($errors->has('description_en'))
                                         <div class="invalid-feedback">
-                                            {{ $errors->first('description') }}
+                                            {{ $errors->first('description_en') }}
                                         </div>
                                         @endif
                                     </div>

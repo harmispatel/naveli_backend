@@ -441,9 +441,15 @@ class UserController extends BaseController
 
     public function newsDetails(Request $request){
         try {
-            $news = News::all();
 
-            return $this->sendResponse(newsResources::collection($news),'list retrieved successfully.',true);
+            if(isset($request->language_code) && !empty($request->language_code)){
+
+                $news = News::all();
+                return $this->sendResponse(newsResources::collection($news),'list retrieved successfully.',true);
+           
+            }else{
+                return $this->sendResponse(null, 'Language Code not Found!', false);
+            }
         } catch (\Throwable $th) {
             return $this->sendResponse(null,'Something went wrong!',false);
         }

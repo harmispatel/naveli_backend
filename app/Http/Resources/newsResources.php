@@ -15,8 +15,8 @@ class newsResources extends JsonResource
     public function toArray($request)
     {
         $data['id']  = (isset($this->id)) ? $this->id : "";
-        $data['title']  = (isset($this->title)) ? $this->title : "";
-        $data['description']  = (isset($this->description)) ? $this->description : "";
+        $data['title']  = (isset($this['title_'.$request->language_code])) ? $this['title_'.$request->language_code] : "";
+        $data['description']  = (isset($this['description_'.$request->language_code])) ? $this['description_'.$request->language_code] : "";
         $data['file_type']  = (isset($this->file_type)) ? $this->file_type : "";
 
         if(isset($this->file_type) && $this->file_type == 'image'){

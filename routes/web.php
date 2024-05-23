@@ -179,7 +179,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('woman-in-news/load', 'load')->name('woman-in-news.load');
             Route::get('woman-in-news/create', 'create')->name('woman-in-news.create');
             Route::post('woman-in-news/store', 'store')->name('woman-in-news.store');
-            Route::get('woman-in-news/edit/{id}', 'edit')->name('woman-in-news.edit');
+            Route::get('woman-in-news/edit/{id}/{locale}', 'edit')->name('woman-in-news.edit');
             Route::post('woman-in-news/update', 'update')->name('woman-in-news.update');
             Route::post('woman-in-news/destroy', 'destroy')->name('woman-in-news.destroy');
         });

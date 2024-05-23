@@ -60,10 +60,10 @@ class NewsController extends Controller
             $datas = $woman_in_newses->map(function ($woman_in_news) {
                 return [
                     'id' => $woman_in_news->id,
-                    'title' => $woman_in_news->title,
-                    'description' => $woman_in_news->description,
+                    'title' => $woman_in_news->title_en,
+                    'description' => $woman_in_news->description_en,
                     'post' => view('admin.woman_in_news.post', ['woman_in_news' => $woman_in_news])->render(),
-                    'actions' => view('admin.woman_in_news.actions', ['woman_in_news' => $woman_in_news])->render(),
+                    'actions' => view('admin.woman_in_news.actions', ['woman_in_news' => $woman_in_news , 'locale' => 'en'])->render(),
                 ];
             })->toArray();
 
@@ -88,8 +88,8 @@ class NewsController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'title' => 'required',
-            'description' => 'required',
+            'title_en' => 'required',
+            'description_en' => 'required',
         ];
 
         if ($request->media_type == 'link') {
@@ -126,11 +126,11 @@ class NewsController extends Controller
 
 
     // Show the form for editing the specified resource.
-    public function edit($id)
+    public function edit($id ,$def_locale)
     {
         try {
             $woman_in_news = News::find(decrypt($id));
-            return view('admin.woman_in_news.edit', compact('woman_in_news'));
+            return view('admin.woman_in_news.edit', compact('woman_in_news','def_locale'));
         } catch (\Throwable $th) {
             return redirect()->route('news.index')->with('error', 'Oops, Something went wrong!');
         }
@@ -140,9 +140,13 @@ class NewsController extends Controller
     // Update the specified resource in storage.
     public function update(Request $request)
     {
+        if(!$request->language_code && empty($request->language_code) && !$request->id){
+            return redirect()->back()->with('error','Required Parameter Not Found!');
+        }
+
         $rules = [
-            'title' => 'required',
-            'description' => 'required',
+            'title_' .$request->language_code => 'required',
+            'description_' .$request->language_code => 'required',
         ];
 
         if ($request->media_type == 'link') {
@@ -159,7 +163,7 @@ class NewsController extends Controller
 
         try {
             $woman_in_news = News::find(decrypt($request->id));
-            $input = $request->except('_token', 'id', 'image', 'link', 'media_type');
+            $input = $request->except('_token', 'id', 'image', 'link', 'media_type','language_code');
             $input['file_type'] = $request->media_type;
 
             if ($request->media_type == 'link') {

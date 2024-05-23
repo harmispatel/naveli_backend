@@ -81,7 +81,7 @@ Route::get('getHelp',[GeneralSettingController::class,'getHelp']);
 Route::get('logout',[UserController::class,'logout'])->middleware('auth:sanctum');
 
 //news
-Route::get('newsDetails',[UserController::class,'newsDetails']);
+Route::post('newsDetails',[UserController::class,'newsDetails']);
 
 //medicine
 Route::get('medicineList',[UserController::class,'medicineList']);
