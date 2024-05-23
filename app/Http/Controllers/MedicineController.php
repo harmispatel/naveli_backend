@@ -27,7 +27,7 @@ class MedicineController extends Controller
                     ->addIndexColumn()
                     ->addColumn('actions', function ($medicine) {
                         return '<div class="btn-group">
-                  <a href=' . route("medicine.edit", ["id" => encrypt($medicine->id)]) . ' class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil" aria-hidden="true"></i></a>
+                  <a href=' . route("medicine.edit", ["id" => encrypt($medicine->id) , 'locale' => 'en']) . ' class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil" aria-hidden="true"></i></a>
                   <a onclick="deleteUsers(\'' . $medicine->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
                   </div>';
                     })
@@ -48,7 +48,7 @@ class MedicineController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|unique:medicines',
+            'name_en' => 'required|unique:medicines',
         ]);
 
         try {
@@ -63,13 +63,13 @@ class MedicineController extends Controller
 
     }
 
-    public function edit($id)
+    public function edit($id,$def_locale)
     {
         try {
             $id = decrypt($id);
             $medicine = Medicine::find($id);
 
-            return view('admin.medicine.edit', compact('medicine'));
+            return view('admin.medicine.edit', compact('medicine','def_locale'));
         } catch (\Throwable $th) {
             return redirect()->route('medicine.index')->with('error', 'Internal server error');
         }
@@ -78,15 +78,23 @@ class MedicineController extends Controller
 
     public function update(Request $request)
     {
+
+        if(!$request->language_code && empty($request->language_code) && !$request->id){
+            return redirect()->back()->with('error','Required Parameter Not Found!');
+        }
         $id = decrypt($request->id);
- 
+
+        $fieldName = 'name_' . $request->language_code;
+
         $request->validate([
-            'name' => 'required|unique:medicines,name,'.$id,
+            $fieldName => 'required|unique:medicines,' . $fieldName . ',' . $id,
         ]);
 
         try {
+
             $medicine = Medicine::find($id);
-            $medicine->name = $request->name;
+
+            $medicine->$fieldName = $request->input($fieldName);
             $medicine->save();
 
             return redirect()->route('medicine.index')->with('message', 'Medicine Updated Successfully');

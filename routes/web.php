@@ -231,7 +231,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('medicine', 'index')->name('medicine.index');
             Route::get('medicine/create', 'create')->name('medicine.create');
             Route::post('medicine/store', 'store')->name('medicine.store');
-            Route::get('medicine/edit/{id}', 'edit')->name('medicine.edit');
+            Route::get('medicine/edit/{id}/{locale}', 'edit')->name('medicine.edit');
             Route::post('medicine/update', 'update')->name('medicine.update');
             Route::post('medicine/destroy', 'destroy')->name('medicine.destroy');
         });

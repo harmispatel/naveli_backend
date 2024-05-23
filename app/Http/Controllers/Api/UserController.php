@@ -457,11 +457,23 @@ class UserController extends BaseController
 
     public function medicineList(Request $request){
         try {
-            $medicine = Medicine::all();
+            if(isset($request->language_code) && !empty($request->language_code)){
 
-            return $this->sendResponse($medicine,'list retrieved successfully.',true);
+                $medicines = Medicine::all();
+
+                $medicineList = $medicines->map(function ($medicine) use ($request){
+                    return [
+                        'id' => $medicine->id,
+                        'name' => $medicine['name_' . $request->language_code] ?? '',
+                    ];
+                });
+                return $this->sendResponse($medicineList,'list retrieved successfully.',true);
+
+            }else{
+                return $this->sendResponse(null, 'Language Code not Found!', false);
+            }
+            
         } catch (\Throwable $th) {
-
             return $this->sendResponse(null,'Something went wrong!',false);
         }
     }

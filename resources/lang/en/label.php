@@ -78,6 +78,7 @@ return [
     "Question_not_found" => "Question Not Found",
     "copyright" => "Copyright",
     "Harmis_Technology" => "Harmis Technology",
+    "neow_india" => "NeoW India",
     "Designed_by" => "Designed by",
     "All_Rights_Reserved" => "All Rights Reserved",
     "Administrator" => "Administrator",

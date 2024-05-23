@@ -84,7 +84,7 @@ Route::get('logout',[UserController::class,'logout'])->middleware('auth:sanctum'
 Route::post('newsDetails',[UserController::class,'newsDetails']);
 
 //medicine
-Route::get('medicineList',[UserController::class,'medicineList']);
+Route::post('medicineList',[UserController::class,'medicineList']);
 
 //ailmentsList
 Route::get('/ailmentsList',[UserController::class,'ailmentsList']);
