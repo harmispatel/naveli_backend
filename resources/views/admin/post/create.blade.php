@@ -98,14 +98,14 @@
                                     </div>
                                     <div class="col-md-12 mb-3">
                                         <div class="form-group">
-                                            <label for="description"
+                                            <label for="description_en"
                                                 class="form-label"><strong>{{ trans('label.description') }} (EN)</strong>
                                                 <span class="text-danger">*</span></label>
-                                            <textarea name="description" id="description" rows="5" cols="100"
-                                                class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}">{{ old('description') }}</textarea>
-                                            @if ($errors->has('description'))
+                                            <textarea name="description_en" id="description_en" rows="5" cols="100"
+                                                class="form-control {{ $errors->has('description_en') ? 'is-invalid' : '' }}">{{ old('description_en') }}</textarea>
+                                            @if ($errors->has('description_en'))
                                                 <div class="invalid-feedback">
-                                                    {{ $errors->first('description') }}
+                                                    {{ $errors->first('description_en') }}
                                                 </div>
                                             @endif
                                         </div>

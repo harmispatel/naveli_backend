@@ -86,7 +86,7 @@ class PostController extends Controller
 
         $request->validate([
             'parent_title' => 'required',
-            'description' => 'required',
+            'description_en' => 'required',
             'file_type' => 'required',
             'posts' => 'required',
 

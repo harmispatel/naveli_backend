@@ -94,7 +94,7 @@ class HealthMixController extends Controller
             'file_type' => 'required',
             'media' => 'required',
             'hashtags' => 'required',
-            'description' => 'required',
+            'description_en' => 'required',
         ]);
 
         try {
