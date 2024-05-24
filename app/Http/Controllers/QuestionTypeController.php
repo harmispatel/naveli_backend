@@ -34,7 +34,7 @@ class QuestionTypeController extends Controller
                     ->addColumn('actions', function ($question) {
                         $questionType_id = isset($question->id) ? $question->id : '';
                         $action_html = '<div class="btn-group">';
-                        $action_html .= '<a href="' . route('questionType.edit', encrypt($question->id)) . '" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
+                        $action_html .= '<a href="' . route('questionType.edit', ['id' => encrypt($question->id),'locale' => 'en']) . '" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
 
                         if(!in_array($questionType_id, [1, 2, 3, 4])){
                             $action_html .= '<a onclick="deleteUsers(\'' . $question->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>';
@@ -63,13 +63,13 @@ class QuestionTypeController extends Controller
     {
 
         $request->validate([
-            'name' => 'required|unique:question_types',
+            'name_en' => 'required|unique:question_types',
             'icon' => 'required|image',
         ]);
 
         try {
 
-            $input = $request->only('name');
+            $input = $request->only('name_en');
 
             $icon = $request->icon;
             $icon_url = $this->addSingleImage('QuestionType', $icon, $old_image = '');
@@ -83,14 +83,13 @@ class QuestionTypeController extends Controller
         }
     }
 
-    public function edit($id)
+    public function edit($id,$def_locale)
     {
         try {
-
             $id = decrypt($id);
             $questionType = QuestionType::find($id);
 
-            return view('admin.questionTypes.edit',compact('questionType'));
+            return view('admin.questionTypes.edit',compact('questionType','def_locale'));
         } catch (\Throwable $th) {
             return redirect()->route('questionType.index')->with('error', 'Internal Server Error!');
         }
@@ -98,15 +97,19 @@ class QuestionTypeController extends Controller
 
     public function update(Request $request)
     {
-        $id = decrypt($request->id);
+        if(!$request->language_code && empty($request->language_code) && !$request->id){
+            return redirect()->back()->with('error','Required Parameters not found!');
+        }
 
+        $id = decrypt($request->id);
+        $fieldName = 'name_' . $request->language_code;
         $request->validate([
-            'name' => 'required|unique:question_types,name,'.$id,
+            'name' => 'required|unique:question_types,' . $fieldName . ','.$id,
         ]);
 
         try {
             $questionType = QuestionType::find($id);
-            $questionType->name = $request->name;
+            $questionType['name_' . $request->language_code] = $request->name;
 
             if ($request->file('icon')) {
                 File::delete(public_path('/images/uploads/QuestionType/' . $questionType->icon));

@@ -15,7 +15,8 @@ class CreateQuestionTypesTable extends Migration
     {
         Schema::create('question_types', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
+            $table->string('name_en')->nullable();
+            $table->string('name_hi')->nullable();
             $table->string('icon')->nullable();
             $table->timestamps();
         });

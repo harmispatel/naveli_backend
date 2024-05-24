@@ -16,7 +16,7 @@ class QuestionTypeResource extends JsonResource
     {
         return [
                'id' => $this->id,
-               'name' => $this->name,
+               'name' => $this['name_' . $request->language_code] ?? '',
                'icon' => isset($this->icon) ? asset('/public/images/uploads/QuestionType/'. $this->icon) : null,
         ];
     }

@@ -19,33 +19,6 @@ use Illuminate\Support\Facades\Auth;
 class QuestionController extends BaseController
 {
 
-    // public function questionlist(Request $request)
-    // {
-    //     try {
-    //         $offset = isset($request->offset) ? $request->offset : 0;
-    //         $question = Question::with('options');
-
-    //         if (isset($request->age_group_id) && !empty($request->age_group_id)) {
-    //             $question = $question->where('age_group_id', $request->age_group_id);
-    //         }
-
-    //         if (isset($request->role_id) && !empty($request->role_id)) {
-    //             $question = $question->where('role_id', $request->role_id);
-    //         }
-
-    //         if (isset($request->option_view_type) && !empty($request->option_view_type)) {
-    //             $question = $question->where('option_view_type', $request->option_view_type);
-    //         }
-
-    //         $question = $question->offset($offset)->limit(10)->get();
-    //         $questionData = QuestionResource::collection($question);
-
-    //         return $this->sendResponse($questionData, 'Question list retrieved successfully.', true);
-    //     } catch (\Throwable $th) {
-    //         return $this->sendError('Something Went Wrong!', [], 500);
-    //     }
-    // }
-
     public function questionlist(Request $request)
     {
         try {
@@ -89,10 +62,14 @@ class QuestionController extends BaseController
     {
 
         try {
-            $questionType = QuestionType::get();
-            $questionTypeData = QuestionTypeResource::collection($questionType);
-
-            return $this->sendResponse($questionTypeData, 'QuestionType list retrived successfully.', true);
+            if(isset($request->language_code) && !empty($request->language_code)){
+                $questionType = QuestionType::all();
+                $questionTypeData = QuestionTypeResource::collection($questionType);
+    
+                return $this->sendResponse($questionTypeData, 'QuestionType list retrived successfully.', true);
+            }else{
+                return $this->sendResponse(null, 'Language Code Not Found!', false); 
+            }
         } catch (\Throwable $th) {
             return $this->sendResponse(null, 'Internal Server Error!', false);
         }

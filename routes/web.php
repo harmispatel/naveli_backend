@@ -169,7 +169,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('questionType', [QuestionTypeController::class, 'index'])->name('questionType.index');
         Route::get('questionType/create', [QuestionTypeController::class, 'create'])->name('questionType.create');
         Route::post('questionType/store', [QuestionTypeController::class, 'store'])->name('questionType.store');
-        Route::get('questionType/edit/{id}', [QuestionTypeController::class, 'edit'])->name('questionType.edit');
+        Route::get('questionType/edit/{id}/{locale}', [QuestionTypeController::class, 'edit'])->name('questionType.edit');
         Route::post('questionType/update', [QuestionTypeController::class, 'update'])->name('questionType.update');
         Route::post('questionType/destroy', [QuestionTypeController::class, 'destroy'])->name('questionType.destroy');
 

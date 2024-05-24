@@ -54,7 +54,7 @@ Route::post('sub-questions-list',[QuestionController::class,'getSubQuestions'])-
 Route::post('subQuestionAnswer',[QuestionController::class,'subQuestionAnswer'])->middleware('auth:sanctum');
 
 //questionType
-Route::get('questionType',[QuestionController::class,'questionTypeList']);
+Route::post('questionType',[QuestionController::class,'questionTypeList']);
 
 //forgetPassword
 Route::post('sendOtp',[ForgotPasswordController::class,'sendOtp']);
