@@ -106,13 +106,13 @@ class CommonController extends BaseController
 
                 $currentMonth = date('m');
                 $currentYear = date('Y');
-    
+
                 // Filter festivals for the current month
                 $festivals = Festival::whereMonth('date', $currentMonth)
                     ->whereYear('date', $currentYear)
                     ->orderBy('date', 'ASC')
                     ->get();
-    
+
                 // Extract festival names
                 $festivalNames = $festivals->pluck('festival_name_'.$request->language_code)->toArray();
                 return $this->sendResponse($festivalNames, 'Festival retrived SuccessFully', true);
@@ -240,14 +240,29 @@ class CommonController extends BaseController
         return $datas;
     }
 
-    public function getHomePage()
+    public function getHomePage(Request $request)
     {
         try {
-            $getHome = Home::all();
+            if(isset($request->language_code) && !empty($request->language_code)){
 
-            return $this->sendResponse($getHome, 'Home page Retrived SuccessFully', true);
+                $getHome = Home::all();
+                if(isset($getHome)){
+                    $homePageDetail = $getHome->map(function ($homePageData) use ($request){
+                        return[
+                            'id' => $homePageData->id,
+                            'title' => $homePageData['title_' . $request->language_code] ?? '',
+                            'link' => $homePageData->link ?? ''
+                        ];
+                    });
+                    return $this->sendResponse($homePageDetail, 'Home page Retrived SuccessFully', true);
+                }else{
+                    return $this->sendResponse(null, 'Home Page Data Not Found!', false);
+                }
+            }else{
+                return $this->sendResponse(null, 'Language Code Not Found!', false);
+            }
         } catch (\Throwable $th) {
-            return $this->sendResponse(null, 'Internal Server Error', false);
+            return $this->sendResponse(null, 'Something Went Wrong!', false);
         }
     }
 

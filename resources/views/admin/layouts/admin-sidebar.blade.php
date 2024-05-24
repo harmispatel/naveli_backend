@@ -24,7 +24,7 @@
         'notification',
         'generalSetting',
         'ContentUpload',
-    ]); 
+    ]);
     $isCollAllAboutPeriods = !in_array($currentRouteName, [
         'aap.category.index',
         'aap.category.create',
@@ -33,6 +33,8 @@
         'aap.posts.create',
         'aap.posts.edit',
     ]);
+
+    $def_locale = ["locale" => "en"];
 @endphp
 
 <!-- ======= Sidebar ======= -->
@@ -49,7 +51,7 @@
         </li>
 
         <li class="nav-item">
-            <a href="{{ route('home.index') }}"
+            <a href="{{ route('home.index',$def_locale) }}"
                 class="nav-link {{ in_array($currentRouteName, ['home.index', 'home.create']) ? 'active-tab' : '' }}">
                 <i
                     class="bi bi-house {{ in_array($currentRouteName, ['home.index', 'home.create']) ? 'icon-tab' : '' }}"></i>
@@ -251,7 +253,7 @@
                     <span>{{ trans('label.healthProfile') }}</span>
                 </a>
             </li>
-        @endcan    
+        @endcan
 
 
         {{-- Health Mix --}}

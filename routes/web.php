@@ -65,7 +65,7 @@ Route::group(['prefix' => 'admin'], function () {
     });
 
     //Home
-    Route::get('home',[HomeController::class,'home'])->name('home.index');
+    Route::get('home/{locale}',[HomeController::class,'home'])->name('home.index');
     Route::post('home/create',[HomeController::class,'homeCreateUpdate'])->name('home.create');
 
 
