@@ -25,14 +25,13 @@ class AllAboutPeriodPostController extends Controller
 
     public function index(Request $request){
         try {
-            $allAboutPeriodPosts = AllAboutPeriodPost::with('category')->get();
+            $allAboutPeriodPosts = AllAboutPeriodPost::all();
 
             if($request->ajax()){
                 return DataTables::of($allAboutPeriodPosts)
                 ->addIndexColumn()
                 ->addColumn('category', function ($row) {
-
-                    return isset($row->category_name) ? $row->category_name : '';
+                    return isset($row->category_name_en) ? $row->category_name_en : '';
                  })
                  ->addColumn('icon', function ($row) {
 
@@ -45,7 +44,7 @@ class AllAboutPeriodPostController extends Controller
                 })
                 ->addColumn('actions', function ($row) {
                     return '<div class="btn-group">
-                            <a href=' . route("aap.posts.edit", ["id" => encrypt($row->id)]) . ' class="btn btn-sm custom-btn me-1"> <i class="bi bi-pencil" aria-hidden="true"></i></a>
+                            <a href=' . route("aap.posts.edit", ["id" => encrypt($row->id),'locale' => 'en']) . ' class="btn btn-sm custom-btn me-1"> <i class="bi bi-pencil" aria-hidden="true"></i></a>
                             <a onclick="deleteUsers(\'' . $row->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
                             </div>';
                 })
@@ -60,8 +59,8 @@ class AllAboutPeriodPostController extends Controller
 
     public function create(){
         try {
-            $getCategories = AllAboutPeriodCategory::all();
-            return view('admin.all_about_periods.posts-create',compact('getCategories'));
+            // $getCategories = AllAboutPeriodCategory::all();
+            return view('admin.all_about_periods.posts-create');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error','Something Went Wrong!');
         }
@@ -71,8 +70,8 @@ class AllAboutPeriodPostController extends Controller
     {
 
         $customMessages = [
-            'category_name.required' => 'The category name field is required.',
-            'category_name.unique' => 'The category name has already been taken.',
+            'category_name_en.required' => 'The category name field is required.',
+            'category_name_en.unique' => 'The category name has already been taken.',
             'icon.required' => 'The icon field is required.',
             'icon.image' => 'The icon must be an image.',
             'icon.max' => 'The icon may not be greater than :max kilobytes.',
@@ -82,7 +81,7 @@ class AllAboutPeriodPostController extends Controller
         ];
 
        $validator = Validator::make($request->all(), [
-            'category_name' => 'required|unique:all_about_period_posts',
+            'category_name_en' => 'required|unique:all_about_period_posts',
             'icon' => 'required|image|max:2048',
             'media_links.0' => [
                 Rule::requiredIf(function () use ($request) {
@@ -110,7 +109,7 @@ class AllAboutPeriodPostController extends Controller
 
         try {
 
-            $input = $request->only('category_name');
+            $input = $request->only('category_name_en');
             // Save icon
             $icon = $request->icon;
             $icon_url = $this->addSingleImage('all_about_periods/category_icons', $icon, $old_image = '');
@@ -142,7 +141,7 @@ class AllAboutPeriodPostController extends Controller
                     $mediaModel->post_id = $newPost->id;
                     $mediaModel->media = $media;
                     $mediaModel->media_type = $fileType;
-                    $mediaModel->description = $request->descriptions[$key];
+                    $mediaModel->description_en = $request->descriptions[$key];
                     $mediaModel->save();
                 }
 
@@ -155,18 +154,22 @@ class AllAboutPeriodPostController extends Controller
         }
     }
 
-    public function edit($id){
+    public function edit($id,$def_locale){
         try {
             $id = decrypt($id);
             $findedPost = AllAboutPeriodPost::with('media')->find($id);
 
-            return view('admin.all_about_periods.posts-edit',compact('findedPost'));
+            return view('admin.all_about_periods.posts-edit',compact('findedPost','def_locale'));
         } catch (\Throwable $th) {
             return redirect()->route('aap.category.index')->with('error', 'Internal Server Error!');
         }
     }
 
     public function update(Request $request){
+
+        if(!$request->language_code && empty($request->language_code) && !$request->id){
+            return redirect()->back()->with('error','Required Parameters not found!');
+        }
 
         $id = decrypt($request->id);
 
@@ -180,9 +183,9 @@ class AllAboutPeriodPostController extends Controller
             'media_files.0.required' => 'The Media File is required when the file type is "image".',
             'media_files.*.image' => 'The Media File must be an image.'
         ];
-
+        $fieldName = 'category_name_' . $request->language_code;
         $validator = Validator::make($request->all(), [
-            'category_name' => 'required|unique:all_about_period_posts,category_name,'.$id,
+            'category_name' => 'required|unique:all_about_period_posts,' . $fieldName . ','.$id,
             'icon' => 'image|max:2048',
             'media_files.*' => 'image',
             'file_types' => ['required', 'array', 'min:1','first_not_null'],
@@ -205,7 +208,7 @@ class AllAboutPeriodPostController extends Controller
 
          // Update the category name if it's provided
          if ($request->has('category_name')) {
-             $post->category_name = $request->category_name;
+            $post['category_name_' . $request->language_code] = $request->category_name;
          }
 
          // Update the icon if it's provided
@@ -223,62 +226,23 @@ class AllAboutPeriodPostController extends Controller
              $post->category_icon = $icon_url;
          }
 
-         // Update media if provided
-        //  if ($request->has('media_links') || $request->hasFile('media_files')) {
-        //     // Remove existing media associated with the post and delete their files
-        //     foreach ($post->media as $media) {
-
-        //         if (!empty($media->media)) {
-        //             // Delete the media file if it exists
-        //             $mediaFilePath = public_path('images/uploads/all_about_periods/posts_media/' . $media->media);
-        //             if (file_exists($mediaFilePath)) {
-        //                 unlink($mediaFilePath);
-        //             }
-        //         }
-        //         $media->delete();
-        //     }
-
-        //     // Loop through the provided media data
-        //     foreach ($request->file_types as $key => $fileType) {
-        //         $media = new AllAboutPeriodPostMedia();
-        //         $media->media_type = $fileType;
-
-        //         if ($fileType == 'link') {
-        //             $media->media = isset($request->media_links[$key]) ? $request->media_links[$key] : '';
-        //         } else {
-        //             // Handle file upload for media files only if files are provided
-        //             if ($request->hasFile('media_files') && isset($request->media_files[$key])) {
-        //                 $mediaFile = $request->media_files[$key];
-        //                 $mediaFileName = $this->addSingleImage('all_about_periods/posts_media/', $mediaFile, $old_image = '');
-        //                 $media->media = $mediaFileName;
-        //             } else {
-        //                 // If media_files are not provided, keep the existing media file
-        //                 $media->media = $post->media[$key]->media;
-        //             }
-        //         }
-        //         $media->description = $request->descriptions[$key];
-        //         // Save media associated with the post
-        //         $post->media()->save($media);
-        //     }
-        // }
 
         if ($request->has('media_links') || $request->hasFile('media_files')) {
-
-           $post->media()->delete();
-
+            $post->media()->delete();
+        
             foreach ($request->file_types as $key => $fileType) {
                 // Check if both media_links or media_files and descriptions are not null or empty at the same index
                 if (($fileType === 'link' && isset($request->media_links[$key])) ||
                     ($fileType === 'image' && $request->hasFile('media_files') && isset($request->media_files[$key]) || isset($post->media[$key]->media)) ||
                     isset($request->descriptions[$key]) && ($request->descriptions[$key] != null)) {
-
+        
                     $media = new AllAboutPeriodPostMedia();
                     $media->media_type = $fileType;
-
+        
                     if ($fileType === 'link') {
-                         $media->media = $request->media_links[$key] ?? '';
+                        $media->media = $request->media_links[$key] ?? '';
                     } else {
-                       // Handle file upload for media files only if files are provided
+                        // Handle file upload for media files only if files are provided
                         if ($request->hasFile('media_files') && $request->file('media_files')[$key]->isValid()) {
                             $mediaFile = $request->file('media_files')[$key];
                             $mediaFileName = $this->addSingleImage('all_about_periods/posts_media/', $mediaFile, $old_image = '');
@@ -288,14 +252,24 @@ class AllAboutPeriodPostController extends Controller
                             $media->media = $post->media[$key]->media ?? '';
                         }
                     }
+                    
+                    // Assign description based on $def_locale value
+                    if ($request->language_code === 'hi') {
 
-                    $media->description = $request->descriptions[$key] ?? '';
+                        $media->description_hi = $request->descriptions[$key] ?? '';
+                        $media->description_en = $post->media[$key]->description_en ?? '';
+     
+                    } else {
+                        $media->description_en = $request->descriptions[$key] ?? '';
+                        $media->description_hi = $post->media[$key]->description_hi ?? '';
+                    }
+        
                     // Save media associated with the post
                     $post->media()->save($media);
                 }
             }
-
         }
+        
          $post->save();
          return redirect()->route('aap.posts.index')->with('message','All About Periods Post updated successfully');
        } catch (\Throwable $th) {

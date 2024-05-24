@@ -132,7 +132,7 @@ Route::post('FestivalList',[CommonController::class,'festivalList']);
 Route::post('StoreDailydairy',[CommonController::class,'storeDailydairy'])->middleware('auth:sanctum');
 Route::post('storeState',[CommonController::class,'storeState'])->middleware('auth:sanctum');
 Route::post('storeCity',[CommonController::class,'storeCity'])->middleware('auth:sanctum');
-Route::post('getHomePage',[CommonController::class,'getHomePage']);
+Route::post('getHomePage',[CommonController::class,'getHomePage'])->middleware('auth:sanctum');
 Route::post('getDailyDiary',[CommonController::class,'getDailyDiary'])->middleware('auth:sanctum');
 Route::post('monthlymission',[CommonController::class,'monthlymission'])->middleware('auth:sanctum');
 Route::get('getMonthlyMisssion',[CommonController::class,'getMonthlyMisssion'])->middleware('auth:sanctum');
@@ -145,7 +145,7 @@ Route::get('getReflectionData',[CommonController::class,'getReflectionData'])->m
 
 //AllAboutPeriodController
 
-Route::get('/getAllAboutPeriodsList',[AllAboutPeriodController::class,'getAllAboutPeriodsList'])->middleware('auth:sanctum');
+Route::post('/getAllAboutPeriodsList',[AllAboutPeriodController::class,'getAllAboutPeriodsList'])->middleware('auth:sanctum');
 Route::post('/getDetailOfAllAboutPeriod',[AllAboutPeriodController::class,'getDetailOfAllAboutPeriod'])->middleware('auth:sanctum');
 
 //MonthlyReminderController

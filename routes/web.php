@@ -274,7 +274,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/all-about-periods',[AllAboutPeriodPostController::class,'index'])->name('aap.posts.index');
         Route::get('/all-about-periods/create',[AllAboutPeriodPostController::class,'create'])->name('aap.posts.create');
         Route::post('/all-about-periods/store',[AllAboutPeriodPostController::class,'store'])->name('aap.posts.store');
-        Route::get('/all-about-periods/edit/{id}',[AllAboutPeriodPostController::class,'edit'])->name('aap.posts.edit');
+        Route::get('/all-about-periods/edit/{id}/{locale}',[AllAboutPeriodPostController::class,'edit'])->name('aap.posts.edit');
         Route::post('/all-about-periods/update',[AllAboutPeriodPostController::class,'update'])->name('aap.posts.update');
         Route::post('/all-about-periods/destroy',[AllAboutPeriodPostController::class,'destroy'])->name('aap.posts.destroy');
     });

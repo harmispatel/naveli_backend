@@ -15,10 +15,8 @@ class CreateAllAboutPeriodPostsTable extends Migration
     {
         Schema::create('all_about_period_posts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('category_id')->nullable();
-            $table->foreign('category_id')->references('id')->on('all_about_period_categories')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->string('title',255)->nullable();
-            $table->longText('description')->nullable();
+            $table->string('category_name',255)->nullable();
+            $table->text('category_icon')->nullable();
             $table->timestamps();
         });
     }
