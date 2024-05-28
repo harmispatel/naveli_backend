@@ -17,7 +17,8 @@ class CreateSubOptionsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('question_or_notification_id')->nullable();
             $table->foreign('question_or_notification_id')->references('id')->on('question_or_notifications');
-            $table->string('option_name',255)->nullable();
+            $table->string('option_name_en',255)->nullable();
+            $table->string('option_name_hi',255)->nullable();
             $table->timestamps();
         });
     }

@@ -152,7 +152,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('question', [QuestionController::class, 'index'])->name('question.index');
         Route::get('question/create', [QuestionController::class, 'create'])->name('question.create');
         Route::post('question/store', [QuestionController::class, 'store'])->name('question.store');
-        Route::get('question/edit/{id}', [QuestionController::class, 'edit'])->name('question.edit');
+        Route::get('question/edit/{id}/{locale}', [QuestionController::class, 'edit'])->name('question.edit');
         Route::post('/question/update', [QuestionController::class, 'update'])->name('question.update');
         Route::post('question/destroy', [QuestionController::class, 'delete'])->name('question.destroy');
         Route::get('question/optionView/{id}', [QuestionController::class, 'questionOptionView'])->name('question.optionView');

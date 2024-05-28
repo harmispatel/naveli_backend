@@ -21,38 +21,46 @@ class QuestionController extends BaseController
 
     public function questionlist(Request $request)
     {
+
         try {
-            $questionType = isset($request->question_type) ? $request->question_type : 0;
-            $ageGroup = $request->age_group ?? null;
 
-            $questionsQuery = Question::where('questionType_id', $questionType)
-                ->with('options', 'age_group');
+            if(isset($request->language_code) && !empty($request->language_code)){
 
-            if ($questionType == 3 && !$ageGroup) {
-                return $this->sendResponse(null, 'Age group is required for question type Others.', false);
-            }
+                $questionType = isset($request->question_type) ? $request->question_type : 0;
+                $ageGroup = $request->age_group ?? null;
 
-            if ($ageGroup) {
-                $questionsQuery->whereHas('age_group', function ($query) use ($ageGroup) {
-                    $query->where('name', $ageGroup);
+                $questionsQuery = Question::where('questionType_id', $questionType)
+                    ->with('options', 'age_group');
+
+                if ($questionType == 3 && !$ageGroup) {
+                    return $this->sendResponse(null, 'Age group is required for question type Others.', false);
+                }
+
+                if ($ageGroup) {
+                    $questionsQuery->whereHas('age_group', function ($query) use ($ageGroup) {
+                        $query->where('name', $ageGroup);
+                    });
+                }
+
+                $questions = $questionsQuery->get();
+                $questionData = $questions->map(function ($question) use ($request){
+                    return [
+                        'id' => $question->id,
+                        'questionType_id' => $question->questionType_id,
+                        'question_name' => $question['question_name_' . $request->language_code],
+                        'options' => QuestionOptionResource::collection($question->options),
+                        'age_group' => isset($question->age_group) ? [
+                            'id' => $question->age_group->id,
+                            'name' => $question->age_group->name,
+                        ] : null,
+                    ];
                 });
+
+                return $this->sendResponse($questionData, 'Question list retrieved successfully.', true);
+            }else{
+                return $this->sendResponse(null, 'Language Code Not Found!', false);
             }
 
-            $questions = $questionsQuery->get();
-            $questionData = $questions->map(function ($question) {
-                return [
-                    'id' => $question->id,
-                    'questionType_id' => $question->questionType_id,
-                    'question_name' => $question->question_name,
-                    'options' => QuestionOptionResource::collection($question->options),
-                    'age_group' => isset($question->age_group) ? [
-                        'id' => $question->age_group->id,
-                        'name' => $question->age_group->name,
-                    ] : null,
-                ];
-            });
-
-            return $this->sendResponse($questionData, 'Question list retrieved successfully.', true);
         } catch (\Throwable $th) {
             return $this->sendResponse(null, 'Internal Server Error!', false);
         }
@@ -65,10 +73,10 @@ class QuestionController extends BaseController
             if(isset($request->language_code) && !empty($request->language_code)){
                 $questionType = QuestionType::all();
                 $questionTypeData = QuestionTypeResource::collection($questionType);
-    
+
                 return $this->sendResponse($questionTypeData, 'QuestionType list retrived successfully.', true);
             }else{
-                return $this->sendResponse(null, 'Language Code Not Found!', false); 
+                return $this->sendResponse(null, 'Language Code Not Found!', false);
             }
         } catch (\Throwable $th) {
             return $this->sendResponse(null, 'Internal Server Error!', false);
@@ -285,52 +293,58 @@ class QuestionController extends BaseController
 
     public function getSubQuestions(Request $request)
     {
+       
         try {
             $option_id = $request->option_id;
+           
+            if (isset($option_id) && !empty($option_id) && isset($request->language_code) && !empty($request->language_code)) {
+               
+                $sub_options = SubQuestion::where('sub_option_id', $option_id)->orWhere('option_id', $option_id)->with('sub_question')->get();
 
-            if (!$option_id) {
-                return $this->sendResponse(null, 'Option Id Not Found!', false);
-            }
-
-            $sub_options = SubQuestion::where('sub_option_id', $option_id)->orWhere('option_id', $option_id)->with('sub_question')->get();
-
-            $data = [];
-            if (count($sub_options) > 1) {
-                foreach ($sub_options as $key => $sub_option) {
-                    if ($sub_option->question_or_notification != "question") {
-                        $data['notification_id'] = isset($sub_option->id) ? $sub_option->id : null;
-                        $data['notification'] = isset($sub_option->sub_question) ? $sub_option->sub_question->title : null;
-                    } else {
-                        $options_of_question = SubOption::select('id', 'option_name')->where('question_or_notification_id', $sub_option->sub_question_id)->get();
-                        $data['question_id'] = isset($sub_option->id) ? $sub_option->id : null;
-                        $data['question'] = isset($sub_option->sub_question) ? $sub_option->sub_question->title : null;
-                        $data['options'] = isset($options_of_question) ? $options_of_question : null;
-                    }
-                }
-                $sub_questions = $data;
-            } else {
-                if (count($sub_options) > 0) {
+                $data = [];
+                if (count($sub_options) > 1) {
                     foreach ($sub_options as $key => $sub_option) {
+                        dd($sub_option->sub_question->title_($request->language_code));
                         if ($sub_option->question_or_notification != "question") {
                             $data['notification_id'] = isset($sub_option->id) ? $sub_option->id : null;
-                            $data['notification'] = isset($sub_option->sub_question) ? $sub_option->sub_question->title : null;
-                            $data['question'] = null;
-                            $data['options'] = null;
+                            $data['notification'] = isset($sub_option->sub_question) ? $sub_option->sub_question['title_'. $request->language_code] : null;
+    
                         } else {
-                            $options_of_question = SubOption::select('id', 'option_name')->where('question_or_notification_id', $sub_option->sub_question_id)->get();
-                            $data['notification'] = null;
+                            $options_of_question = SubOption::select('id', 'option_name_'. $request->language_code)->where('question_or_notification_id', $sub_option->sub_question_id)->get();
                             $data['question_id'] = isset($sub_option->id) ? $sub_option->id : null;
-                            $data['question'] = isset($sub_option->sub_question) ? $sub_option->sub_question->title : null;
+                            $data['question'] = isset($sub_option->sub_question) ? $sub_option->sub_question['title_'. $request->language_code] : null;
                             $data['options'] = isset($options_of_question) ? $options_of_question : null;
                         }
                     }
                     $sub_questions = $data;
                 } else {
-                    $sub_questions = null;
+                    if (count($sub_options) > 0) {
+                        foreach ($sub_options as $key => $sub_option) {
+                            if ($sub_option->question_or_notification != "question") {
+                                $data['notification_id'] = isset($sub_option->id) ? $sub_option->id : null;
+                                $data['notification'] = isset($sub_option->sub_question) ? $sub_option->sub_question['title_'. $request->language_code] : null;
+                                $data['question'] = null;
+                                $data['options'] = null;
+                            } else {
+                                $options_of_question = SubOption::select('id', 'option_name_'. $request->language_code)->where('question_or_notification_id', $sub_option->sub_question_id)->get();
+                                $data['notification'] = null;
+                                $data['question_id'] = isset($sub_option->id) ? $sub_option->id : null;
+                                $data['question'] = isset($sub_option->sub_question) ? $sub_option->sub_question['title_'. $request->language_code] : null;
+                                $data['options'] = isset($options_of_question) ? $options_of_question : null;
+                            }
+                        }
+                        $sub_questions = $data;
+                    } else {
+                        $sub_questions = null;
+                    }
                 }
-            }
+    
+                return $this->sendResponse($sub_questions, 'Data Receive Successfully', true);
+     
+            }else{
 
-            return $this->sendResponse($sub_questions, 'Data Receive Successfully', true);
+                return $this->sendResponse(null, 'Required Parameter Not Found!', false);
+            }
         } catch (\Throwable $th) {
             return $this->sendResponse(null, 'something went wrong!', false);
         }

@@ -17,7 +17,7 @@ class QuestionOptionResource extends JsonResource
         return [
             'question_id' => $this->question_id,
             'option_id' => $this->id,
-            'option_name' => $this->option_name,
+            'option_name' => $this['option_name_' . $request->language_code] ?? '',
 
         ];
     }

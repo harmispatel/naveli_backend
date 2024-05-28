@@ -49,7 +49,7 @@
                                                 @foreach ($questionTypes as $questionType)
                                                     <option value="{{ $questionType->id }}"
                                                         {{ old('questionType_id') == $questionType->id ? 'selected' : '' }}>
-                                                        {{ $questionType->name }}
+                                                        {{ $questionType->name_en }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -71,14 +71,14 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                </div>
+                                    </div>
                                     <div class="col-md-6 ">
                                         <div class="form-group">
                                             <label for="question_name"
-                                                class="form-label"><strong>{{ trans('label.question_name') }}</strong>
+                                                class="form-label"><strong>{{ trans('label.question_name') }} (EN)</strong>
                                                 <span class="text-danger">*</span></label>
-                                            <input type="text" name="question_name" id="question_name"
-                                                value="{{ old('question_name') }}"
+                                            <input type="text" name="question_name_en" id="question_name_en"
+                                                value="{{ old('question_name_en') }}"
                                                 class="form-control">
                                             <div id="question_name_error" class="invalid-feedback"></div>
                                         </div>
@@ -91,7 +91,7 @@
                                     <div class="col-md-6 additional-info">
                                         <div class="form-group">
                                             <label for="option_name"
-                                                class="form-label"><strong>{{ trans('label.option_name') }}</strong></label>
+                                                class="form-label"><strong>{{ trans('label.option_name') }} (EN)</strong></label>
                                             <input type="text" name="option_name[]" id="option_name1"
                                                 class="form-control" />
                                                 <div id="option_name1_error" class="invalid-feedback"></div>
@@ -100,7 +100,7 @@
                                     <div class="col-md-6 additional-info">
                                         <div class="form-group">
                                             <label for="option_name"
-                                                class="form-label"><strong>{{ trans('label.option_name') }}</strong></label>
+                                                class="form-label"><strong>{{ trans('label.option_name') }} (EN)</strong></label>
                                             <input type="text" name="option_name[]" id="option_name2"
                                                 class="form-control" />
                                                 <div id="option_name2_error" class="invalid-feedback"></div>
@@ -157,7 +157,7 @@
                     '<div class="col-md-10 additional-info">' +
                     '<div class="form-group">' +
                     '<label for="option_name" class="form-label">' +
-                    '<strong>{{ trans('label.option_name') }}</strong>' +
+                    '<strong>{{ trans('label.option_name') }} (EN)</strong>' +
                     '</label>' +
                     '<input type="text" name="option_name[' + optionIndex + ']" class="form-control" />' +
                     '</div>' +

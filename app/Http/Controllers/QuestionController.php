@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
+
 class QuestionController extends Controller
 {
     use ImageTrait;
@@ -27,6 +28,7 @@ class QuestionController extends Controller
     public function index(Request $request)
     {
         try {
+
             $questionTypes = QuestionType::all();
             $ageGroups = QuestionTypeAge::all();
 
@@ -49,7 +51,7 @@ class QuestionController extends Controller
                     ->addIndexColumn()
                     ->addColumn('questionType_id', function ($question) {
                         $questionType = QuestionType::find($question->questionType_id);
-                        return $questionType ? $questionType->name : '--';
+                        return $questionType ? $questionType->name_en : '--';
                     })
                     ->addColumn('age_group_id', function ($question) {
                         $ageGroup = QuestionTypeAge::find($question->age_group_id);
@@ -58,7 +60,7 @@ class QuestionController extends Controller
                     ->addColumn('actions', function ($question) {
 
                         $action_html = '<div class="btn-group">';
-                        $action_html .= '<a href=' . route("question.edit", ["id" => encrypt($question->id)]) . ' class="btn btn-sm custom-btn me-1"> <i class="bi bi-pencil" aria-hidden="true"></i></a>';
+                        $action_html .= '<a href=' . route("question.edit", ["id" => encrypt($question->id) , "locale" => "hi"]) . ' class="btn btn-sm custom-btn me-1"> <i class="bi bi-pencil" aria-hidden="true"></i></a>';
                         if(!in_array($question->questionType_id, [1, 2, 3, 4])){
                             $action_html .= '<a onclick="deleteUsers(\'' . $question->id . '\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash" aria-hidden="true"></i></a>';
                         }
@@ -72,7 +74,7 @@ class QuestionController extends Controller
 
             return view('admin.questions.index',compact('ageGroups','questionTypes'));
         } catch (\Throwable $th) {
-            
+
             return redirect()->back()->with('error', 'Internal Server Error');
         }
     }
@@ -88,7 +90,7 @@ class QuestionController extends Controller
 
             return view('admin.questions.OptionView', compact('options','question'));
         } catch (\Throwable $th) {
-           
+
             return redirect()->back()->with('error', 'Internal Server Error');
         }
     }
@@ -106,7 +108,7 @@ class QuestionController extends Controller
     {
 
         $request->validate([
-            'question_name' => 'required',
+            'question_name_en' => 'required',
             'questionType_id' => 'required',
         ]);
 
@@ -129,8 +131,8 @@ class QuestionController extends Controller
                         if ($optionName !== null && $optionName !== '') {
                             $questionOption = new Question_option;
                             $questionOption->question_id = $question->id;
-                            $questionOption->option_name = $optionName;
-                            $questionOption->option_slug = strtolower(Str::slug($questionOption->option_name, "_"));
+                            $questionOption->option_name_en = $optionName;
+                            $questionOption->option_slug = strtolower(Str::slug($questionOption->option_name_en, "_"));
                             $questionOption->save();
                         }
                     }
@@ -144,7 +146,7 @@ class QuestionController extends Controller
         }
     }
 
-    public function edit($id)
+    public function edit($id,$def_locale)
     {
         try {
             $id = decrypt($id);
@@ -154,7 +156,7 @@ class QuestionController extends Controller
             $questionTypes = QuestionType::get();
             $ageTypes = QuestionTypeAge::get();
 
-            return view('admin.questions.edit', compact('question','ageTypes', 'options', 'questionTypes'));
+            return view('admin.questions.edit', compact('question','ageTypes', 'options', 'questionTypes','def_locale'));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Internal Server Error');
         }
@@ -163,75 +165,53 @@ class QuestionController extends Controller
 
     public function update(Request $request)
     {
-       
         $request->validate([
             'question_name' => 'required',
-            // 'questionType_id' => 'required',
-
+            'language_code' => 'required',
+            'option_name.*' => 'required'
         ]);
 
         try {
             $id = decrypt($request->id);
-
             $question = Question::find($id);
 
-            if ($question) {
-                $question->update([
-                //  'questionType_id' => $request->questionType_id,
-                    'question_name' => $request->question_name,
-                //  'age_group_id' => $request->age_group_id
-                ]);
-                // $question->questionType_id = $request->questionType_id;
-                // $question->question_name = $request->question_name;
-                // $question->age_group_id = $request->age_group_id;
-
-                // $question->save(); // Save the changes to the database
-
-                // $existingOptionIds = [];
-
-                // foreach ($request->option_name as $index => $optionName) {
-    
-                //     if (!is_null($optionName)) {
-                //         $questionOption = Question_option::where('question_id', $id)
-                //                           ->first(); // Find existing Question_option or create a new one
-
-                //       $update =  $questionOption->update([
-                //            'question_id' => $id,
-                //            'option_name' => $optionName,
-                //            'option_slug' => strtolower(Str::slug($questionOption->option_name,"_")),
-                //         ]);
-
-                       
-                //         // $questionOption->question_id = $id;
-                //         // $questionOption->option_name = $optionName;
-                //         // $questionOption->option_slug = strtolower(Str::slug($questionOption->option_name,"_"));
-                //         // $questionOption->save();
-
-                //         $existingOptionIds[] = $questionOption->id;
-                //     }
-                // }
-
-                // if(isset($question->questionType_id) && $question->questionType_id != 3) {
-                //     $updateAgeGroup = Question::where('id',$id)->update([
-                //          'age_group_id' => null,
-                //     ]);
-                // }
-
-                // Delete records whose IDs are not in the $existingOptionIds array
-                //    $questionOption =  Question_option::where('question_id', $id)
-                //                       ->whereNotIn('id', $existingOptionIds)
-                //                       ->delete();
-
-
-                return redirect()->route('question.index')->with('message', 'Question Updated Successfully');
+            if (!$question) {
+                return redirect()->route('question.index')->with('error', 'Question Not Found');
             }
-            return redirect()->route('question.index')->with('error', 'Question Not Found');
+
+            // Update the question name based on the language code
+            $question->{'question_name_' . $request->language_code} = $request->question_name;
+            $question->save();
+
+            // If the language code is 'hi', update the option names as well
+            if ($request->language_code == 'hi') {
+                $existingOptionIds = [];
+
+                // Retrieve existing question options
+                $questionOptions = Question_option::where('question_id', $id)->get();
+
+                // Check if the number of provided option names matches the number of existing options
+                if (count($request->option_name) != $questionOptions->count()) {
+                    return redirect()->route('question.index')->with('error', 'The number of options provided does not match the number of existing options.');
+                }
+
+                foreach ($request->option_name as $index => $optionName) {
+                    if (!is_null($optionName)) {
+                        $questionOption = $questionOptions[$index];
+                        $questionOption->update([
+                            'option_name_hi' => $optionName,
+                        ]);
+                        $existingOptionIds[] = $questionOption->id;
+                    }
+                }
+            }
+
+            return redirect()->route('question.index')->with('message', 'Question Updated Successfully');
         } catch (\Throwable $th) {
-            dd($th);
-            // Log the error for further investigation
             return redirect()->route('question.index')->with('error', 'Internal Server Error');
         }
     }
+
 
 //     public function update(Request $request)
 // {

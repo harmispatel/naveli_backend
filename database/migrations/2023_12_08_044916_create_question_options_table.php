@@ -16,7 +16,8 @@ class CreateQuestionOptionsTable extends Migration
         Schema::create('question_options', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('question_id');
-            $table->string('option_name')->nullable();
+            $table->string('option_name_en')->nullable();
+            $table->string('option_name_hi')->nullable();
             $table->string('icon')->nullable();
             $table->foreign('question_id')->references('id')->on('questions')->cascadeOnDelete();
             $table->timestamps();

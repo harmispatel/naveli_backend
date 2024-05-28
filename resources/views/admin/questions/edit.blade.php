@@ -28,130 +28,152 @@
     {{-- Clients Card --}}
     <div class="col-md-12">
         <div class="card">
-            <form class="form" action="{{ route('question.update') }} " method="POST" enctype="multipart/form-data">
+            <div class="card-body">
+                <div class="row" id="form-pills">
+                    <div class="col-md-12 mt-3">
+                        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <a href="{{ route('question.edit', [encrypt($question->id), 'en']) }}" class="nav-link {{ ($def_locale == 'en') ? 'active' : '' }}" id="pills-en-tab">English</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a href="{{ route('question.edit', [encrypt($question->id), 'hi']) }}" class="nav-link {{ ($def_locale == 'hi') ? 'active' : '' }}" id="pills-hi-tab">Hindi</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-12 mt-3">
+                        <div class="tab-content" id="pills-tabContent">
+                            <div class="tab-pane fade show active">
+                                <form class="form" action="{{ route('question.update') }} " method="POST" enctype="multipart/form-data">
 
-                <input type="hidden" name="id" id="id" value="{{ encrypt($question->id) }}">
-                <div class="card-body">
-                    @csrf
-                    <div class="form_box">
-                        <div class="form_box_inr">
-                            <div class="box_title">
-                                <h2>{{ trans('label.Question') }}</h2>
-                            </div>
-                            <div class="form_box_info">
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <div class="form-group">
-                                            <label for="questionType_id"
-                                                class="form-label"><strong>{{ trans('label.questionType') }}</strong>
-                                                <span class="text-danger">*</span></label>
-                                            <input type="hidden" class="form-control" name="questionType_id"
-                                                id="questionType_id" value="{{ $question->questionType_id }}">
-                                            @if (isset($question->questionType_id))
-                                                @foreach ($questionTypes as $questionType)
-                                                    @if ($questionType->id == $question->questionType_id)
-                                                        <input type="text" class="form-control"
-                                                            value="{{ $questionType->name }}" readonly>
-                                                    @endif
-                                                @endforeach
-                                            @endif
-
-                                            {{-- <select type="text" name="questionType_id" id="cc"
-                                                class="form-control {{ $errors->has('questionType_id') ? 'is-invalid' : '' }}" readonly>
-                                                <option value="">-- Select Question Type</option>
-                                                @foreach ($questionTypes as $questionType)
-                                                    <option value="{{ $questionType->id }}"
-                                                        {{ old('questionType_id', $question->questionType_id == $questionType->id) ? 'selected' : '' }}>
-                                                        {{ $questionType->name }}   
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            @if ($errors->has('questionType_id'))
-                                                <div class="invalid-feedback">
-                                                    {{ $errors->first('questionType_id') }}
-                                                </div>
-                                            @endif --}}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6" id="ageHide" style="display: none">
-                                        <div class="form-group">
-                                            <label for="age_group_id"
-                                                class="form-label"><strong>{{ trans('label.ageType') }}</strong></label>
-                                            <input type="hidden" class="form-control" name="age_group_id" id="age_group_id"
-                                                value="{{ $question->age_group_id }}">
-                                            @if (isset($question->age_group_id))
-                                                @foreach ($ageTypes as $ageType)
-                                                    @if ($ageType->id == $question->age_group_id)
-                                                        <input type="text" class="form-control"
-                                                            value="{{ $ageType->name }}" readonly>
-                                                    @endif
-                                                @endforeach
-                                            @endif
-                                            {{-- <select type="text" name="age_group_id" id="age_group_id"
-                                                class="form-control" readonly>
-                                                <option value="">-- Select Age Type --</option>
-                                                @foreach ($ageTypes as $ageType)
-                                                    <option value="{{ $ageType->id }}"
-                                                        {{ old('age_group_id', $question->age_group_id == $ageType->id) ? 'selected' : '' }}>
-                                                        {{ $ageType->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select> --}}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="form-group">
-                                            <label for="question_name"
-                                                class="form-label"><strong>{{ trans('label.question_name') }}</strong>
-                                                <span class="text-danger">*</span></label>
-                                            <input type="text" name="question_name" id="question_name"
-                                                value="{{ old('question_name', $question->question_name) }}"
-                                                class="form-control {{ $errors->has('question_name') ? 'is-invalid' : '' }}">
-                                            @if ($errors->has('question_name'))
-                                                <div class="invalid-feedback">
-                                                    {{ $errors->first('question_name') }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-12 mb-3 additional-info text-end">
-                                        {{-- <a class="btn btn-sm new-category custom-btn" id="addOption"><i
-                                                class="bi bi-plus-lg"></i></a> --}}
-                                    </div>
-                                    {{-- <div class="row"> --}}
-                                        <!-- Populate options -->
-                                        @foreach ($options as $option)
-                                            <div class="col-md-6">
-                                                {{-- <div class="row align-items-end added-option"> --}}
-                                                    <!-- Populate option_name and icon if they exist in your Option model -->
-                                                    {{-- <div class="col-md-12 mb-3 additional-info"> --}}
-                                                        <label for="option_name"
-                                                            class="form-label"><strong>{{ trans('label.option_name') }}</strong></label>
-                                                        <input type="text" name="option_name[]" id="option_name1"
-                                                            value="{{ $option->option_name }}" class="form-control"
-                                                            readonly />
-                                                        <div id="option_name1_error" class="invalid-feedback"></div>
-                                                    {{-- </div> --}}
-                                                    {{-- <div class="col-md-2 mb-3 pt-2 additional-info">
-                                                        <button class="btn btn-sm btn-danger cancel-option"
-                                                            onclick="removeOption(this)"><i class="bi bi-trash"
-                                                                aria-hidden="true"></i></button>
-                                                    </div> --}}
-                                                {{-- </div> --}}
+                                    <input type="hidden" name="language_code" id="language_code" value="{{ $def_locale }}">
+                                    <input type="hidden" name="id" id="id" value="{{ encrypt($question->id) }}">
+                                    @csrf
+                                    <div class="form_box">
+                                        <div class="form_box_inr">
+                                            <div class="box_title">
+                                                <h2>{{ trans('label.Question') }}</h2>
                                             </div>
-                                        @endforeach
-                                    {{-- </div> --}}
-                                    <div class="appending_div row"></div>
-                                </div>
+                                            <div class="form_box_info">
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="form-group">
+                                                            <label for="questionType_id"
+                                                                class="form-label"><strong>{{ trans('label.questionType') }}</strong>
+                                                                <span class="text-danger">*</span></label>
+                                                            <input type="hidden" class="form-control" name="questionType_id"
+                                                                id="questionType_id" value="{{ $question->questionType_id }}">
+                                                            @if (isset($question->questionType_id))
+                                                                @foreach ($questionTypes as $questionType)
+                                                                    @if ($questionType->id == $question->questionType_id)
+                                                                        <input type="text" class="form-control"
+                                                                            value="{{ $questionType->name_en }}" readonly>
+                                                                    @endif
+                                                                @endforeach
+                                                            @endif
+
+                                                            {{-- <select type="text" name="questionType_id" id="cc"
+                                                                class="form-control {{ $errors->has('questionType_id') ? 'is-invalid' : '' }}" readonly>
+                                                                <option value="">-- Select Question Type</option>
+                                                                @foreach ($questionTypes as $questionType)
+                                                                    <option value="{{ $questionType->id }}"
+                                                                        {{ old('questionType_id', $question->questionType_id == $questionType->id) ? 'selected' : '' }}>
+                                                                        {{ $questionType->name }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                            @if ($errors->has('questionType_id'))
+                                                                <div class="invalid-feedback">
+                                                                    {{ $errors->first('questionType_id') }}
+                                                                </div>
+                                                            @endif --}}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6" id="ageHide" style="display: none">
+                                                        <div class="form-group">
+                                                            <label for="age_group_id"
+                                                                class="form-label"><strong>{{ trans('label.ageType') }}</strong></label>
+                                                            <input type="hidden" class="form-control" name="age_group_id" id="age_group_id"
+                                                                value="{{ $question->age_group_id }}">
+                                                            @if (isset($question->age_group_id))
+                                                                @foreach ($ageTypes as $ageType)
+                                                                    @if ($ageType->id == $question->age_group_id)
+                                                                        <input type="text" class="form-control"
+                                                                            value="{{ $ageType->name }}" readonly>
+                                                                    @endif
+                                                                @endforeach
+                                                            @endif
+                                                            {{-- <select type="text" name="age_group_id" id="age_group_id"
+                                                                class="form-control" readonly>
+                                                                <option value="">-- Select Age Type --</option>
+                                                                @foreach ($ageTypes as $ageType)
+                                                                    <option value="{{ $ageType->id }}"
+                                                                        {{ old('age_group_id', $question->age_group_id == $ageType->id) ? 'selected' : '' }}>
+                                                                        {{ $ageType->name }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select> --}}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="form-group">
+                                                            <label for="question_name"
+                                                                class="form-label"><strong>{{ trans('label.question_name') }}</strong>
+                                                                <span class="text-uppercase">({{$def_locale}})</span>
+                                                                <span class="text-danger">*</span></label>
+                                                            <input type="text" name="question_name" id="question_name"
+                                                                value="{{ old('question_name', $question['question_name_' .$def_locale]) }}"
+                                                                class="form-control {{ $errors->has('question_name') ? 'is-invalid' : '' }}">
+                                                            @if ($errors->has('question_name'))
+                                                                <div class="invalid-feedback">
+                                                                    {{ $errors->first('question_name') }}
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-12 mb-3 additional-info text-end">
+                                                        {{-- <a class="btn btn-sm new-category custom-btn" id="addOption"><i
+                                                                class="bi bi-plus-lg"></i></a> --}}
+                                                    </div>
+                                                    {{-- <div class="row"> --}}
+                                                        <!-- Populate options -->
+                                                        @foreach ($options as $option)
+                                                            <div class="col-md-6">
+                                                                {{-- <div class="row align-items-end added-option"> --}}
+                                                                    <!-- Populate option_name and icon if they exist in your Option model -->
+                                                                    {{-- <div class="col-md-12 mb-3 additional-info"> --}}
+                                                                        <label for="option_name"
+                                                                            class="form-label"><strong>{{ trans('label.option_name') }}</strong>
+                                                                            <span class="text-uppercase">({{$def_locale}})</span>
+                                                                        </label>
+                                                                        <input type="text" name="option_name[]" id="option_name1"
+                                                                            value="{{ $option['option_name_' . $def_locale] }}" class="form-control"
+                                                                            {{ $def_locale != 'hi' ? 'readonly' : '' }} />
+                                                                        <div id="option_name1_error" class="invalid-feedback"></div>
+                                                                    {{-- </div> --}}
+                                                                    {{-- <div class="col-md-2 mb-3 pt-2 additional-info">
+                                                                        <button class="btn btn-sm btn-danger cancel-option"
+                                                                            onclick="removeOption(this)"><i class="bi bi-trash"
+                                                                                aria-hidden="true"></i></button>
+                                                                    </div> --}}
+                                                                {{-- </div> --}}
+                                                            </div>
+                                                        @endforeach
+                                                    {{-- </div> --}}
+                                                    <div class="appending_div row"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer text-center">
+                                        <button type="submit" class="btn form_button">{{ trans('label.Update') }}</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer text-center">
-                        <button type="submit" class="btn form_button">{{ trans('label.Update') }}</button>
-                    </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
@@ -160,7 +182,7 @@
 @section('page-js')
 
     <script>
-        // question option 
+        // question option
         // $(document).ready(function() {
         //     // Attach a change event listener to the radio buttons
         //     $('.is-available-radio').change(function() {
@@ -188,6 +210,7 @@
                     '<div class="form-group">' +
                     '<label for="option_name" class="form-label">' +
                     '<strong>{{ trans('label.option_name') }}</strong>' +
+                    '<span class="text-uppercase">({{$def_locale}})</span>'+
                     '</label>' +
                     '<input type="text" name="option_name[]" class="form-control" />' +
                     '</div>' +

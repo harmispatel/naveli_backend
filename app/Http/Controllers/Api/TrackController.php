@@ -53,23 +53,36 @@ class TrackController extends BaseController
     public function getStoredMedicationsDetail(Request $request)
     {
         try {
+            if (isset($request->language_code) && !empty($request->language_code)) {
             $login_user_id = auth()->user()->id;
             $getUserMedicationsDetail = TrackPeriodsMedication::where('user_id', $login_user_id)->first();
 
-            if (isset($getUserMedicationsDetail)) {
+                if (isset($getUserMedicationsDetail)) {
 
-                $medicineIds = isset($getUserMedicationsDetail->medicine_id) ? json_decode($getUserMedicationsDetail->medicine_id) : null;
-                $otherMedicines = isset($getUserMedicationsDetail->other_medicine) ? json_decode($getUserMedicationsDetail->other_medicine) : null;
-                $medicines = Medicine::whereIn('id', $medicineIds)->get();
+                    $medicineIds = isset($getUserMedicationsDetail->medicine_id) ? json_decode($getUserMedicationsDetail->medicine_id) : null;
+                    $otherMedicines = isset($getUserMedicationsDetail->other_medicine) ? json_decode($getUserMedicationsDetail->other_medicine) : null;
+                    $medicines = Medicine::whereIn('id', $medicineIds)->get();
+                    if (count($medicines) > 0) {
 
+                        $medicines = $medicines->map(function ($medicine) use ($request) {
+                            return [
+                                'id' => $medicine->id,
+                                'name' => $medicine['name_' . $request->language_code]
+                            ];
+                        });
+                    }
 
-                $getUserMedicationsDetail->medicine_id = $medicines;
-                $getUserMedicationsDetail->other_medicine = $otherMedicines;
-                return $this->sendResponse($getUserMedicationsDetail, 'Data Retrived successully', true);
+                    $getUserMedicationsDetail->medicine_id = $medicines->toArray();
+                    $getUserMedicationsDetail->other_medicine = $otherMedicines;
+                    return $this->sendResponse($getUserMedicationsDetail, 'Data Retrived successully', true);
 
+                }else{
+                   return $this->sendResponse(null, 'Empty User Madicines!', true);
+                }
+
+            } else {
+                return $this->sendResponse(null, 'Language Code not Found!', false);
             }
-
-            return $this->sendResponse(null, 'No Data Retrived', true);
         } catch (\Throwable $th) {
             return $this->sendResponse(null, 'Internal Server Error!', false);
         }
@@ -204,9 +217,11 @@ class TrackController extends BaseController
         }
     }
 
-    public function getStoredAilmentsDetail()
-    {
-        try {
+   public function getStoredAilmentsDetail(Request $request)
+{
+
+    try {
+        if (isset($request->language_code) && !empty($request->language_code)) {
             $login_user_id = auth()->user()->id;
 
             $getUserAilmentsDetail = TrackAilment::where('user_id', $login_user_id)->first();
@@ -216,18 +231,34 @@ class TrackController extends BaseController
                 $ailmentIds = json_decode($getUserAilmentsDetail->ailment_id);
                 $otherAilments = isset($getUserAilmentsDetail->other_ailments) ? json_decode($getUserAilmentsDetail->other_ailments) : null;
                 $ailments = Ailment::whereIn('id', $ailmentIds)->get();
+
+                if (count($ailments) > 0) {
+
+                    $ailments = $ailments->map(function ($ailment) use ($request) {
+                        return [
+                            'id' => $ailment->id,
+                            'name' => $ailment['name_' . $request->language_code]
+                        ];
+                    });
+                }
                 $getUserAilmentsDetail->ailment_id = $ailments->toArray();
                 $getUserAilmentsDetail->other_ailments = $otherAilments;
 
-                return $this->sendResponse($getUserAilmentsDetail, 'Data Retrived successully', true);
+                return $this->sendResponse($getUserAilmentsDetail, 'Data Retrieved successfully', true);
 
-            }
+            }else{
+                   return $this->sendResponse(null, 'Empty User Ailments!', true);
+                }
 
-            return $this->sendResponse(null, 'No Data Retrived', true);
-        } catch (\Throwable $th) {
-            return $this->sendResponse(null, 'Internal Server Error!', false);
+
+        } else {
+            return $this->sendResponse(null, 'Language Code not Found!', false);
         }
+    } catch (\Throwable $th) {
+        return $this->sendResponse(null, 'Internal Server Error!', false);
     }
+}
+
 
     public function storeUserSleepDetail(Request $request){
         try {

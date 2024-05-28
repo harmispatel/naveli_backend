@@ -48,7 +48,7 @@
                                     <select class="form-control" id="question_type_filter">
                                         <option value="">{{ trans('label.question_type') }}</option>
                                         @foreach ($questionTypes as $questionType)
-                                            <option value="{{ $questionType->id }}">{{ $questionType->name }}</option>
+                                            <option value="{{ $questionType->id }}">{{ $questionType->name_en }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -110,8 +110,8 @@
 
                     },
                     {
-                        data: 'question_name',
-                        name: 'question_name',
+                        data: 'question_name_en',
+                        name: 'question_name_en',
 
                     },
                     {

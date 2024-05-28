@@ -103,11 +103,11 @@ Route::get('/user-hirsutism', [UserHirsutismController::class, 'getUserHirsutism
 
 //TrackController
 Route::post('/track/storeUserMedicationsDetail',[TrackController::class,'storeUserMedicationsDetail'])->middleware('auth:sanctum');
-Route::get('/track/getStoredMedicationsDetail',[TrackController::class,'getStoredMedicationsDetail'])->middleware('auth:sanctum');
+Route::post('/track/getStoredMedicationsDetail',[TrackController::class,'getStoredMedicationsDetail'])->middleware('auth:sanctum');
 Route::post('/track/storeBmiCalculatorDetail',[TrackController::class,'storeBmiCalculatorDetail'])->middleware('auth:sanctum');
 Route::post('/track/storeWeightDetail',[TrackController::class,'storeWeightDetail'])->middleware('auth:sanctum');
 Route::post('/track/storeUserAilmentsDetail',[TrackController::class,'storeUserAilmentsDetail'])->middleware('auth:sanctum');
-Route::get('/track/getStoredAilmentsDetail',[TrackController::class,'getStoredAilmentsDetail'])->middleware('auth:sanctum');
+Route::post('/track/getStoredAilmentsDetail',[TrackController::class,'getStoredAilmentsDetail'])->middleware('auth:sanctum');
 Route::post('/track/storeUserSleepDetail',[TrackController::class,'storeUserSleepDetail'])->middleware('auth:sanctum');
 Route::post('/track/storeUserWaterReminders',[TrackController::class,'storeUserWaterReminders'])->middleware('auth:sanctum');
 Route::get('/track/getStoredUserSleepDetail',[TrackController::class,'getStoredUserSleepDetail'])->middleware('auth:sanctum');
